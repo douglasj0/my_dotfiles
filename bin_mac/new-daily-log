@@ -1,0 +1,117 @@
+#!/bin/bash
+#
+# Run at beginning of week to rotate log files and email previous
+# weeks to self and supervisor.
+#
+# 1999 - Gerald Sievers
+# 20110108 - djackson, updated to clean up code and add error checking
+
+LOGDIR="${HOME}/org/DailyLogs"
+
+# Check if the +current link is actually a link or has mystically became
+# the log file, if so exit with a warning
+if [ -e ${LOGDIR}/+current -a ! -L ${LOGDIR}/+current ]; then
+  echo "WARNING:  +current has become a regular file, check contents!  Exiting."
+  exit 1
+fi
+
+if [ -d ${LOGDIR} ]; then
+  cd ${LOGDIR}
+else
+  echo -e "Log Directory ${LOGDIR} doesn't exist.\n\tHave you run the monday script yet?"
+  exit 1
+fi
+
+# for loading of "SMTP", "mailTo", "mailFrom" and "yourName" variables if it exists
+if [ -f .config ]; then
+   . ./.config
+else
+  SMTP=""
+  mailTo=""
+  mailFrom=""
+  yourName="Anonymous Employee"
+fi
+
+newfile=$( < .monday ) \
+    || exit 1
+
+# If newfile already exists, print error and exit
+if [ -f "${newfile}" ]; then
+    echo -e "
+$0: ERROR... $newfile already exists.
+\tdoing nothing." >&2
+    exit 1
+fi
+
+# Delete +current and +Last symlinks, ~ backup files
+rm -f +* *~
+
+# Create new empty daily log file template
+##echo -e "#-*- mode: org -*-\n
+##$yourName  [ Week beginning Monday ${newfile#*--} ]\n
+##Monday\n\n  .\n
+##Tuesday\n\n\n
+##Wednesday\n\n\n
+##Thursday\n\n\n
+##Friday\n\n" >${newfile}
+
+echo -e "#-*- mode: org; fill-column: 78 -*-
+#+STARTUP: showall
+
+# 'C-x r l' – list bookmarks
+# 'C-x r m' - set bookmark
+# 'M-x bookmark-delete' - delete by name
+# 'C-x C-+ / - change font size
+#
+# NOTE: Track ALL interruptions
+
+$yourName  [ Week beginning Monday ${newfile#*--} ]\n
+* Monday
+\n9:30-10:30 [Meeting] Dugong Sprint Planning (Sofritas 19fl)
+\n10:30-11:30 [Meeting ] Manatee Sprint Planning and Grooming (Sofritas 19th)
+\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
+\n11-11:30 Team Alchemy Sprint Planning (Parmesan (20FL)
+\n3-3:30 GrubOps <-> SRE Standup
+\n* Tuesday
+\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
+9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
+\n1-5 SRE Heads Down Time
+\n3:30-4 John : Doug 1:1
+\n* Wednesday
+\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
+9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+\n10-11 [Meeting] Team Manatee Backlog Grooming (Sofritas 19fl)
+\n10:30-11 [Meeting] Team Alchemy In-Person Standup (20F - Tempura)
+\n11:20-12:30 Spicey Chicken
+\n* Thursday
+\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
+9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
+\n11-12 [Meeting] Dugong Grooming (19fl - Sofritas)
+\n1-5 SRE Heads Down Time
+\n* Friday
+\n9-10 [Meeting] SRE's Unite (Fettuccine 21fl)
+\n11:30-12:30 Learning Friday/Technology Lunch
+\n1-5 Learning Friday Time
+\n* Notes:\n\n" >${newfile}
+
+# Count the number of log files (whose name starts with 0-9)
+set [0-9]*
+
+# If there are more then one, email the previous weeks log to... ?
+if [ $# -gt 1 ]
+then
+        # Create +Last symlink to last week's log
+        eval "ln -s \"\${$(( $# - 1 ))}\" +Last"
+
+        # If mailTo is set, email the contents of +Last
+        # (using nailx from the heirloom project for its smtp support)
+        if [ "${mailTo}" ]
+        then
+            nailx -s "$( awk '/ Week beginning /' +Last )" -Ssmtp=${SMTP} -SmailFrom=${mailFrom} ${mailTo} <+Last
+        fi
+fi
+
+# Create new symlink for +current
+ln -s ${newfile} +current

@@ -1,0 +1,2 @@
+#!/bin/sh
+vncviewer -passwd ${HOME}/.vnc/passwd -encodings "copyrect hextile corre rre" $1

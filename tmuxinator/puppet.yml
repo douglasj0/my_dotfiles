@@ -1,0 +1,41 @@
+# ~/.tmuxinator/puppet.yml
+
+name: puppet
+root: ~/repos/puppet.git
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Layouts:
+# even-horizontal, even-vertical, main-horizontal, main-vertical, or tiled
+
+windows:
+  - emacs-puppet.git:
+      layout: main-vertical
+      panes:
+        - emacs -nw --eval "(neotree-toggle)"
+        - clear; sleep 1; ssh pe.qa
+        - clear; sleep 1; ssh pe.preprod
+  - ssh-puppet-prod:
+      layout: tiled
+      panes:
+        - clear; sleep 2; ssh pe-master01
+        - clear; sleep 2; ssh pe-master02
+        - clear; sleep 3; ssh pe-console01
+  - local-puppet:
+      layout:  even-vertical
+      panes:
+        - clear
+        - clear

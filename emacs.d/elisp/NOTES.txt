@@ -1,0 +1,1 @@
+to set subversion to ignore files, use 'svn propset svn:ignore ." in the directory

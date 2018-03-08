@@ -1,0 +1,79 @@
+#
+#
+#
+term vt100			# term type:  vt100, xterm, etc.
+startup_message off		# don't display the copyright page
+#escape ^Zz			# replace ctrl-A by ctrl-z
+activity "activity: window ~%"	# Message when activity occurs in a window
+vbell on			# no annoying audible bell, please
+vbell_msg "bell: window ~%"	# Message for visual bell
+vbellwait 2			# Seconds to pause the screen for visual bell
+allpartial off			# Refresh entire screen on window change
+autodetach on			# Autodetach session on hangup instead of
+				# terminating screen completely
+bufferfile /tmp/screen-buffer	# Filename for the paste buffer
+chdir				# Change to the home directory
+
+defscrollback 10000		# Set the default number of scrollback lines
+
+zombie cr			# Keep dead windows around until I tell them to exit
+#verbose on			# show the command for the windows when they're resurrected
+
+# jump to window 11-19
+bind  ! select 11
+bind  @ select 12
+bind \# select 13
+bind  $ select 14
+bind  % select 15
+bind \^ select 16
+bind  & select 17
+bind  * select 18
+bind  ( select 19
+bind  ) select 10
+
+##hardstatus off
+#hardstatus alwayslastline
+##caption always "%{=kG}%H | %-Lw%{= BW}%50>%n* %t%{-}%+Lw%<"
+#hardstatus on
+#hardstatus alwayslastline
+#hardstatus string "%{=kG}%H | %-Lw%{= BW}%50>%n* %t%{-}%+Lw%<"
+#caption always "%{gk}host: (%{yk}%H%{gk}) | %{= kc}%?%-Lw%?%{= kY}%n*%f %t%?(%u)%?%{= kc}%?%+Lw%?"
+##caption always "%{= kc}%?%-Lw%?%{= kY}%n*%f %t%?(%u)%?%{= kc}%?%+Lw%?"
+caption always "%{= kc}[%H] %?%-Lw%?%{= kY}%50>%n*%f %t%?(%u)%?%{= kc}%?%+Lw%?%<"
+
+# http://www.gnu.org/software/screen/manual/html_node/String-Escapes.html#String-Escapes
+# %{= kc}  # pad string to the display's width (k=black, c=cyan)
+# %-Lw     # L=long names, w=all window numbers and names (-=up to current window)
+# %{= kY}  # pad string to the display's width (k=black, Y=yellow)
+# %50>     # mark current text position for next truncation
+# %n*      # hardstatus of the window
+# %f       # flags of the window
+# %t       # window title
+# (%u)     # all other users of this window
+# %{= kc}  # pad string to the display's width (k=black, c=cyan)
+# %+Lw     # L=long names, w=all window numbers and names (+=starting with window after current one)
+# %<       # same as %=, but just do truncation
+
+
+## new to try out:
+#hardstatus alwayslastline
+#hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{=kw}%?%-Lw%?%{r}(%{W}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B}%Y-%m-%d %{W}%c %{g}]'
+
+# http://www.karan.org/blog/index.php/2010/01/06/this-is-my-screenrc-whats-yours
+#caption string "%?%F%{= Bk}%? %C%A %D %d-%m-%Y %{= kB} %t%= %?%F%{= Bk}%:%{= wk}%? %n "
+#hardstatus alwayslastline
+#hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m/%d %{W}%c %{g}]'
+
+## start up ssh-agent
+#screen -t agent 0
+#select 0
+#exec ${HOME}/bin/screen-ssh-agent
+#exec true
+#source ${HOME}/.ssh/screen_agent
+
+# connect to ssh-agent
+#setenv SSH_AUTH_SOCK $HOME/.ssh/ssh_auth_sock
+
+# screens
+screen -t orlok
+select 0

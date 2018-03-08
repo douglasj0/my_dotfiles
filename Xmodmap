@@ -1,0 +1,11 @@
+!keysym Mode_switch = Escape
+!keysym Escape = Mode_switch
+
+!! Fix ESC and Alt as meta in X11
+!! Removed because it was breaking vim
+!clear Mod1
+!clear Mod2
+!keycode 63 = Mode_switch
+!keycode 66 = Meta_L
+!add Mod1 = Meta_L
+!add Mod2 = Mode_switch

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CASSVER="2.0.16"
+
+${HOME}/Applications/apache-cassandra-${CASSVER}/bin/cqlsh $*

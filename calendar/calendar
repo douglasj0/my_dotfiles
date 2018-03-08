@@ -1,0 +1,14 @@
+#include </usr/share/calendar/calendar.australia>
+#include </usr/share/calendar/calendar.birthday>
+#include </usr/share/calendar/calendar.christian>
+#include </usr/share/calendar/calendar.computer>
+#include </usr/share/calendar/calendar.freebsd>
+#include </usr/share/calendar/calendar.history>
+#include </usr/share/calendar/calendar.holiday>
+#include </usr/share/calendar/calendar.judaic>
+#include </usr/share/calendar/calendar.lotr>
+#include </usr/share/calendar/calendar.music>
+#include </usr/share/calendar/calendar.newzealand>
+#include </usr/share/calendar/calendar.southafrica>
+#include </usr/share/calendar/calendar.usholiday>
+#include </usr/share/calendar/calendar.world>

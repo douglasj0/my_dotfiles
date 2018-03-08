@@ -1,0 +1,106 @@
+#!/bin/sh
+#
+# Link files in ~/${CURRDIR} to ~/
+# if they are links then remove the link and re-create
+# if they are not links and don't exist then create
+
+# Cleanup:
+#rm -rf .bash_profile .bashrc .boxes .calendar .emacs.d .inputrc .irssi .mutt .nsmbrc .screenrc .tmux.conf .vm .zlogin .zshenv .zshrc common.git examples org
+
+CURRDATE=`date +%Y%m%d`
+CURRDIR=`pwd`
+
+# Create links for specific files in the dotfiles directory
+#bash_profile bashrc boxes calendar emacs.d git-prompt.sh inputrc launchd.conf MacOSX screenrc tmux.conf tmuxinator vimrc vm Xdefaults Xmodmap Xresources zlogin zshenv zshrc
+for d in bash_profile bashrc boxes calendar emacs.d inputrc launchd.conf MacOSX screenrc vimrc vm Xdefaults Xmodmap Xresources zlogin zshenv zshrc
+do
+  if [ -e ${HOME}/.${d} ]; then
+    if [ -L ${HOME}/.${d} ]; then
+      rm ${HOME}/.${d}
+    else
+      mv ${HOME}/.${d} ${HOME}/.${d}-${CURRDATE}
+    fi
+  fi
+  ln -s ${CURRDIR}/${d} ${HOME}/.${d}
+done
+
+# OS Specific settings
+case "`uname`" in
+Darwin)
+  if [ -e ${HOME}/bin ]; then
+    if [ -L ${HOME}/bin ]; then
+      rm ${HOME}/bin
+    else
+      mv ${HOME}/bin ${HOME}/bin.old
+    fi
+  fi
+  ln -s ${CURRDIR}/bin_mac ${HOME}/bin
+#  if [ ! -L ${HOME}/.tmux.conf.local ]; then
+#    ln -s ${CURRDIR}/tmux-osx.conf ${HOME}/.tmux.conf.local
+#  fi
+;;
+Linux)
+  if [ -e ${HOME}/bin ]; then
+    if [ -L ${HOME}/bin ]; then
+      rm ${HOME}/bin
+    else
+      mv ${HOME}/bin ${HOME}/bin.old
+    fi
+  fi
+  ln -s ${CURRDIR}/bin_lin ${HOME}/bin
+#  if [ ! -L ${HOME}/.tmux.conf.local ]; then
+#    ln -s ${CURRDIR}/tmux-linux.conf ${HOME}/.tmux.conf.local
+#  fi
+;;
+*)
+  echo "uname not reporing Darwin or Linux"
+;;
+esac
+
+#for b in ${BIN};
+#do
+#  if [ -L ${HOME}/bin ]; then
+#    rm ${HOME}/bin
+#  fi
+#  ln -s ${CURRDIR}/${b} ${HOME}/bin
+#done
+
+# Misc links from Dropbox
+if [ -d ${HOME}/Dropbox ]; then
+  # Diary
+    if [ -L ${HOME}/diary ]; then
+      rm ${HOME}/diary
+      ln -s ${HOME}/Dropbox/Documents/diary ${HOME}/diary
+    fi
+  # org
+    if [ -L ${HOME}/org ]; then
+      rm ${HOME}/org
+    fi
+    ln -s ${HOME}/Dropbox/Home/org ${HOME}/org
+  # .newsrc
+#    if [ -L ${HOME}/.newsrc ]; then
+#      rm ${HOME}/.newsrc
+#    fi
+#    ln -s ${HOME}/Dropbox/Home/dotfiles/newsrc ${HOME}/.newsrc
+  # .newsrc.eld
+#    if [ -L ${HOME}/.newsrc.eld ]; then
+#      rm ${HOME}/.newsrc.eld
+#    fi
+#    ln -s ${HOME}/Dropbox/Home/dotfiles/newsrc.eld ${HOME}/.newsrc.eld
+  # .authinfo
+    if [ -L ${HOME}/.authinfo ]; then
+      rm ${HOME}/.authinfo
+    fi
+    ln -s ${HOME}/Dropbox/Home/dotfiles/authinfo ${HOME}/.authinfo
+  # .mutt
+#    if [ -L ${HOME}/.mutt ]; then
+#      rm ${HOME}/.mutt
+#    fi
+#    ln -s ${HOME}/Dropbox/Home/dotfiles/mutt ${HOME}/.mutt
+fi
+
+# Specific links from internal work repos
+if [ -e ${HOME}/repos/djackson/djackson/dotfiles/workrc ]; then
+  if [ -L ${HOME}/.workrc ]; then rm ${HOME}/.workrc; fi
+  ln -s ${HOME}/repos/djackson/djackson/dotfiles/workrc ${HOME}/.workrc
+fi

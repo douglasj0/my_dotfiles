@@ -1,0 +1,44 @@
+# ~/.tmuxinator/puppet.yml
+
+name: csite
+root: ~/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Layouts:
+# even- horizontal, even-vertical, main-horizontal, main-vertical, or tiled
+
+windows:
+  - csite-tomcat:
+      layout: tiled
+      panes:
+        - ssh consumersite-tomcat01
+        - sleep 1; ssh consumersite-tomcat02
+        - sleep 2; ssh consumersite-tomcat03
+        - sleep 3; ssh consumersite-tomcat04
+        - sleep 4; ssh consumersite-tomcat05
+        - sleep 5; ssh consumersite-tomcat06
+        - sleep 6; ssh consumersite-tomcat07
+        - sleep 7; ssh consumersite-tomcat08
+        - sleep 8; ssh consumersite-tomcat09
+        - sleep 9; ssh consumersite-tomcat10
+  - csite-apache:
+      layout: tiled
+      panes:
+        -
+        -
+        -
+        -

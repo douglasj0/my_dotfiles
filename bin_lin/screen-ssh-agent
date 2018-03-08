@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm ${HOME}/.ssh/screen_agent
+
+/usr/bin/ssh-agent | head -2 | cut -d\; -f1 | sed 's/^/setenv\ /' | sed 's/=/\ /' > ${HOME}/.ssh/screen_agent

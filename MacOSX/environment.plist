@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PATH</key>
+	<string>${HOME}/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin</string>
+	<key>TMPDIR</key>
+	<string>/tmp</string>
+</dict>
+</plist>

@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in `who|tail -3|awk '{print $1}'`
+do
+  who|grep -w $i
+  pstree -A -pu $i
+done

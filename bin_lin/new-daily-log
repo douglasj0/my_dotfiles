@@ -1,0 +1,120 @@
+#!/bin/bash
+#
+# Run at beginning of week to rotate log files and email previous
+# weeks to self and supervisor.
+#
+# 1999 - Gerald Sievers
+# 20110108 - djackson, updated to clean up code and add error checking
+
+LOGDIR="${HOME}/org/DailyLogs"
+
+# Check if the +current link is actually a link or has mystically became
+# the log file, if so exit with a warning
+if [ -e ${LOGDIR}/+current -a ! -L ${LOGDIR}/+current ]; then
+  echo "WARNING:  +current has become a regular file, check contents!  Exiting."
+  exit 1
+fi
+
+if [ -d ${LOGDIR} ]; then
+  cd ${LOGDIR}
+else
+  echo -e "Log Directory ${LOGDIR} doesn't exist.\n\tHave you run the monday script yet?"
+  exit 1
+fi
+
+# for loading of "SMTP", "mailTo", "mailFrom" and "yourName" variables if it exists
+if [ -f .config ]; then
+   . ./.config
+else
+  SMTP=""
+  mailTo=""
+  mailFrom=""
+  yourName="Anonymous Employee"
+fi
+
+newfile=$( < .monday ) \
+    || exit 1
+
+# If newfile already exists, print error and exit
+if [ -f "${newfile}" ]; then
+    echo -e "
+$0: ERROR... $newfile already exists.
+\tdoing nothing." >&2
+    exit 1
+fi
+
+# Delete +current and +Last symlinks, ~ backup files
+rm -f +* *~
+
+# Create new empty daily log file template
+##echo -e "#-*- mode: org -*-\n
+##$yourName  [ Week beginning Monday ${newfile#*--} ]\n
+##Monday\n\n  .\n
+##Tuesday\n\n\n
+##Wednesday\n\n\n
+##Thursday\n\n\n
+##Friday\n\n" >${newfile}
+
+echo -e "#-*- mode: org; fill-column: 78 -*-
+#+STARTUP: showall
+
+# 'C-x r l' – list bookmarks
+# 'C-x r m' - set bookmark
+# 'M-x bookmark-delete' - delete by name
+
+$yourName  [ Week beginning Monday ${newfile#*--} ]\n
+* Monday
+\n9:30-9:45 Team Awesome Standup (Lo Mein)
+\n10-10:30 SRE Standup (Crab Rangoona)
+\n10:30-11:30 SDL Meeting
+\n1:30-2 1:1 James and Doug
+\n3-3:30 GrubOps <-> SRE Standup
+\n
+* Tuesday
+\n9:30-9:45 Team Awesome Standup
+\n10-10:30 SRE Standup (Crab Rangoon)
+\n10:30-11:30 SDL Meeting
+\n
+* Wednesday
+\n9-9:30 Core & 3rd Party Standup (Lo Mein)
+\n9:30-9:45 Team Awesome Standup (Lo Mein)
+\n10-10:30 SRE Standup
+\n10:30-11:30 SDL Meeting
+\n11:20-12:30 Spicey Chicken
+\n3-4 SRE's Unite (Lo Mein)
+\n4:30-8 Alcoholics Anonymous, the movie (Monks)
+\n
+* Thursday
+\n9:30-9:45 Team Awesome Standup
+\n10-10:30 SRE Standup (Crab Rangoon)
+\n10:30-11:30 SDL Meeting
+\n3:30-4 PCI Weekly (Taco)
+\n
+* Friday
+\n9:30-9:45 Team Awesome Standup
+\n9:45-10 Email weekly status report
+\n10:30-12 Team Awesome Sprint Planning
+\n12-1 SRE Weekly Team Meeting (Lo Mein)
+\n1-5 Learning Fridays Time
+\n
+* Notes:\n\n" >${newfile}
+
+# Count the number of log files (whose name starts with 0-9) 
+set [0-9]*
+
+# If there are more then one, email the previous weeks log to... ?
+if [ $# -gt 1 ]
+then
+        # Create +Last symlink to last week's log
+        eval "ln -s \"\${$(( $# - 1 ))}\" +Last"
+
+        # If mailTo is set, email the contents of +Last
+        # (using nailx from the heirloom project for its smtp support)
+        if [ "${mailTo}" ]
+        then
+            nailx -s "$( awk '/ Week beginning /' +Last )" -Ssmtp=${SMTP} -SmailFrom=${mailFrom} ${mailTo} <+Last
+        fi
+fi
+
+# Create new symlink for +current
+ln -s ${newfile} +current

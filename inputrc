@@ -1,0 +1,39 @@
+# none, visible or audible
+set bell-style visible
+
+#set editing-mode vi
+
+set meta-flag on		#Enable 8bit input
+set input-meta on		#
+set convert-meta off		#Turns off 8th bit stripping
+set output-meta on		#Keep the 8th bit for display
+
+# Completed names which are symbolic links to
+# directories have a slash appended.
+set mark-symlinked-directories on
+
+set show-all-if-ambiguous on
+set completion-ignore-case on
+
+$if mode=emacs
+
+# for linux console and RH/Debian xterm
+# some do not work in vi mode
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char		#Forward delete with DEL key
+"\e[2~": quoted-insert
+"\e[5C": forward-word		#Forward word with ctrl-arrow
+"\e[5D": backward-word		#Back word with ctrl-arrow
+#"\e\e[C": forward-word
+#"\e\e[D": backward-word
+#
+# enable tab cycles through all completions
+#"\t": menu-complete
+
+# makes readline work more like the C-shell in that pressing up/down
+# yields only commands matching the current prefix
+"\e[A": history-search-backward
+"\e[B": history-search-forward

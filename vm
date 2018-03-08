@@ -1,0 +1,20 @@
+(setq vm-primary-inbox "~/email/inbox.mbox")
+(setq vm-crash-box "~/email/inbox.crash.mbox")
+
+(setq vm-spool-files `((,vm-primary-inbox
+                            "/var/mail/douglas"
+                            ,vm-crash-box)))
+
+(setq vm-mime-text/html-handler 'emacs-w3m)
+
+(setq
+  vm-startup-with-summary t
+  vm-always-use-presentation-buffer t
+
+  vm-auto-center-summary 0
+  vm-auto-decode-mime-messages t
+  vm-auto-displayed-mime-content-type-exceptions nil
+  vm-auto-displayed-mime-content-types '("text" "image" "multipart"
+                                        "message/rfc822")
+)
+

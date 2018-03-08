@@ -1,0 +1,12 @@
+alias ll ls -l $*
+alias l ls -laF $*
+alias la ls -a $*
+alias lf ls -F $*
+alias s (magit-status (eshell/pwd)) > /dev/null
+alias emacs find-file $1
+alias w3m w3m-find-file $1
+alias clear recenter 0
+alias ff find-file $1
+alias FF find-file-other-window $1
+alias v view-file $1
+alias V view-file-other-window

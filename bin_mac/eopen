@@ -1,0 +1,20 @@
+#!/bin/sh
+# http://blog.alieniloquent.com/2009/07/01/using-emacsclient-on-mac-os/
+
+# Send the file to our running Emacs and bring it to the foreground.
+/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n "${1}" \
+  2> /dev/null \
+  && open -a Emacs
+
+# If that failed, then open a new emacs visiting the file.
+if [ $? -ne 0 ]; then
+  EOPEN_DIR="${PWD}" EOPEN_FILE="${1}" open -a Emacs
+fi
+
+## Add the following to .emacs.d/init.el
+# (let ((dir (getenv "EOPEN_DIR"))
+#      (file (getenv "EOPEN_FILE")))
+#  (if dir
+#      (cd dir))
+#  (if file
+#      (find-file file)))

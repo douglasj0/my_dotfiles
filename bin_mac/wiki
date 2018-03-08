@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+CURRWIKI="${HOME}/Dropbox/Home/dbjwiki.html"
+NEWWIKI="${HOME}/Downloads/dbjwiki.html"
+
+if [[ $NEWWIKI -nt $CURRWIKI ]]; then
+  mv $NEWWIKI $CURRWIKI
+fi
+
+open ${HOME}/Dropbox/Home/dbjwiki.html

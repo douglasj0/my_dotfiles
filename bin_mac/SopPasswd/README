@@ -1,0 +1,17 @@
+Sort-of-pronounceable-password generator
+Version: 0.1
+Author: Mark A. Pors, mark@dreamzpace.com, www.dreamzpace.com
+License: GPL
+
+This simple perl script generates easy to remember passwords.
+It is not based on any standard (like the FIPS 181 standard), so it's probably not a secure as it should be, but it's probably sufficient for most purposes. For something more academic have a look at the Crypt::RandPasswd module.
+
+How it works:
+You can specify the number of passwords you want, the length of the passwords, the dictionary file, the length of the chunks of words that are used to construct the password and the character to separate the passwords in the output.
+
+If you don't want numbers in your passwords, make sure that you can divide $wordlen by $sublen. So a $wordlen of 8 with a $sublen of 4 won't have numbers in the result. If you choose the $sublen=1, the result might be not that pronounceable, but probably a bit more secure?
+
+Just edit the script as you like and do:
+
+chmod 755 SopPasswd-01.pl
+./SopPasswd-01.pl
