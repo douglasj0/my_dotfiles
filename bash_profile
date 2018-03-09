@@ -11,7 +11,7 @@ case $(uname) in
 Darwin)  # Darwin Environment
 echo ".Darwin bash_profile loaded"
 
-PATH=$HOME/bin:${HOME}/Library/Python/2.7/bin/:/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin:/usr/local/opt/python/libexec/bin/:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/usr/local/opt/qt/bin
+PATH=$HOME/bin:/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/usr/local/opt/qt/bin
 MANPATH=/usr/local/share/man:/usr/local/man:/usr/share/man:/usr/X11/man
 ;; # end Darwin
 
