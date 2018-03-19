@@ -68,30 +68,30 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 * Monday
 \n9:30-10:30 [Meeting] Dugong Sprint Planning (Sofritas 19fl)
-\n10:30-11:30 [Meeting ] Manatee Sprint Planning and Grooming (Sofritas 19th)
-\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
-\n11-11:30 Team Alchemy Sprint Planning (Parmesan (20FL)
-\n3-3:30 GrubOps <-> SRE Standup
+10-11 [Meeting] Bee Team Sprint Planning (Tenderloin 20fl)
+11:30-11:30 [Meeting ] Manatee Sprint Planning and Grooming (Sofritas 19th)
+11-11:50 Team Unity Sprint Planning (Parmesan (20FL)
 \n* Tuesday
-\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
-9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
-\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
+\n9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+9:45-10 [Meeting] Bee Team Standup (Spanakopita 19fl)
 \n1-5 SRE Heads Down Time
-\n3:30-4 John : Doug 1:1
 \n* Wednesday
-\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
+\n9:30-9:45 Braveheart Standup (Parmesan 20fl)
 9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
-\n10-11 [Meeting] Team Manatee Backlog Grooming (Sofritas 19fl)
-\n10:30-11 [Meeting] Team Alchemy In-Person Standup (20F - Tempura)
+9:45-10 [Meeting] Bee Team Standup (Spanakopita 19fl)
 \n11:20-12:30 Spicey Chicken
 \n* Thursday
-\n9:30-9:45 [Meeting] Team Manatee Daily Aggregation (19FL - Strudel)
+\n9:30-9:45 Braveheart Standup (Parmesan 20fl)
 9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
-\n10:30-11 [Meeting] Team Alchemy Virtual Standup (Hipchat)
+9:45-10 [Meeting] Bee Team Standup (Spanakopita 19fl)
 \n11-12 [Meeting] Dugong Grooming (19fl - Sofritas)
 \n1-5 SRE Heads Down Time
+\n3-4 Manatee Grooming (Sofritas 19fl)
 \n* Friday
-\n9-10 [Meeting] SRE's Unite (Fettuccine 21fl)
+\n9:30-9:45 Braveheart Standup (Parmesan 20fl)
+9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+10-11 [Meeting] Bee Team Retro (Tenderloin 20fl)
+\n9:30-10:30 [Meeting] SRE's Unite (Fettuccine 21fl)
 \n11:30-12:30 Learning Friday/Technology Lunch
 \n1-5 Learning Friday Time
 \n* Notes:\n\n" >${newfile}
