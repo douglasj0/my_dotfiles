@@ -1045,7 +1045,7 @@ last sentence."
 
 (setq
   deft-extension "txt"
-  deft-directory "~/Documents/Notes"
+  deft-directory "~/org/notes"
   deft-text-mode 'org-mode
   deft-use-filename-as-title t
   deft-recursive t
