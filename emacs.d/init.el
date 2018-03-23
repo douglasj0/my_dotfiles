@@ -80,6 +80,7 @@
   pydoc-info    ;;
   restclient    ;; REST client for emacs
   s             ;; The long lost Emacs string manipulation library
+  shell-pop     ;; Pop up a quick shell
   ;smartscan     ;; Quickly jumps between other symbols found at point
   ;smex          ;; M-x enhancement for Emacs. Built on top of IDO
   ;sr-speedbar   ;; mode make SpeedBar show in Current Frame
@@ -190,7 +191,7 @@
 (global-set-key (kbd "C-c e") 'eshell)
 (global-set-key (kbd "C-c s") 'shell)
 ;(global-set-key (kbd "C-c t") 'term)
-(global-set-key (kbd "C-c t") 'ansi-term)
+;(global-set-key (kbd "C-c t") 'ansi-term) ; re-assigned to shell-pop
 
 ;; Bind rgrep to C-c r / C-c C-r
 (global-set-key (kbd "C-c r") 'rgrep)
@@ -1500,6 +1501,18 @@ last sentence."
 (recentf-mode t)                  ;; turn it on
 ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;(global-set-key (kbd "C-x C-r") 'helm-recentf)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- shell-pop
+;;; https://github.com/kyagi/shell-pop-el
+(require 'shell-pop)
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/bash")
+  ;(setq shell-pop-universal-key "C-t")
+  (global-set-key (kbd "C-c t") 'shell-pop)
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
