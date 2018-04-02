@@ -66,7 +66,7 @@
   ;maxframe      ;; maximize the emacs frame and stay within the display res
   ;monokai-theme ;; replacement theme for zenburn, didn't like fonts
   multi-term    ;;
-  multiple-cursors ;;
+  ;multiple-cursors ;; Multiple cursors for emacs.
   ;neotree       ;; tree plugin like NerdTree for Vim
   nov           ;; Major mode for reading epubs
   org-plus-contrib ;; all org files plus all contribs files
@@ -84,11 +84,11 @@
   ;smartscan     ;; Quickly jumps between other symbols found at point
   ;smex          ;; M-x enhancement for Emacs. Built on top of IDO
   ;sr-speedbar   ;; mode make SpeedBar show in Current Frame
-  tabbar        ;; Web browser like tabs
+  ;tabbar        ;; Web browser like tabs
   treemacs      ;; Directory pane
   sublimity     ;; smooth-scrolling, minimap and distraction-free mode
   switch-window ;; Window switching, the visual way
-  twittering-mode ;; Twitter client for Emacs
+  ;twittering-mode ;; Twitter client for Emacs
   undo-tree     ;; undo system to recover any past state of a buffer
   ;w3m           ;; an Emacs interface to the w3m text browser
   ;workgroups    ;; Store an unlimited number of window configs
@@ -674,17 +674,17 @@
 ;;; ---------------------------------------------------------------------------
 ;;; Jump to next character - Similar to Vim's semicolon command
 ;;; http://www.reddit.com/r/emacs/comments/nfj0e/emacs_wizards_how_do_you_move_about_in_source_code/
-(defun jump-to-next-char (c &optional count)
-  "Jump forward or backward to a specific character.  With a
-count, move that many copies of the character."
-  (interactive "cchar: \np")
-  (when (string= (string c) (buffer-substring (point) (+ 1 (point))))
-    (setq count (+ 1 count)))
-  (and
-   (search-forward (string c) nil t count)
-   (> count 0)
-   (backward-char)))
-(global-set-key (kbd "C-;") 'jump-to-next-char)
+;(defun jump-to-next-char (c &optional count)
+;  "Jump forward or backward to a specific character.  With a
+;count, move that many copies of the character."
+;  (interactive "cchar: \np")
+;  (when (string= (string c) (buffer-substring (point) (+ 1 (point))))
+;    (setq count (+ 1 count)))
+;  (and
+;   (search-forward (string c) nil t count)
+;   (> count 0)
+;   (backward-char)))
+;(global-set-key (kbd "C-;") 'jump-to-next-char)
 
 ;;; ---------------------------------------------------------------------------
 ;;; Remove duplicate lines in a region
