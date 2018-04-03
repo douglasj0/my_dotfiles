@@ -956,7 +956,6 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
 (show-paren-mode 1)
-(setq-default indent-tabs-mode nil)
 (setq save-interprogram-paste-before-kill t
       apropos-do-all t
       mouse-yank-at-point t
