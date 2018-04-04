@@ -61,8 +61,8 @@
   json-mode     ;; https://github.com/joshwnj/json-mode
   ;key-chord     ;; map pairs of simultaneously pressed keys to commands
   magit         ;; An emacs mode for git
-  mark-multiple ;; sorta lets you mark several regions at once
-  markdown-mode ;; commented out?, included with Emacs for OS X Modified
+  ;mark-multiple ;; sorta lets you mark several regions at once
+  markdown-mode ;; Included with Emacs for OS X Modified
   ;maxframe      ;; maximize the emacs frame and stay within the display res
   ;monokai-theme ;; replacement theme for zenburn, didn't like fonts
   multi-term    ;;

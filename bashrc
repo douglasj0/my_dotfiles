@@ -413,6 +413,7 @@ if [ `which watch` ]; then alias nap="watch -n 120 echo ${HOSTNAME}"; fi
 alias screenssh='ln -sf $SSH_AUTH_SOCK $HOME/.ssh-auth-sock; env SSH_AUTH_SOCK=$HOME/.ssh-auth-sock screen'
 alias git_repo_name='git remote show -n origin | grep Fetch | cut -d: -f2-'
 alias ping4='ping -c4'
+alias weather='curl wttr.in/chicago'
 
 # about-alias 'the silver searcher (ag) aliases'
 ## Summary for args to less:
