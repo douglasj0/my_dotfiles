@@ -358,7 +358,7 @@ Captured %<%Y-%m-%d %H:%M>
           (asymptote . t) ;Asymptote
           (awk . t)       ;Awk
           (C . t)         ;C
-          ;(C++ . t)       ; C++
+          ;(C++ . t)       ;C++
           (clojure . t)   ;Clojure
           (css . t)       ;CSS
           ;(d . f)        ;D
@@ -366,7 +366,7 @@ Captured %<%Y-%m-%d %H:%M>
           (dot . t)       ;Graphviz
           (calc . t)      ; Emacs Calc
           ;(fortran . t)   ;Fortran
-          (gnuplot . t)   ; gnuplot
+          (gnuplot . t)   ;gnuplot
           ;(haskell . t)   ;Haskell
           (java . t)      ;Java
           (js . t)        ;Javascript
@@ -379,7 +379,7 @@ Captured %<%Y-%m-%d %H:%M>
           ;(mscgen . t)    ;Mscgen
           ;(ocaml . t)     ;Objective Caml
           ;(octave . t)    ;octave
-          (org . t)       ; Org mode
+          (org . t)       ;Org mode
           ;(oz . f)        ;Oz
           (perl . t)      ;Perl
           ;(plantuml . t)  ;Plantuml
@@ -390,10 +390,10 @@ Captured %<%Y-%m-%d %H:%M>
           ;(sass . t)      ;Sass
           ;(scheme . t)    ;Scheme
           (screen . t)    ;GNU Screen
-          (sed . t)        ;Sed
-          (sh . t)        ;shell
+          (sed . t)       ;Sed
+          (shell . t)     ;shell
           (sql . t)       ; SQL
-          (sqlite .t)        ;SQLite
+          (sqlite .t)     ;SQLite
 )))
 
 
