@@ -56,7 +56,7 @@ rm -f +* *~
 ##Friday\n\n" >${newfile}
 
 echo -e "#-*- mode: org; fill-column: 78 -*-
-#+STARTUP: showall
+#+STARTUP: overview
 
 # 'C-x r l' – list bookmarks
 # 'C-x r m' - set bookmark
@@ -84,7 +84,7 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n9:30-9:45 Braveheart Standup (Parmesan 20fl)
 9:45-10 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
 9:45-10 [Meeting] Bee Team Standup (Spanakopita 19fl)
-\n11-12 [Meeting] Dugong Grooming (19fl - Sofritas)
+\n10-11 [Meeting] Dugong Grooming (19fl - Sofritas)
 \n1-5 SRE Heads Down Time
 \n3-4 Manatee Grooming (Sofritas 19fl)
 \n* Friday
