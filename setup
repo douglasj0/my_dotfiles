@@ -78,20 +78,20 @@ if [ -d ${HOME}/Dropbox ]; then
     fi
     ln -s ${HOME}/Dropbox/Home/org ${HOME}/org
   # .newsrc
-#    if [ -L ${HOME}/.newsrc ]; then
-#      rm ${HOME}/.newsrc
-#    fi
-#    ln -s ${HOME}/Dropbox/Home/dotfiles/newsrc ${HOME}/.newsrc
+    if [ -L ${HOME}/.newsrc ]; then
+      rm ${HOME}/.newsrc
+    fi
+    ln -s ${HOME}/Dropbox/Home/NNTP/newsrc ${HOME}/.newsrc
   # .newsrc.eld
-#    if [ -L ${HOME}/.newsrc.eld ]; then
-#      rm ${HOME}/.newsrc.eld
-#    fi
-#    ln -s ${HOME}/Dropbox/Home/dotfiles/newsrc.eld ${HOME}/.newsrc.eld
+    if [ -L ${HOME}/.newsrc.eld ]; then
+      rm ${HOME}/.newsrc.eld
+    fi
+    ln -s ${HOME}/Dropbox/Home/NNTP/newsrc.eld ${HOME}/.newsrc.eld
   # .authinfo
     if [ -L ${HOME}/.authinfo ]; then
       rm ${HOME}/.authinfo
     fi
-    ln -s ${HOME}/Dropbox/Home/dotfiles/authinfo ${HOME}/.authinfo
+    ln -s ${HOME}/Dropbox/Home/NNTP/authinfo ${HOME}/.authinfo
   # .mutt
 #    if [ -L ${HOME}/.mutt ]; then
 #      rm ${HOME}/.mutt
@@ -100,7 +100,7 @@ if [ -d ${HOME}/Dropbox ]; then
 fi
 
 # Specific links from internal work repos
-if [ -e ${HOME}/repos/djackson/djackson/dotfiles/workrc ]; then
+if [ -e ${HOME}/repos/djackson/necronomicon/profile/workrc ]; then
   if [ -L ${HOME}/.workrc ]; then rm ${HOME}/.workrc; fi
-  ln -s ${HOME}/repos/djackson/djackson/dotfiles/workrc ${HOME}/.workrc
+  ln -s ${HOME}/repos/djackson/necronomicon/profile/workrc ${HOME}/.workrc
 fi

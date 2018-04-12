@@ -25,6 +25,9 @@
 (add-to-list 'Info-default-directory-list "~/.emacs.d/info")
 (add-to-list 'load-path "~/.emacs.d/elisp/") ;; elisp packages not in pkg manager
 
+;;; Custom theme path
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+
 ;;; Install Packages - http://crn.io/2011/12/managing-packages-in-emacs-24/
 ;;; Update installed packages with: M-x package-list-packages U x
 (setq package-archives
@@ -37,7 +40,7 @@
 
 (defvar my-packages)
 (setq my-packages '(
-  auctex        ;; package for writing and formatting TeX files
+  ;auctex        ;; package for writing and formatting TeX files, keeps failing install
   color-moccur  ;; search a regexp in all buffers
   ;company       ;; text completion framework for Emacs
   ;confluence    ;; mode for editing pages in a Confluence wiki
@@ -67,7 +70,7 @@
   ;monokai-theme ;; replacement theme for zenburn, didn't like fonts
   multi-term    ;;
   ;multiple-cursors ;; Multiple cursors for emacs.
-  ;neotree       ;; tree plugin like NerdTree for Vim
+  neotree       ;; tree plugin like NerdTree for Vim
   nov           ;; Major mode for reading epubs
   org-plus-contrib ;; all org files plus all contribs files
   ;org-journal   ;; set of functions to maintain a simple personal diary/journal
@@ -85,7 +88,7 @@
   ;smex          ;; M-x enhancement for Emacs. Built on top of IDO
   ;sr-speedbar   ;; mode make SpeedBar show in Current Frame
   ;tabbar        ;; Web browser like tabs
-  treemacs      ;; Directory pane
+  ;treemacs      ;; Directory pane
   sublimity     ;; smooth-scrolling, minimap and distraction-free mode
   switch-window ;; Window switching, the visual way
   ;twittering-mode ;; Twitter client for Emacs
@@ -1051,7 +1054,7 @@ last sentence."
   deft-recursive t
   deft-ignore-file-regexp "archive\.*")
 ;(global-set-key (kbd "<f8>") 'deft))
-(global-set-key (kbd "C-x C-g") 'deft-find-file)
+(global-set-key (kbd "C-c C-g") 'deft-find-file)
 
 ;; Notational Velocity provides a show-hide function key, letting you pop
 ;; in-and-out of the interface quickly. I recreated a crude version of this
@@ -1371,11 +1374,11 @@ last sentence."
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;(global-set-key (kbd "<f1> l") 'counsel-find-library)
+;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
 
 ;; Ivy-based interface to shell and system tools
 (global-set-key (kbd "C-c g") 'counsel-git)
@@ -1392,7 +1395,7 @@ last sentence."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; -- magit-mode - emacs mode for interacting with the Git vcs
-(global-set-key (kbd "C-c m") 'magit-status)  ;; had changed to C-c g
+(global-set-key (kbd "C-c g") 'magit-status)  ;;
 (setq magit-completing-read-function 'ivy-completing-read)
 
 
@@ -1437,7 +1440,7 @@ last sentence."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; -- neo-tree
 ;;; Emacs version of Vim's nerdtree
-;(global-set-key [f5] 'neotree-toggle)
+(global-set-key [f5] 'neotree-toggle)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1558,8 +1561,8 @@ last sentence."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; -- treemacs -
-(setq treemacs-show-hidden-files nil)
-(global-set-key [f5] 'treemacs-toggle)
+;(setq treemacs-show-hidden-files nil)
+;(global-set-key [f5] 'treemacs-toggle)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1574,3 +1577,5 @@ last sentence."
 ;;; Testing area
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+
+;;; M-g M-g - goto-line

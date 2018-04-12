@@ -13,6 +13,7 @@
 ;(message "*** Loaded org-mode-init.el")
 (require 'org)
 (require 'org-contacts) ;takes 0.59s To load
+(require 'ox-confluence)
 
 ;; Add markdown and odt export
 ;;http://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown
