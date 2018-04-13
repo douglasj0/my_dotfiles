@@ -40,8 +40,8 @@
 
 (defvar my-packages)
 (setq my-packages '(
-  auctex        ;; package for writing and formatting TeX files, keeps failing install
   color-moccur  ;; search a regexp in all buffers
+  ;auctex        ;; package for writing and formatting TeX files, keeps failing install
   ;company       ;; text completion framework for Emacs
   ;confluence    ;; mode for editing pages in a Confluence wiki
   deft          ;; quickly browse, filter, & edit dirs of plain text notes

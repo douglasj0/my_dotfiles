@@ -16,6 +16,9 @@ chdir				# Change to the home directory
 
 defscrollback 10000		# Set the default number of scrollback lines
 
+# Enable mouse scrolling and scroll bar history scrolling
+termcapinfo xterm* ti@:te@
+
 zombie cr			# Keep dead windows around until I tell them to exit
 #verbose on			# show the command for the windows when they're resurrected
 
