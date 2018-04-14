@@ -1,6 +1,57 @@
 #-*- mode: org; fill-column: 78 -*-
 #+STARTUP: overview
 
+* Keymappings
+| Key                 | Function                  | Notes                                 |
+|---------------------+---------------------------+---------------------------------------|
+| C-x C-u             | upcase region             |                                       |
+| C-x C-l             | downcase region           |                                       |
+|                     |                           |                                       |
+| C-x r m             | set a bookmark            |                                       |
+| C-x r b             | jump to a bookmark        |                                       |
+| C-x r l             | list your bookmarks       |                                       |
+| M-x bookmark-delete | delete a bookmark by name |                                       |
+|                     |                           |                                       |
+| M-`                 | other-frame               |                                       |
+| C-c e               | ehsell                    |                                       |
+| C-c s               | shell                     |                                       |
+| C-c r               | rgrep                     |                                       |
+| C-c C-r             | rgrep                     |                                       |
+| C-f12               | list-matching-lines       |                                       |
+| C-f10               | query-replace             |                                       |
+| S-f10               | ispell-buffer             |                                       |
+| C-S-f10             | flyspell-buffer           |                                       |
+| C-x r v             | list-registers            | summary of all registers with content |
+| C-M-z               | zap-back-to-char          | Reverse of M-z zap to char            |
+| f12                 | toggle-truncate-lines     |                                       |
+| C-x O               | rev-other-window          |                                       |
+| C-x C-m             | M-x without Alt key       |                                       |
+| C-c C-m             | M-x without Alt key       |                                       |
+|                     |                           |                                       |
+| C-c I               | overwrite-mode            | Mac                                   |
+|                     |                           |                                       |
+| C-c C-j             | term-toggle-mode          |                                       |
+| C-c C-k             | term-toggle-mode          |                                       |
+| C-c n               | narrow-or-widen           | Toggle between modes                  |
+| C-c C-l             | locked-buffer-mode        | Lock buffer to window                 |
+| M-S-down            | move-line-down            |                                       |
+| M-S-up              | move-line-up              |                                       |
+| C-x c               | clear-shell               |                                       |
+| f9                  | daily-log                 | Jerry Sievers daily log               |
+| C-x C-b             | ibuffer                   | Nice buffer switching                 |
+| C-s                 | swiper                    | Ivy-mode search (f6 to resume         |
+| C-c g               | magit-status              | Start magit                           |
+| f5                  | neotree                   |                                       |
+|                     |                           |                                       |
+| C-c l               | org-store-link            |                                       |
+| C-c a               | org-agenda                |                                       |
+| C-c b               | org-iswitchb              |                                       |
+| C-c c               | org-capture               |                                       |
+|                     |                           |                                       |
+| C-c t               | shell-pop                 | pop up shell                          |
+| C-c o               | switch-window             |                                       |
+|---------------------+---------------------------+---------------------------------------|
+
 * Themes and housekeeping
 #+BEGIN_SRC emacs-lisp
 ;;; Only use Themes in GUI. Set color theme (load-theme) for >= Emacs 24
@@ -65,9 +116,6 @@
   '(search-ring regexp-search-ring)    ;; ... my search entries
   savehist-file "~/.emacs.d/cache/history") ;; keep my .emacs.d clean
 (savehist-mode t)                      ;; do customization before activate
-
-;; Enable linnum mode for major programming modes in Emacs 24 (C, puppet, etc)
-;(add-hook 'prog-mode-hook 'linum-mode)
 
 ;; And disable electric-indent if active
 (when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
@@ -494,13 +542,13 @@
 ;;; ---------------------------------------------------------------------------
 ;;; Kill all other open files, other then the current one.  NO Notification!
 ;;; http://emacsredux.com/blog/2013/03/30/kill-other-buffers/
-(defun kill-other-buffers ()
-  "Kill all buffers but the current one.
-   Don't mess with special buffers."
-  (interactive)
-  (dolist (buffer (buffer-list))
-    (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
-      (kill-buffer buffer))))
+;(defun kill-other-buffers ()
+;  "Kill all buffers but the current one.
+;   Don't mess with special buffers."
+;  (interactive)
+;  (dolist (buffer (buffer-list))
+;    (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
+;      (kill-buffer buffer))))
 ;(global-set-key (kbd "C-c k") 'kill-other-buffers)
 
 ;;; ---------------------------------------------------------------------------
@@ -582,24 +630,24 @@
 ;;; ---------------------------------------------------------------------------
 ;;; Remove duplicate lines in a region
 ;;; http://stackoverflow.com/questions/13046791/how-to-delete-the-repeat-lines-in-emacs
-(defun uniq-lines (beg end)
-  "Unique lines in region.
-Called from a program, there are two arguments:
-BEG and END (region to sort)."
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region beg end)
-      (goto-char (point-min))
-      (while (not (eobp))
-        (kill-line 1)
-        (yank)
-        (let ((next-line (point)))
-          (while
-              (re-search-forward
-               (format "^%s" (regexp-quote (car kill-ring))) nil t)
-            (replace-match "" nil nil))
-          (goto-char next-line))))))
+;(defun uniq-lines (beg end)
+;  "Unique lines in region.
+;Called from a program, there are two arguments:
+;BEG and END (region to sort)."
+;  (interactive "r")
+;  (save-excursion
+;    (save-restriction
+;      (narrow-to-region beg end)
+;      (goto-char (point-min))
+;      (while (not (eobp))
+;        (kill-line 1)
+;        (yank)
+;        (let ((next-line (point)))
+;          (while
+;              (re-search-forward
+;               (format "^%s" (regexp-quote (car kill-ring))) nil t)
+;            (replace-match "" nil nil))
+;          (goto-char next-line))))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Match Paren / based on the vim command using %
@@ -738,17 +786,17 @@ This command does the reverse of `fill-region'."
 
 ;;; ---------------------------------------------------------------------------
 ;;; http://www.reddit.com/r/emacs/comments/gjqki/is_there_any_way_to_tell_emacs_to_not/c1o26uk
-(defun toggle-sticky-buffer-window ()
- "Toggle whether this window is dedicated to this buffer."
- (interactive)
- (set-window-dedicated-p
-  (selected-window)
-  (not (window-dedicated-p (selected-window))))
- (if (window-dedicated-p (selected-window))
-     (message "Window is now dedicated.")
-   (message "Window is no longer dedicated.")))
-
-(global-set-key [(super d)] 'toggle-sticky-buffer-window) ;; cmd-d
+;(defun toggle-sticky-buffer-window ()
+; "Toggle whether this window is dedicated to this buffer."
+; (interactive)
+; (set-window-dedicated-p
+;  (selected-window)
+;  (not (window-dedicated-p (selected-window))))
+; (if (window-dedicated-p (selected-window))
+;     (message "Window is now dedicated.")
+;   (message "Window is no longer dedicated.")))
+;
+;(global-set-key [(super d)] 'toggle-sticky-buffer-window) ;; cmd-d
 
 ;;; ---------------------------------------------------------------------------
 (defun intelligent-close ()
@@ -798,9 +846,9 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
 (require 'saveplace)
   (setq-default save-place t)
 
- (global-set-key (kbd "M-/") 'hippie-expand)
-;(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "M-z") 'zap-up-to-char)
+(global-set-key (kbd "M-/") 'hippie-expand)
+;(global-set-key (kbd "C-x C-b") 'ibuffer) ; set elsewhere in file
+;(global-set-key (kbd "M-z") 'zap-up-to-char) ; doesn't exist?
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -960,6 +1008,24 @@ last sentence."
 ;; Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
 (require 'ehelp)
 (define-key global-map "\C-h" 'ehelp-command)
+#+END_SRC
+* elpy
+#+BEGIN_SRC emacs-lisp
+;;; -- elpy - Emacs Python IDE
+;; https://realpython.com/blog/python/emacs-the-best-python-editor/
+;; To use elpy, just add the following to your .emacs:
+(elpy-enable)
+;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
+;(elpy-clean-modeline)
+
+;; replace flymake with flycheck for on-the-fly checking
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; Emable pep8 auto correct erros on save
+;(require 'py-autopep8)
+;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 #+END_SRC
 * flycheck
 #+BEGIN_SRC emacs-lisp
@@ -1170,27 +1236,25 @@ last sentence."
 #+END_SRC
 * org-mode
 #+BEGIN_SRC emacs-lisp
-;;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
-;;; planning, and authoring with a fast and effective plain-text system
-;;; NOTES:
-;;; To include org files in other org files:
-;;; #+setupfile: /path/to/config.org
-;;; Info:
-;;;   Call up the info with C-h i.
-;;;   Then call g (Info-goto-node).
-;;;   Enter (org) at the prompt.
+;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
+;; planning, and authoring with a fast and effective plain-text system
+;;
+;; Info:
+;;   Call up the info with C-h i.
+;;   Then call g (Info-goto-node).
+;;   Enter (org) at the prompt.
 
 ;(message "*** Loaded org-mode-init.el")
 (require 'org)
 (require 'org-contacts) ;takes 0.59s To load
 
 ;; Load additional exporters
-(eval-after-load 'org
-      (lambda()
-        (require 'ox-md)
-        (require 'ox-odt)
-        (require 'ox-opml)
-        (require 'ox-confluence)))
+;(eval-after-load 'org
+;      (lambda()
+;        (require 'ox-md)
+;        (require 'ox-odt)
+;        (require 'ox-opml)
+;        (require 'ox-confluence)))
 
 ;; Bind C-h o to org-info
 (define-key global-map (kbd "C-h o") 'org-info)
@@ -1211,13 +1275,6 @@ last sentence."
 
 ;;; Agenda
 ;; Agenda window setup
-;; Possible values for this option are:
-;;  current-window  -Show agenda in the current window, keeping other windows.
-;;  other-frame     -Use `switch-to-buffer-other-frame' to display agenda.
-;;  other-window    -Use `switch-to-buffer-other-window' to display agenda.
-;;  reorganize-frame-Show only 2 windows, the current window and the agenda.
-;; See also the variable `org-agenda-restore-windows-after-quit'."
-;(setq org-agenda-window-setup 'other-frame) ;; open agenda in new frame
 (setq org-agenda-window-setup 'current-window) ;; don't kill my window setup
 
 ;; Include emacs diary, not needed if using org-anniversary
@@ -1253,16 +1310,6 @@ last sentence."
 (setq org-default-notes-file (expand-file-name "~/org/notes.org"))
 
 ;; Capture templates - C-c c t
-;(setq org-capture-templates
-; '(("t" "Todo" entry (file+headline (concat org-directory "/gtd.org") "Tasks")
-;        "* TODO %?\n %i\n %a")
-;   ("n" "Note" entry (file+datetree (concat org-directory "/notes.org") "Notes")
-;        "* %?\nEntered on %U\n  %i\n  %a")
-;   ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org") "Journel")
-;        "* %?\nEntered on %U\n  %i\n  %a")
-;   ("l" "Link" plain (file (concat org-directory "/links.org"))
-;         "- %?\n %x\n"))) ; save contents of clipboard to links.org (URLs)
-
 ;; Based on Sacha Chua's org-capture-tempaltes
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html
 (defvar dbj/org-basic-task-template "* TODO %^{Task}
@@ -1389,19 +1436,19 @@ Captured %<%Y-%m-%d %H:%M>
           (awk . t)       ;Awk
           (C . t)         ;C
           ;(C++ . t)       ;C++
-          (clojure . t)   ;Clojure
-          (css . t)       ;CSS
+          ;(clojure . t)   ;Clojure
+          ;(css . t)       ;CSS
           ;(d . f)        ;D
-          (ditaa . f)     ;ditaa
-          (dot . t)       ;Graphviz
-          (calc . t)      ; Emacs Calc
+          ;(ditaa . f)     ;ditaa
+          ;(dot . t)       ;Graphviz
+          ;(calc . t)      ; Emacs Calc
           ;(fortran . t)   ;Fortran
-          (gnuplot . t)   ;gnuplot
+          ;(gnuplot . t)   ;gnuplot
           ;(haskell . t)   ;Haskell
           (java . t)      ;Java
           (js . t)        ;Javascript
-          (latex . t)     ;LaTeX
-          ;(ledger . f)    ;Ledger
+          ;(latex . t)     ;LaTeX
+          (ledger . f)    ;Ledger
           (lisp . t)      ;Lisp
           ;(lilypond . t)  ;Lilypond
           ;(lua . t)       ;Lua
@@ -1423,7 +1470,7 @@ Captured %<%Y-%m-%d %H:%M>
           (sed . t)       ;Sed
           (shell . t)     ;shell
           (sql . t)       ; SQL
-          (sqlite .t)     ;SQLite
+          ;(sqlite .t)     ;SQLite
 )))
 #+END_SRC
 * recentf

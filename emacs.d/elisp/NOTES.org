@@ -1,0 +1,5 @@
+* SVN Ignore
+set subversion to ignore files, use 'svn propset svn:ignore ." in the directory
+
+* Profile startup time
+emacs -Q -l ~/.emacs.d/elisp/profile-dotemacs.el -f profile-dotemacs
