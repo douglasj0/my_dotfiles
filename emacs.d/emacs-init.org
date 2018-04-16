@@ -117,6 +117,10 @@
   savehist-file "~/.emacs.d/cache/history") ;; keep my .emacs.d clean
 (savehist-mode t)                      ;; do customization before activate
 
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
 ;; And disable electric-indent if active
 (when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
 #+END_SRC
@@ -171,6 +175,9 @@
 #+END_SRC
 * Global settings
 #+BEGIN_SRC emacs-lisp
+;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
+(add-hook 'focus-out-hook #'garbage-collect)
+
 ;;; Turn on automatic bracket insertion by pairs. New in emacs 24
 ;;; http://ergoemacs.org/emacs/emacs_insert_brackets_by_pair.html
 ;;; Works great with new text, editing existing text is very annoying
@@ -868,8 +875,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
       backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 #+END_SRC
-* Package conifurations
-** daily log
+* daily log
 #+BEGIN_SRC emacs-init
 ;;; -- daily log -
 
@@ -927,7 +933,7 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
-** dired
+* dired
 #+BEGIN_SRC emacs-lisp
 ;;; -- dired - directory listing buffer
 ;;; http://www.emacswiki.org/emacs/DiredPlus
@@ -1002,7 +1008,7 @@ last sentence."
 ;; default destination.
 (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
 #+END_SRC
-** electric help
+* electric help
 #+BEGIN_SRC emacs-lisp
 ;;; -- ehelp (Electric help)
 ;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
@@ -1011,14 +1017,23 @@ last sentence."
 (require 'ehelp)
 (define-key global-map "\C-h" 'ehelp-command)
 #+END_SRC
-** elpy
+* elpy
 #+BEGIN_SRC emacs-lisp
 ;;; -- elpy - Emacs Python IDE
+;; Info and setup
 ;; https://realpython.com/blog/python/emacs-the-best-python-editor/
+;; https://github.com/jorgenschaefer/elpy
+;; User manual:  http://elpy.readthedocs.io/en/latest/
+;; Setup python env first:
+;;   pip install jedi flake8 autopep8 yapf
 ;; To use elpy, just add the following to your .emacs:
-(elpy-enable)
+(when (require 'elpy nil t)
+  (elpy-enable))
 ;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
 ;(elpy-clean-modeline)
+
+;; Explicitly choose backend
+(setq elpy-rpc-backend "jedi")
 
 ;; replace flymake with flycheck for on-the-fly checking
 (when (require 'flycheck nil t)
@@ -1028,8 +1043,16 @@ last sentence."
 ;; Emable pep8 auto correct erros on save
 ;(require 'py-autopep8)
 ;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+;; Use ipython as interpeter instead of just python
+;; https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i --simple-prompt")
+
+;; use pdb with Elpy
+(setq gud-pdb-command-name "python -m pdb")
 #+END_SRC
-** flycheck
+* flycheck
 #+BEGIN_SRC emacs-lisp
 ;;; -- flycheck
 (require 'flycheck)
@@ -1040,13 +1063,13 @@ last sentence."
 ;(eval-after-load 'flycheck (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))  ;; ver 0.16+
 (eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
 #+END_SRC
-** git gutter
+* git gutter
 #+BEGIN_SRC emacs-lisp
 ;;; -- git-gutter
 ;;; https://github.com/syohex/emacs-git-gutter
 (global-git-gutter-mode t)
 #+END_SRC
-** gnus
+* gnus
 #+BEGIN_SRC emacs-lisp
 ;;; -- gnus - Mail and News reader
 
@@ -1070,7 +1093,7 @@ last sentence."
 ;; show even if there are no articles
 (setq gnus-permanently-visible-groups ".*")
 #+END_SRC
-** ibuffer
+* ibuffer
 #+BEGIN_SRC emacs-lisp
 ;;; -- ibuffer - *Nice* buffer switching
 ;;
@@ -1177,7 +1200,7 @@ last sentence."
              (ibuffer-auto-mode 1)
              (ibuffer-switch-to-saved-filter-groups "default")))
 #+END_SRC
-** ispell
+* ispell
 #+BEGIN_SRC emacs-lisp
 ;;; -- ispell - interactive spell
 ;;; Set ispell checks to use aspell
@@ -1189,7 +1212,7 @@ last sentence."
      ;; sug-mode=fast is more accurate, slower then ultra
      (setq ispell-extra-args '("--sug-mode=fast"))))
 #+END_SRC
-** ivy
+* ivy
 #+BEGIN_SRC emacs-lisp
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
 ;;; swiper - an alternative to isearch uses ivy to show overview of all matches
@@ -1224,19 +1247,19 @@ last sentence."
 ;; disable M-x filter "^"
 (setq ivy-initial-inputs-alist nil)
 #+END_SRC
-** magit
+* magit
 #+BEGIN_SRC emacs-lisp
 ;;; -- magit-mode - emacs mode for interacting with the Git vcs
 (global-set-key (kbd "C-c g") 'magit-status)  ;;
 (setq magit-completing-read-function 'ivy-completing-read)
 #+END_SRC
-** neotree
+* neotree
 #+BEGIN_SRC emacs-lisp
-;;; -- neo-tree
-;;; Emacs version of Vim's nerdtree
+;; -- neo-tree
+;; Emacs version of Vim's nerdtree
 (global-set-key [f5] 'neotree-toggle)
 #+END_SRC
-** org-mode
+* org-mode
 #+BEGIN_SRC emacs-lisp
 ;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
 ;; planning, and authoring with a fast and effective plain-text system
@@ -1475,7 +1498,7 @@ Captured %<%Y-%m-%d %H:%M>
           ;(sqlite .t)     ;SQLite
 )))
 #+END_SRC
-** recentf
+* recentf
 #+BEGIN_SRC emacs-lisp
 ;;; -- recentf - a minor mode that builds a list of recently opened files
 ;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
@@ -1488,7 +1511,7 @@ Captured %<%Y-%m-%d %H:%M>
 ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;(global-set-key (kbd "C-x C-r") 'helm-recentf)
 #+END_SRC
-** shell-pop
+* shell-pop
 #+BEGIN_SRC emacs-lisp
 ;;; -- shell-pop
 ;;; https://github.com/kyagi/shell-pop-el
@@ -1500,13 +1523,13 @@ Captured %<%Y-%m-%d %H:%M>
   ;; need to do this manually or not picked up by `shell-pop'
   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 #+END_SRC
-** switch-window
+* switch-window
 #+BEGIN_SRC emacs-lisp
 ;;; -- switch-window - a C-x o replacment for multiple window movement
 (require 'switch-window)
 (global-set-key (kbd "C-x o") 'switch-window)
 #+END_SRC
-** tramp
+* tramp
 #+BEGIN_SRC emacs-lisp
 ;;; -- tramp- edit files on remote servers
 (autoload 'tramp "tramp" "Tramp mode" t)
