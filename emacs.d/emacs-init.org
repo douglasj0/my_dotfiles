@@ -876,7 +876,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
                                                "backups"))))
 #+END_SRC
 * daily log
-#+BEGIN_SRC emacs-init
+#+BEGIN_SRC emacs-lisp
 ;;; -- daily log -
 
 (defun daily-log ()
@@ -890,7 +890,7 @@ last sentence."
   (if (re-search-backward "[.!?]") ;search for punctuation from end of file
       (forward-char 1))
   )
-(global-set-key [f9] 'daily-log)
+(global-set-key (kbd "<f9>") 'daily-log)
 
 ;;; ---------------------------------------------------------------------------
 ;(diary)
