@@ -58,10 +58,9 @@ rm -f +* *~
 echo -e "#-*- mode: org; fill-column: 78 -*-
 #+STARTUP: overview
 
-# 'C-x r l' – list bookmarks
-# 'C-x r m' - set bookmark
-# 'M-x bookmark-delete' - delete by name
-# 'C-x C-+ / - change font size
+# | C-x r l    | list bookmarks   | | C-x r m   | set bookmark    |
+# | M-x bookmark-delete           | |           |                 |
+# | C-x C+ / - | change font size | | C-c p C-h | Projectile help |
 #
 # NOTE: Track ALL interruptions
 
