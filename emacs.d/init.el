@@ -37,6 +37,7 @@
 (setq my-packages '(
   color-moccur  ;; search a regexp in all buffers
   deft          ;; quickly browse, filter, & edit dirs of plain text notes
+  dumb-jump     ;; an Emacs "jump to definition" package
   elpy          ;; python IDE for Emacs
   ivy           ;; generic completion mechanism like ido and helm
   counsel       ;; ivy's counsel

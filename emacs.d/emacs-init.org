@@ -1008,6 +1008,27 @@ last sentence."
 ;; default destination.
 (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
 #+END_SRC
+* dumb-jump
+#+BEGIN_SRC emacs-lisp
+;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
+;;; alternative Emacs packages for other languages
+;;; - Tags supports multiple languages
+;;; - GNU Global supports multiple languages
+;;; - Tern for JavaScript
+;;; - elpy for Python
+;;; - robe for Ruby
+
+;; Setup keybindinds
+(use-package dumb-jump
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'ivy) ;; (setq dumb-jump-selector 'helm)
+  :ensure)
+
+#+END_SRC
 * electric help
 #+BEGIN_SRC emacs-lisp
 ;;; -- ehelp (Electric help)
