@@ -1498,6 +1498,33 @@ Captured %<%Y-%m-%d %H:%M>
           ;(sqlite .t)     ;SQLite
 )))
 #+END_SRC
+* projectile
+#+BEGIN_SRC emacs-lisp
+;;; -- projectile - project managent (works with helm)
+;;; Project navigation and management library for Emacs
+;;; https://github.com/bbatsov/projectile
+;;; http://batsov.com/projectile/
+;;; Keybindings: https://projectile.readthedocs.io/en/latest/usage/
+
+;; put bookmark in cache directory
+(setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
+
+;; use helm projectile C-c p h
+(projectile-global-mode)
+;(setq projectile-completion-system 'helm)
+;;(helm-projectile-on)
+
+;; force use external commands for indexing
+(setq projectile-indexing-method 'alien)
+
+;; enable caching unconditionally use this snippet of code:
+(setq projectile-enable-caching t)
+
+;;(setq projectile-switch-project-action 'helm-projectile-find-file)
+;(setq projectile-switch-project-action 'helm-projectile)
+(setq projectile-completion-system 'ivy)
+#+END_SRC
+
 * recentf
 #+BEGIN_SRC emacs-lisp
 ;;; -- recentf - a minor mode that builds a list of recently opened files

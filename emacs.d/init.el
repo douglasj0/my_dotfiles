@@ -49,6 +49,8 @@
   multi-term    ;;
   neotree       ;; tree plugin like NerdTree for Vim
   org-plus-contrib ;; all org files plus all contribs files
+  projectile    ;; project interaction library for Emacs
+    counsel-projectile ;; projectile ivy integration
   py-autopep8   ;; automaticly apply pep8 fixes on file save
   pydoc-info    ;;
   restclient    ;; REST client for emacs
