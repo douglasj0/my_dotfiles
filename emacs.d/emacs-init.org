@@ -933,6 +933,45 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
+
+* deft
+#+BEGIN_SRC emacs-lisp
+;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
+;;; directories of plain text notes.  http://jblevins.org/projects/deft/
+;;; http://jblevins.org/git/deft.git
+(autoload 'deft "deft" "mode for working with text notes" t)
+
+(setq
+  deft-extension "txt"
+  deft-directory "~/org/notes"
+  deft-text-mode 'org-mode
+  deft-use-filename-as-title t
+  deft-recursive t
+  deft-ignore-file-regexp "archive\.*")
+;(global-set-key (kbd "<f8>") 'deft))
+(global-set-key (kbd "C-c C-g") 'deft-find-file)
+
+;; Notational Velocity provides a show-hide function key, letting you pop
+;; in-and-out of the interface quickly. I recreated a crude version of this
+;; in Deft, bound to f6.
+(define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
+(setq deft-text-mode 'deft-note-mode)
+(defun kill-all-deft-notes ()
+  (interactive)
+  (save-excursion
+    (let((count 0))
+      (dolist(buffer (buffer-list))
+        (set-buffer buffer)
+        (when (not (eq nil deft-note-mode))
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      )))
+(defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
+                                          (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
+                                        (deft)
+                                        ))
+(global-set-key [f8] 'deft-or-close)
+#+END_SRC
 * dired
 #+BEGIN_SRC emacs-lisp
 ;;; -- dired - directory listing buffer
