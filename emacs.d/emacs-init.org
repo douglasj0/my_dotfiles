@@ -840,7 +840,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
 ;;; https://github.com/technomancy/better-defaults
 ;(require 'better-defaults)
 
-(menu-bar-mode -1)
+;(menu-bar-mode -1) ; was making tabbar tabs on 2nd frame
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode)
