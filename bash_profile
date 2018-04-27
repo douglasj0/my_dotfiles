@@ -27,9 +27,7 @@ MANPATH=/usr/local/share/man:/usr/share/man:/usr/X11R6/man
 
 # pyenv linux
 export PYENV_ROOT="$HOME/.pyenv"
-export PAT=H"$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+export PATH="$PYENV_ROOT/bin:$PATH"
 ;; # end Linux
 
 *)
