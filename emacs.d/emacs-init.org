@@ -386,36 +386,13 @@
 (setq trash-directory "~/.Trash")
 (setq delete-by-moving-to-trash t)
 
-;;; Change default font (was Monaco)
-;;(set-default-font "Menlo-12")
-
 ;; For Macbook Pro, which has no insert key.
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2006-07/msg00220.html
 (global-set-key (kbd "C-c I") (function overwrite-mode))
 
-;;; Bring emacs.app to the foreground when running emacsclient
-;;; http://stackoverflow.com/questions/945709/emacs-23-os-x-multi-tty-and-emacsclient
-;; (add-hook 'server-visit-hook 'call-raise-frame)
-;; (defun call-raise-frame ()
-;;   (raise-frame))
-
-;;; Set default font face and size in GUI
-;(when (display-graphic-p) (set-face-attribute 'default nil :font "Monaco-12"))
-
-;;; For w3m on MacOS (installed with brew), add /usr/local/bin to exec-path
-;(add-to-list 'exec-path "/usr/local/bin")
-
 ;;; Open up URLs in mac browser
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 ; (setq browse-url-browser-function 'browse-url-default-windows-browser)
-
-;;; Hard set option/alt key to meta, command to nil (allow os to set, was hyper)
-;;; http://www.emacswiki.org/emacs/EmacsForMacOS
-;(when (eq system-type 'darwin) ;; mac specific settings
-  ;(setq mac-option-modifier 'meta)
-  ;(setq mac-command-modifier 'nil)
-  ;(global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to right-delete
-;)
 
 ;;; Copy and paste into Emacs Terminal
 ;;; stack overflow, pasting text into emacs on Macintosh
