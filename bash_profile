@@ -13,6 +13,10 @@ echo ".Darwin bash_profile loaded"
 
 PATH=$HOME/bin:/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/usr/local/opt/qt/bin
 MANPATH=/usr/local/share/man:/usr/local/man:/usr/share/man:/usr/X11/man
+
+
+
+
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
@@ -20,6 +24,12 @@ echo ".Linux bash_profile loaded"
 
 PATH=${HOME}/bin:${HOME}/scripts:${HOME}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/jdk:/opt/jdk/bin:/usr/java/bin:/usr/local/java/bin
 MANPATH=/usr/local/share/man:/usr/share/man:/usr/X11R6/man
+
+# pyenv linux
+export PYENV_ROOT="$HOME/.pyenv"
+export PAT=H"$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 ;; # end Linux
 
 *)

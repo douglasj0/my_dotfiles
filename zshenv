@@ -7,6 +7,12 @@ path=( ~ $lpath ~/bin /usr/local /usr/local/bin/X11 /usr/bin /bin
 lpath=(/usr/openwin/bin/xview /usr/openwin/bin)
 mychoice='openwin'
 
+manpath=(/usr/man /usr/local/man)
+export MANPATH
+
+export LD_LIBRARY_PATH=/usr/dt/lib:/usr/openwin/lib:/opt/lotus/notes/latest/sunspa
+export GR_HOME=/usr/local/bin
+
 alias -- netscape='/opt/netscape/communicator/netscape'
 alias -- la='ls -a'
 alias -- lf='ls -F'

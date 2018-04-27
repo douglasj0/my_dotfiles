@@ -16,12 +16,6 @@ umask 077
 # setenv for csh junkies (including tset)
 setenv() { export $1=$2 }
 
-manpath=(/usr/man /usr/local/man)
-export MANPATH
-
-export LD_LIBRARY_PATH=/usr/dt/lib:/usr/openwin/lib:/opt/lotus/notes/latest/sunspa
-export GR_HOME=/usr/local/bin
-
 PROMPT='%T %m[%h]%# '
 
 # functions to autoload

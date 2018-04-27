@@ -10,38 +10,26 @@
 # 20120714 - Re-arranged, moved common settings to the top
 # 20120803 - Removed ShopperTrak entries
 # 20170104 - Removed ALL specific work related entries
+# 20180427 - More cleanup of unused portion, too much I don't use here
 # ------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+
 ###################
 # Common Settings #
 ###################
-
-# Get results of uname for use later
-UNAME=$(uname)
-
-# vagrant on Fedora 21 wants to use libvirt, force it to virtualbox
-export VAGRANT_DEFAULT_PROVIDER=virtualbox
-
-#NNTPSERVER=nntp.aioe.org
+UNAME=$(uname)                  # Get results of uname for later use
+#NNTPSERVER=nntp.aioe.org       # https://news.aioe.org/
 NNTPSERVER=news.eternal-september.org
 umask 022
-#stty sane
 test -t 0 && stty erase '^?'	# changed from ^h because of emacs help
 stty -ixon                      # disable ^Q and ^S flow control
-#TERM=vt100
-#[ -z $TERM ] && TERM=vt100	# if TERM isn't set make it vt100
-#TERM=xterm
-[ -z $TERM ] && TERM=xterm-color
+[ -z $TERM ] && TERM=xterm-color  # If term isn't set make it xterm-color
 MORE=p
-#LESS="aCegj20mqX"
 LESS="-XgmR"
-[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
-#export ALTERNATE_EDITOR=emacs
-#export VISUAL=emacsclient
-#export SVN_EDITOR='"vi"'
+[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR to zile if blank
 set -o emacs
 set bell-style visible
 bind 'set bell-style visible'		# No beeping
@@ -79,32 +67,6 @@ shopt -s checkhash	# check hash table for command before executing it
 shopt -s checkwinsize   # check term row/column size after each command before prompt
 
 
-###############
-# Completions #
-###############
-# tab complete any hostname you've previously ssh'd to
-# http://www.macosxhints.com/article.php?story=20080317085050719
-#complete -W "$(sed -e 's/^  *//' -e '/^#/d' -e 's/[, ].*//' -e '/\[/d' ~/.ssh/known_hosts | sort -u)" ssh
-_complete_ssh_hosts () {
-        COMPREPLY=()
-        cur="${COMP_WORDS[COMP_CWORD]}"
-        comp_ssh_hosts=`cat ~/.ssh/known_hosts | \
-                        cut -f 1 -d ' ' | \
-                        sed -e s/,.*//g | \
-                        grep -v ^# | \
-                        uniq | \
-                        grep -v "\[" ;
-                if [ -f ~/.ssh/config ]; then
-                        cat ~/.ssh/config | \
-                                grep -i "^Host " | \
-                                awk '{print $2}'
-                fi`
-        COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
-        return 0
-}
-complete -F _complete_ssh_hosts ssh
-
-
 #############
 # Functions #
 #############
@@ -122,32 +84,6 @@ function stats() { uptime; awk '/^MemTotal:/{total = $2/1024^2} /^(MemFree|Buffe
 
 # get mac addr
 function mac { ping -c 2 $1 > /dev/null 2>&1; arp $1 | awk '{print $3}' | tail -1; }
-
-# Do quick arithmetic from the command line. Use "x" for multiplication
-function math { echo "scale=2 ; $*" | sed -e "s:x:*:g" | sed -e "s:,::g" | bc; }
-
-# GNU Screen, opens SSH on a new screen window with the appropriate name.
-function screen_ssh {
-    numargs=$#
-    screen -t ${!numargs} ssh $@
-#    screen -t "$@" ssh "$@"
-}
-#if [ $TERM == "screen" -o $TERM == "vt102" ]; then
-[ -n "$STY" -o -n "$WINDOW" ] && alias sshs=screen_ssh
-
-function tabname {  # Set the tab name in OSX Terminal
-     printf "\e]1;$1\a"
-}
-
-findgrep () {	# find | grep
-    if [ $# -eq 0 ]; then
-        echo "findgrep: No arguments entered."; return 1
-    else
-        # "{.[a-zA-Z],}*" instead of "." makes the output cleaner
-        find {.[a-zA-Z],}* -type f | xargs grep -n $* /dev/null \
-        2> /dev/null
-    fi
-}
 
 rot13 () {	# For some reason, rot13 pops up everywhere
     if [ $# -eq 0 ]; then
@@ -172,9 +108,8 @@ mcd () { mkdir -p $1 && cd $1; }
 # cd and run ls
 cdl () { builtin cd "$@" && ls; }
 
-# Top 10 most used commands in history (TODO update for MacOS)
+# Top 10 most used commands in history
 top10 () { history | awk '{print $2}' | awk 'BEGIN {FS="|"} {print $1}' | sort | uniq -c | sort -nr | head -10; }
-top10a () { history | cut -f 5 -d' ' | sort | uniq -c | sort -n | tail; }
 
 # History unique grep search / to re-use a line found !123:p / !123
 hugs () { history | grep -i -- "$1" | sort -k2 -u | grep -v 'hugs' | sort -n ; }
@@ -188,13 +123,6 @@ bak () {
 unbak () {
     length=$((${#1} - 4))
     mv $1 ${1:0:$length}
-}
-
-# Remove a host from the known_hosts file (Might be a better way...)
-remove-known-host () {
-    local HOST=$1
-    grep -v $HOST ~/.ssh/known_hosts > ~/.ssh/known_hosts.tmp
-    mv ~/.ssh/known_hosts.tmp ~/.ssh/known_hosts
 }
 
 # Extract common archive formats
@@ -220,68 +148,12 @@ extract () {
 }
 
 # Repeat last command with sudo
-#fuck() {
-#    if [[ $# == 0 ]]; then
-#        sudo $(history -p '!!')
-#    else
-#        sudo "$@"
-#    fi
-#}
-
-# Tableflip animation
-flip() {
-  echo;
-  echo -en "( º_º）  ┬─┬   \r"; sleep .5;
-  echo -en " ( º_º） ┬─┬   \r"; sleep .5;
-  echo -en "  ( ºДº）┬─┬   \r"; sleep .5;
-  echo -en "  (╯'Д'）╯︵⊏   \r"; sleep .5;
-  echo -en "  (╯'□'）╯︵ ⊏  \r"; sleep .5;
-  echo     "  (╯°□°）╯︵ ┻━┻"; sleep .5;
-}
-
-# Bounce animation
-bounce() {
-  echo;
-  echo -en '°'"\r"; sleep .1;
-  echo -en '°º'"\r"; sleep .1;
-  echo -en '°º¤'"\r"; sleep .1;
-  echo -en '°º¤ø'"\r"; sleep .1;
-  echo -en '°º¤ø,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,¸,'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,¸,¸'"\r"; sleep .1;
-  echo -en '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,¸,¸¸'"\r"; sleep .1;
-  echo     '°º¤ø,¸¸,ø¤º°º¤ø,¸,ø¤º¤ø,¸,ø,¸,¸¸¸¸'; sleep .1;
-}
-
-# Make and cd into a directory
-mkcd() {
-    mkdir "$@" || return "$?"
-    shift $(( $# - 1 ))
-    cd "$1"
+yolo() {
+    if [[ $# == 0 ]]; then
+        sudo $(history -p '!!')
+    else
+        sudo "$@"
+    fi
 }
 
 # Add all ssh keys in ~/.ssh
@@ -352,7 +224,6 @@ pushkey() {
     ssh -q $1 "mkdir -p ~/.ssh && chmod 0700 ~/.ssh && touch ~/.ssh/authorized_keys && echo "$KEYCODE" >> ~/.ssh/authorized_keys && chmod 644 ~/.ssh/authorized_keys"
   fi
 }
-
 
 # Track directory, username, and cwd for remote logons.
 #if [ "$TERM" = "eterm-color" ]; then
@@ -697,7 +568,7 @@ EDITOR="${HOME}/bin/edit"
 ALTERNATE_EDITOR="zile"
 CLICOLOR=1
 GROOVY_HOME=/usr/local/opt/groovy/libexec
-export PATH MANPATH TMPDIR LD_LIBRARY_PATH CPPFLAGS TERM EDITOR ALTERNATE_EDITOR CLICOLOR GROOVY_HOME
+export MANPATH TMPDIR LD_LIBRARY_PATH CPPFLAGS TERM EDITOR ALTERNATE_EDITOR CLICOLOR GROOVY_HOME
 
 if [[ $INSIDE_EMACS ]]; then
   echo "..Inside Emacs"
@@ -766,25 +637,6 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 ;; # end Darwin
-
-SunOS)          # Based off of Solaris 10
-if [[ ! -z $PS1 ]]; then echo ".Solaris bashrc loaded"; fi  # interactive
-
-PATH=${HOME}/bin:/opt/perl/bin:/opt/SUNWspro/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/ucb:/usr/ccs/bin:/usr/openwin/bin:/usr/sfw/bin:/usr/sfw/sbin:/usr/local/bin:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/csw/bin:/opt/csw/sbin
-MANPATH=/usr/man:/usr/share/man:/opt/csw/man:/opt/csw/share/man:/usr/sfw/man:/usr/sfw/share/man:/opt/local/man:/usr/dt/man
-LD_LIBRARY_PATH=/usr/local/lib:/opt/csw/lib:/usr/dt/lib:/usr/openwin/lib
-TERM=vt100
-export PATH MANPATH LD_LIBRARY_PATH TERM
-;; # end SunOS
-
-FreeBSD)
-if [[ ! -z $PS1 ]]; then echo ".FreeBSD profile loaded"; fi  # interactive
-
-PATH=${HOME}/bin:/bin:/usr/bin:/usr/local/bin:/usr/games:/usr/sbin
-#TERM=vt100
-TERM=xterm-256color
-export PATH TERM
-;; # end FreeBSD
 
 Linux)  # Based off of Ubuntu
 if [[ ! -z $PS1 ]]; then echo ".Linux bashrc loaded"; fi	# interactive
@@ -866,11 +718,7 @@ alias pbpaste='xclip -selection clipboard -o'
 
 googlesay(){ curl -A RG translate\.google\.com/translate_tts -d "tl=en&q=$@" |mpg123 -; };
 
-###
-# pyenv linux
-###
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+# pyenv linux (path moved to .bash_profile)
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
