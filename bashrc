@@ -1,36 +1,14 @@
 # -*- shell-script -*-
-# .bashrc
-#
-# ~/.bash_profile - executed for login shells
 # ~/.bashrc - executed for interactive non-login shells
 #
-# Modified:
-# 20100512 - Merged built up changes from Mac and Solaris
-# 20111007 - Changed prompts to single line, cleaned out deadweight
-# 20120714 - Re-arranged, moved common settings to the top
-# 20120803 - Removed ShopperTrak entries
-# 20170104 - Removed ALL specific work related entries
-# 20180427 - More cleanup of unused portion, too much I don't use here
 # ------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-
 ###################
 # Common Settings #
 ###################
-UNAME=$(uname)                  # Get results of uname for later use
-#NNTPSERVER=nntp.aioe.org       # https://news.aioe.org/
-NNTPSERVER=news.eternal-september.org
-umask 022
-test -t 0 && stty erase '^?'	# changed from ^h because of emacs help
-stty -ixon                      # disable ^Q and ^S flow control
-[ -z $TERM ] && TERM=xterm-color  # If term isn't set make it xterm-color
-MORE=p
-LESS="-XgmR"
-[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR to zile if blank
-set -o emacs
 set bell-style visible
 bind 'set bell-style visible'		# No beeping
 #bind 'set horizontal-scroll-mode on'	# Don't wrap
@@ -73,13 +51,11 @@ shopt -s checkwinsize   # check term row/column size after each command before p
 function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
 function psg { ps -aef | grep $* | grep -v grep ; }  # sysv ps
 function psb { ps -aux | grep $* | grep -v grep ; }  # bsd ps
-function du1 { du -s *(/) | sort -n ; }
 function lhd { last $* | head ; }
-function ? { echo "$*" | bc -l; }
 function calc { awk "BEGIN{ print $* }" ;}
 function rmd { pandoc $1 | lynx -stdin ;}
 
-# Status (from Rackspace?)
+# Status (from Rackspace)
 function stats() { uptime; awk '/^MemTotal:/{total = $2/1024^2} /^(MemFree|Buffers|Cached):/{sum += $2} END {printf " Memory: %.2fG/%.2fG\n", sum/1024^2, total}' /proc/meminfo; ps -eo pcpu | awk '/[0-9]/ {sum += $1} END {printf " CPU: %s%%\n", sum}'; }
 
 # get mac addr
@@ -87,45 +63,19 @@ function mac { ping -c 2 $1 > /dev/null 2>&1; arp $1 | awk '{print $3}' | tail -
 
 rot13 () {	# For some reason, rot13 pops up everywhere
     if [ $# -eq 0 ]; then
-        tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
+	tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
     else
-        echo $* | tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
+	echo $* | tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
     fi
 }
 
-dls () {	# print directories then files
-    /bin/ls -lF "$@" | egrep '^d|total';
-    #/bin/ls -lFXB "$@" | egrep -v '^d|total';
-    /bin/ls -lFB "$@" | egrep -v '^d|total';
-}
-
-# prints a box around text
-box () { t="$1xxxx";c=${2:-=}; echo ${t//?/$c}; echo "$c $1 $c"; echo ${t//?/$c}; }
-
-# mkdir and enter it immediately thereafter
-mcd () { mkdir -p $1 && cd $1; }
-
-# cd and run ls
-cdl () { builtin cd "$@" && ls; }
-
-# Top 10 most used commands in history
+# Top 10 most used commands in history (TODO update for MacOS)
 top10 () { history | awk '{print $2}' | awk 'BEGIN {FS="|"} {print $1}' | sort | uniq -c | sort -nr | head -10; }
 
 # History unique grep search / to re-use a line found !123:p / !123
 hugs () { history | grep -i -- "$1" | sort -k2 -u | grep -v 'hugs' | sort -n ; }
 
-# Add a .bak extension to a file
-bak () {
-    mv $1 $1.bak
-}
-
-# Remove a .back extension from a file
-unbak () {
-    length=$((${#1} - 4))
-    mv $1 ${1:0:$length}
-}
-
-# Extract common archive formats
+## Extract common archive formats
 extract () {
     if [ -f $1 ] ; then
         case $1 in
@@ -156,6 +106,7 @@ yolo() {
     fi
 }
 
+# ssh key functions
 # Add all ssh keys in ~/.ssh
 ssh-add-all() {
   LIST=$(ls $HOME/.ssh/id_* | grep -v '.pub')
@@ -193,26 +144,6 @@ grepp() {
     [ $# -eq 1 ] && perl -00ne "print if /$1/i" || perl -00ne "print if /$1/i" < "$2"
 }
 
-# Emacs Remote Directory Tracking (ansi-term)
-function set-eterm-dir {
-    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
-    echo -e "\033AnSiTc" "$(pwd)"
-    if [ $UNAME = "SunOS" ]; then
-        if [[ $(grep savvis-chi3-il /etc/hosts) ]]; then
-            domain="savvis-chi3-il.rctanalytics.com";
-        else
-            domain="rctanalytics.com";
-        fi
-        # The -f option does something else on SunOS and is not needed anyway.
-        hostname_options="";
-    else
-        domain-"";
-        hostname_options="-f";
-    fi
-    echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
-    history -a # Write history to disk.
-}
-
 # Push ssh authorized_keys to remote host
 pushkey() {
   #cat ~/.ssh/authorized_keys | \
@@ -239,9 +170,9 @@ pushkey() {
 #[ "x$INSIDE_EMACS" != "x" ]] && export TERM=vt100
 
 
-###########
-# Aliases #
-###########
+#############
+#  Aliases  #
+#############
 alias j='jobs'
 alias h='history'
 alias la='ls -a'
@@ -259,8 +190,6 @@ alias lla='ls -la'
 alias lll='ls -actl | more'     # pipe through 'more'
 alias ldir="ls -l | egrep '^d'" # show only directories
 alias lfile="ls -l | egrep -v '^d'" # show files only"
-alias gitGraph="git log --graph --oneline --all --decorate --color"
-alias aspen="tree -h -f -C"
 alias digs="dig +short"
 alias killmercer='sudo $(history -p !!)'
 alias just='sudo'
@@ -285,6 +214,8 @@ alias screenssh='ln -sf $SSH_AUTH_SOCK $HOME/.ssh-auth-sock; env SSH_AUTH_SOCK=$
 alias git_repo_name='git remote show -n origin | grep Fetch | cut -d: -f2-'
 alias ping4='ping -c4'
 alias weather='curl wttr.in/chicago'
+alias speedtest='wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test100.zip'
+alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 
 # about-alias 'the silver searcher (ag) aliases'
 ## Summary for args to less:
@@ -296,130 +227,22 @@ alias weather='curl wttr.in/chicago'
 #   -X (-X or --no-init) Disable termcap init & deinit
 alias ag='ag --smart-case --pager="less -MIRFX"'
 
-cdls() {
-  builtin cd "$*" && ls
-}
-alias cdl="cdls"
-
 # Proksel's aliases
 alias aspen='tree -h -f -C'
 alias atomize='open . -a Atom'
-alias gitGraph='git log --graph --oneline --all --decorate --color'
 alias killmercer='sudo $(history -p !!)'
 alias public_ip='curl ipecho.net/plain; echo'
 alias terraform_graph='terraform graph | dot -Tpng > graph.png'
 
-
-###
-# Load git-completion if git is installed
-###
-# Add the following lines to ~/.bashrc
-# if [ -x `which git` ]; then
-#     if [ -e ~/.git-completion.bash ]; then
-# 	echo "Sourcing .git-completion.bash"
-# 	source ~/.git-completion.bash
-#     fi
-# fi
-
-##############
-# Set Prompt #
-##############
-
-# http://brettterpstra.com/my-new-favorite-bash-prompt
-# NOTE: double quotes to enable $color variable expansion and \[ \] escapes
-#   around them so they are not counted as character positions and the cursor
-#   position is not wrong)
-
-# example:  08:53 djackson@orlok[5740/0]:~/Documents
-
-#function set_prompt {
-#    local BLACK="\[\033[0;30m\]"   #Regular colors
-#    local RED="\[\033[0;31m\]"
-#    local GREEN="\[\033[0;32m\]"
-#    local YELLOW="\[\033[0;33m\]"
-#    local BLUE="\[\033[0;34m\]"
-#    local PURPLE="\[\033[0;35m\]"
-#    local CYAN="\[\033[0;36m\]"
-#    local WHITE="\[\033[0;37m\]"
-#
-#    local BBLACK="\[\033[1;30m\]"   #Bold colors
-#    local BRED="\[\033[1;31m\]"
-#    local BGREEN="\[\033[1;32m\]"
-#    local BYELLOW="\[\033[1;33m\]"
-#    local BBLUE="\[\033[1;34m\]"
-#    local BPURPLE="\[\033[1;35m\]"
-#    local BCYAN="\[\033[1;36m\]"
-#    local BWHITE="\[\033[1;37m\]"
-#
-#    # return color to Terminal setting for text color
-#    local RESET="\[\033[0m\]"
-#
-#    if [[ -z "$SSH_CLIENT" ]]; then  # Change host to yellow sshed to it
-#        local SSHUSER=${CYAN}
-#        local SSHHOST=${CYAN}
-#    else
-#        local SSHUSER=${YELLOW}
-#        local SSHHOST=${YELLOW}
-#    fi
-#
-#    if [[ "$UNAME" == "SunOS" ]]; then
-#        if [[ $EUID == '0' ]]; then
-#            export PS1="${CYAN}[${RED}\u@\h(`zonename`) \w${CYAN}] ${RED}"
-#        else
-#            export PS1="${CYAN}[\h(`zonename`) ${RED}\w${CYAN}] ${RESET}"
-#        fi
-#    else
-#        if [[ $EUID == '0' ]]; then
-#            export PS1="${WHITE}\A ${RED}\u${PURPLE}@${RED}\h${CYAN}[${WHITE}\!${CYAN}/\`if [[ \$? = "0" ]]; then echo "\\[\\033[35m\\]"; else echo "\\[\\033[31m\\]"; fi\`\j${CYAN}]:${WHITE}\w\n${RESET}\\$ "
-#        else
-#            export PS1="${WHITE}\A ${SSHUSER}\u${PURPLE}@${SSHHOST}\h${CYAN}[${WHITE}\!${CYAN}/\`if [[ \$? = "0" ]]; then echo "\\[\\033[35m\\]"; else echo "\\[\\033[31m\\]"; fi\`\j${CYAN}]:${WHITE}\w\n${RESET}\\$ "
-#        fi
-#    fi
-#}
+# git aliases
+alias gg="git grep"
+alias git-unfuck="git reset --hard HEAD"
+alias gitGraph='git log --graph --oneline --all --decorate --color'
 
 
-# Set the shell prompt, check if dumb term for Emacs TRAMP
-#if [[ "$TERM" == "dumb" ]]; then
-#  PS1='$ '
-#else
-#  #set_prompt
-#
-#  # Shell prompt from Linux Mint (from /etc/bash.basrhc)
-#  if [[ ${EUID} == 0 ]] ; then
-#    PS1='\[\033[01;31m\]\h\[\033[01;34m\] \W \$\[\033[00m\] '
-#  else
-#    PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] '
-#  fi
-#fi
-
-# New prompt with git branch (relies on git-prompt.sh
-# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-# http://code-worrier.com/blog/git-branch-in-bash-prompt/
-
-WHITE="\[\033[0;37m\]"
-BBLACK="\[\033[1;30m\]"   #Bold colors
-BRED="\[\033[1;31m\]"
-BGREEN="\[\033[1;32m\]"
-BYELLOW="\[\033[1;33m\]"
-BBLUE="\[\033[1;34m\]"
-BPURPLE="\[\033[1;35m\]"
-BCYAN="\[\033[1;36m\]"
-BWHITE="\[\033[1;37m\]"
-RESET="\[\033[0m\]"
-
-#source ~/.git-prompt.sh
-#PS1="\[$GREEN\]\t\[$RED\]-\[$BLUE\]\u\[$YELLOW\]\[$YELLOW\]\w\[\033[m\]\[$MAGENTA\]\$(__git_ps1)\[$WHITE\]\$ "
-
-# http://stackoverflow.com/questions/15883416/adding-git-branch-on-the-bash-command-prompt
-#if [ "${SSH_CONNECTION}" ]; then
-#  PS1="${RESET}[\u@${BRED}\h${RESET} \W${BGREEN}\$(__git_ps1 ' (%s)')${RESET}]\$ "
-#else
-#  PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
-#fi
-
-###
-# shell prompt
-###
+################
+#  Set Prompt  #
+################
 
 # Name the colors
 BLACK="\[\033[0;30m\]"   #Regular colors
@@ -491,84 +314,29 @@ function parse_git_dirty {
 }
 
 # Shell Prompt
-#export PS1="\[\e[00;33m\]\u\[\e[0m\]\[\e[00;37m\]@\h \[\e[0m\]\[\e[00;36m\][\w]\[\e[0m\]\[\e[00;37m\] \`parse_git_branch\` \`\` \n\[\e[0m\]\[\e[00;31m\]\\$\[\e[0m\]\[\e[00;37m\] \[\e[0m\]"
-#export PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\` \`\` \n${RESET}${RED}\$${RESET}${WHITE} ${RESET}"
-#PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 # if CHIC02RR812G8WP change to thorn
 if [[ ${HOSTNAME} == "CHIC02RR812G8WP.grubhub.local" ]];then
   PS1="${YELLOW}\u${RESET}${WHITE}@thorn ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 else
   PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 fi
-#\`if [[ \$? = "0" ]]; then echo '${RESET}\$'; else echo '${RED}\$${RESET}'; fi \` "
 export PS1
 
-####
-# More Aliases
-###
 
-conncount() {
-  netstat -an|grep ^tcp|grep -v LISTEN|awk '{print $6}'|sort|uniq -c|awk '{sum+=$1} {print $2 "=" $1} END {print "------------\nTOTAL=" sum}'
-}
-
-mcd() { mkdir -p "$1" && cd "$1"; }
-
-alias speedtest='wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test100.zip'
-alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
-
-# Colored man pages
-#export GROFF_NO_SGR=1
-manc() {
-    env LESS_TERMCAP_mb=$'\E[01;31m'   \
-    LESS_TERMCAP_md=$'\E[01;38;5;74m'  \
-    LESS_TERMCAP_me=$'\E[0m'           \
-    LESS_TERMCAP_se=$'\E[0m'           \
-    LESS_TERMCAP_so=$'\E[38;5;246m'    \
-    LESS_TERMCAP_ue=$'\E[0m'           \
-    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-    man "$@"
-}
-
-
-#Get IPs for all network interfaces:
-#iip() { ip a | grep "inet " | sed -e 's/^.*inet //g' -e 's/\/.*//g' | grep -v '127.0.0.1' }
-
-alias gg="git grep"
-alias git-unfuck="git reset --hard HEAD"
-
-###
-# Tmuxinator
-###
-[ -f ~/bin/tmuxinator.bash ] && source ~/bin/tmuxinator.bash
-alias tml="tmux list-sessions"
-alias tma="tmux -2 attach -t $1"
-alias tmk="tmux kill-session -t $1"
-
-
-
-
-#################
-# Source workrc #
-#################
+###################
+#  Source workrc  #
+###################
 if [ -e ${HOME}/.workrc ]; then
   source ~/.workrc
 fi
 
 
 ###################
-# System Specific #
+#   OS Specific   #
 ###################
 case "$UNAME" in
 Darwin)  # Darwin Environment
 if [[ ! -z $PS1 ]]; then echo ".Darwin bashrc loaded"; fi  # Interactive
-
-TMPDIR=/tmp
-# NOTE: PATH setup moved to bash_profile
-EDITOR="${HOME}/bin/edit"
-ALTERNATE_EDITOR="zile"
-CLICOLOR=1
-GROOVY_HOME=/usr/local/opt/groovy/libexec
-export MANPATH TMPDIR LD_LIBRARY_PATH CPPFLAGS TERM EDITOR ALTERNATE_EDITOR CLICOLOR GROOVY_HOME
 
 if [[ $INSIDE_EMACS ]]; then
   echo "..Inside Emacs"
@@ -629,37 +397,10 @@ if [[ -f ~/Library/mysql/com.mysql.mysqld.plist ]]; then
     alias start_mysql="sudo launchctl load ~/Library/mysql/com.mysql.mysqld.plist"
     alias stop_mysql="sudo launchctl unload ~/Library/mysql/com.mysql.mysqld.plist"
 fi
-
-###
-# pyenv darwin
-###
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
 if [[ ! -z $PS1 ]]; then echo ".Linux bashrc loaded"; fi	# interactive
-
-TERM=xterm-256color
-
-# Debian / Ubuntu / Fedora / Other
-# NOTE: PATH setup moved to bash_profile
-#if [[ $(uname -a | grep Ubuntu) ]]; then
-dist=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
-if [[ "${dist}" == "Ubuntu" ]]; then
-  echo "Ubuntu"
-  LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30:ow=34:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:'
-elif [[ -f /etc/fedora-release ]]; then
-  echo "Fedora"
-  LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.axa=01;36:*.oga=01;36:*.spx=01;36:*.xspf=01;36:'
-  PS1='\[\033[0;34m\][$(date +%H:%M)] \[\033[0;32m\]\u\[\033[0;36m\]@\[\033[0;32m\]\h\[\033[0;34m\] \W\[\033[0;32m\]$(parse-git-branch.sh) \[\033[0;34m\]$\[\033[00m\] '
-else # CentOS or Something Else [tm]
-  echo "Not Ubuntu or Fedora"
-  LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:*.cmd=01;32:*.exe=01;32:*.com=01;32:*.btm=01;32:*.bat=01;32:*.sh=01;32:*.csh=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tz=01;31:*.rpm=01;31:*.cpio=01;31:*.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.xbm=01;35:*.xpm=01;35:*.png=01;35:*.tif=01;35:'
-fi
-GZIP="-9"
-export MANPATH TERM LS_COLORS GZIP
 
 ## Open like command for Linux:  xdg-open or see
 function open { xdg-open "$1" &> /dev/null & }
@@ -717,15 +458,10 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 googlesay(){ curl -A RG translate\.google\.com/translate_tts -d "tl=en&q=$@" |mpg123 -; };
-
-# pyenv linux (path moved to .bash_profile)
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 ;; # end Linux
 
 *)
-echo "uname not reporing Darwin, SunOS, FreeBSD, or Linux.  Where are we?"
+echo "uname not reporing Darwin or Linux.  Where are we?"
 ;;
 
 esac  # End System Specific case statement
