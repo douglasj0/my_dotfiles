@@ -173,6 +173,29 @@ alias tma="tmux -2 attach -t $1"
 alias tmk="tmux kill-session -t $1"
 
 
+# Track directory, username, and cwd for remote logons.
+#if [ "$TERM" = "eterm-color" ]; then
+#if [ "x${INSIDE_EMACS}" != "x" ]; then
+#if [ "${SSH_CLIENT%% *}" = "10.0.3.31" -o "${SSH_CLIENT%% *}" = "10.3.14.49" ]; then
+#   PROMPT_COMMAND=set-eterm-dir
+#   echo "We're inside Emacs"
+#    echo "Run 'set-eterm-dir' to enable Emacs ansi-term directory tracking"
+#fi
+
+# Check if we're running inside of Emacs, change TERM to accomodate
+#if [ -n "$INSIDE_EMACS" ]; then export TERM=vt100; fi
+#[ "x$INSIDE_EMACS" != "x" ]] && export TERM=vt100
+
+# about-alias 'the silver searcher (ag) aliases'
+## Summary for args to less:
+# less(1)
+#   -M (-M or --LONG-PROMPT) Prompt very verbosely
+#   -I (-I or --IGNORE-CASE) Searches with '/' ignore case
+#   -R (-R or --RAW-CONTROL-CHARS) For handling ANSI colors
+#   -F (-F or --quit-if-one-screen) Auto exit if <1 screen
+#   -X (-X or --no-init) Disable termcap init & deinit
+alias ag='ag --smart-case --pager="less -MIRFX"'
+
 ####
 # More Aliases
 ###

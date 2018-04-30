@@ -6,9 +6,9 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-###################
-# Common Settings #
-###################
+#####################
+#  Common Settings  #
+#####################
 set bell-style visible
 bind 'set bell-style visible'		# No beeping
 #bind 'set horizontal-scroll-mode on'	# Don't wrap
@@ -16,9 +16,9 @@ bind 'set show-all-if-ambiguous on'	# Tab once for complete
 bind 'set visible-stats on'		# Show file info in complete
 
 
-###########################
-# Configure shell history #
-###########################
+#############################
+#  Configure shell history  #
+#############################
 #export PROMPT_COMMAND="history -a; history -n"  # Manually update .bash_history file
 export HISTCONTROL=ignorespace
 #export HISTIGNORE="&:ls:[bf]g:exit"
@@ -27,9 +27,9 @@ unset HISTFILESIZE
 export HISTSIZE=10000
 
 
-##################
-# Bash Variables #
-##################
+####################
+#  Bash Variables  #
+####################
 set -o noclobber	# disable > >& <> from overwriting existing files
 #set -o physical
 shopt -s cdspell	# corrects for slop in directory spelling
@@ -45,18 +45,15 @@ shopt -s checkhash	# check hash table for command before executing it
 shopt -s checkwinsize   # check term row/column size after each command before prompt
 
 
-#############
-# Functions #
-#############
+###############
+#  Functions  #
+###############
 function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
 function psg { ps -aef | grep $* | grep -v grep ; }  # sysv ps
-function psb { ps -aux | grep $* | grep -v grep ; }  # bsd ps
+function psb { ps aux | grep $* | grep -v grep ; }  # bsd ps
 function lhd { last $* | head ; }
 function calc { awk "BEGIN{ print $* }" ;}
 function rmd { pandoc $1 | lynx -stdin ;}
-
-# Status (from Rackspace)
-function stats() { uptime; awk '/^MemTotal:/{total = $2/1024^2} /^(MemFree|Buffers|Cached):/{sum += $2} END {printf " Memory: %.2fG/%.2fG\n", sum/1024^2, total}' /proc/meminfo; ps -eo pcpu | awk '/[0-9]/ {sum += $1} END {printf " CPU: %s%%\n", sum}'; }
 
 # get mac addr
 function mac { ping -c 2 $1 > /dev/null 2>&1; arp $1 | awk '{print $3}' | tail -1; }
@@ -107,67 +104,27 @@ yolo() {
 }
 
 # ssh key functions
-# Add all ssh keys in ~/.ssh
-ssh-add-all() {
-  LIST=$(ls $HOME/.ssh/id_* | grep -v '.pub')
-  ssh-add $LIST
-}
+ssh-add-all() { LIST=$(ls $HOME/.ssh/id_* | grep -v '.pub'); ssh-add $LIST; } # add all ssh keys
+ssh-del-all() { ssh-add -D; }                                       # delete all ssh keys
+ssh-add-work () { ssh-add ${HOME}/.ssh/id_rsa_work; }               # add work key
+ssh-del-work () { ssh-add -d ${HOME}/.ssh/id_rsa_work; }            # delete work key
+ssh-add-github () { ssh-add ${HOME}/.ssh/github/id_rsa_github; }    # add github key
+ssh-del-github () { ssh-add -d ${HOME}/.ssh/github/id_rsa_github; } # delete github key
 
-# Delete all ssh keys in keyring
-ssh-del-all() {
-  ssh-add -D
-}
-
-# Only add work key
-ssh-add-work () {
-  ssh-add ${HOME}/.ssh/id_rsa_work
-}
-
-# Only delete work key
-ssh-del-work () {
-  ssh-add -d ${HOME}/.ssh/id_rsa_work
-}
-
-# Only add github key
-ssh-add-github () {
-  ssh-add ${HOME}/.ssh/github/id_rsa_github
-}
-
-# Only delete github key
-ssh-del-github () {
-  ssh-add -d ${HOME}/.ssh/github/id_rsa_github
-}
-
-#grepp: grep by paragraph
-#thx to http://www.commandlinefu.com/commands/view/4547/
+#grepp: grep by paragraph, http://www.commandlinefu.com/commands/view/4547/
 grepp() {
     [ $# -eq 1 ] && perl -00ne "print if /$1/i" || perl -00ne "print if /$1/i" < "$2"
 }
 
 # Push ssh authorized_keys to remote host
 pushkey() {
-  #cat ~/.ssh/authorized_keys | \
-  #ssh $1 "cat >> authorized_keys && mkdir -p ~/.ssh && chmod 0700 ~/.ssh && mv ~/authorized_keys ~/.ssh"
   if [ -z $1 ]; then
      echo "no host specified"
   else
-    KEYCODE=`cat $HOME/.ssh/id_rsa_work.pub`
+    KEYCODE=`cat $HOME/.ssh/authorized_keys`
     ssh -q $1 "mkdir -p ~/.ssh && chmod 0700 ~/.ssh && touch ~/.ssh/authorized_keys && echo "$KEYCODE" >> ~/.ssh/authorized_keys && chmod 644 ~/.ssh/authorized_keys"
   fi
 }
-
-# Track directory, username, and cwd for remote logons.
-#if [ "$TERM" = "eterm-color" ]; then
-#if [ "x${INSIDE_EMACS}" != "x" ]; then
-#if [ "${SSH_CLIENT%% *}" = "10.0.3.31" -o "${SSH_CLIENT%% *}" = "10.3.14.49" ]; then
-#   PROMPT_COMMAND=set-eterm-dir
-#   echo "We're inside Emacs"
-#    echo "Run 'set-eterm-dir' to enable Emacs ansi-term directory tracking"
-#fi
-
-# Check if we're running inside of Emacs, change TERM to accomodate
-#if [ -n "$INSIDE_EMACS" ]; then export TERM=vt100; fi
-#[ "x$INSIDE_EMACS" != "x" ]] && export TERM=vt100
 
 
 #############
@@ -216,16 +173,6 @@ alias ping4='ping -c4'
 alias weather='curl wttr.in/chicago'
 alias speedtest='wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test100.zip'
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
-
-# about-alias 'the silver searcher (ag) aliases'
-## Summary for args to less:
-# less(1)
-#   -M (-M or --LONG-PROMPT) Prompt very verbosely
-#   -I (-I or --IGNORE-CASE) Searches with '/' ignore case
-#   -R (-R or --RAW-CONTROL-CHARS) For handling ANSI colors
-#   -F (-F or --quit-if-one-screen) Auto exit if <1 screen
-#   -X (-X or --no-init) Disable termcap init & deinit
-alias ag='ag --smart-case --pager="less -MIRFX"'
 
 # Proksel's aliases
 alias aspen='tree -h -f -C'
@@ -427,6 +374,9 @@ alias pscpu10='ps auxf | sort -nr -k 3 | head -10'
 
 ## Get server cpu info ##
 alias cpuinfo='lscpu'
+
+# Status (from Rackspace)
+function stats() { uptime; awk '/^MemTotal:/{total = $2/1024^2} /^(MemFree|Buffers|Cached):/{sum += $2} END {printf " Memory: %.2fG/%.2fG\n", sum/1024^2, total}' /proc/meminfo; ps -eo pcpu | awk '/[0-9]/ {sum += $1} END {printf " CPU: %s%%\n", sum}'; }
 
 alias fullline='perl -p00e "s/\r?\n //gi"'
 alias ls='ls --color=auto'
