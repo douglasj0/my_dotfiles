@@ -5,14 +5,14 @@
 # if they are not links and don't exist then create
 
 # Cleanup:
-#rm -rf .bash_profile .bashrc .boxes .calendar .emacs.d .inputrc .irssi .mutt .nsmbrc .screenrc .tmux.conf .vm .zlogin .zshenv .zshrc common.git examples org
+#rm -rf .profile .bash_profile .bashrc .boxes .calendar .emacs.d .inputrc .irssi .mutt .nsmbrc .screenrc .tmux.conf .vm .zlogin .zshenv .zshrc common.git examples org
 
 CURRDATE=`date +%Y%m%d`
 CURRDIR=`pwd`
 
 # Create links for specific files in the dotfiles directory
 #bash_profile bashrc boxes calendar emacs.d git-prompt.sh inputrc launchd.conf MacOSX screenrc tmux.conf tmuxinator vimrc vm Xdefaults Xmodmap Xresources zlogin zshenv zshrc
-for d in bash_profile bashrc boxes calendar emacs.d inputrc launchd.conf MacOSX screenrc vimrc vm Xdefaults Xmodmap Xresources zlogin zshenv zshrc
+for d in profile bash_profile bashrc boxes calendar emacs.d inputrc launchd.conf MacOSX screenrc vimrc vm Xdefaults Xmodmap Xresources zlogin zshenv zshrc
 do
   if [ -e ${HOME}/.${d} ]; then
     if [ -L ${HOME}/.${d} ]; then

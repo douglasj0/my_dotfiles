@@ -281,9 +281,9 @@ fi
 ###################
 #   OS Specific   #
 ###################
-case "$UNAME" in
+case "$(uname)" in
 Darwin)  # Darwin Environment
-if [[ ! -z $PS1 ]]; then echo ".Darwin bashrc loaded"; fi  # Interactive
+if [[ ! -z $PS1 ]]; then echo ".darwin bashrc loaded"; fi  # Interactive
 
 if [[ $INSIDE_EMACS ]]; then
   echo "..Inside Emacs"
@@ -347,7 +347,7 @@ fi
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
-if [[ ! -z $PS1 ]]; then echo ".Linux bashrc loaded"; fi	# interactive
+if [[ ! -z $PS1 ]]; then echo ".linux bashrc loaded"; fi	# interactive
 
 ## Open like command for Linux:  xdg-open or see
 function open { xdg-open "$1" &> /dev/null & }
