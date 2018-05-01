@@ -34,6 +34,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(eval-when-compile
+  (require 'use-package))
+
 ;; Test out a package without installing it
 (use-package try
   :ensure t)
