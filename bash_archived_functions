@@ -402,3 +402,10 @@ else # CentOS or Something Else [tm]
 fi
 
 export PATH MANPATH TERM LS_COLORS
+
+function mount_sshfs {
+    if [ ! -d /tmp/$1 ]; then mkdir /tmp/$1; fi
+    sshfs jacksond@$1: /tmp/$1 -ocache=no -onolocalcaches -ovolname=$1
+}
+
+

@@ -22,7 +22,7 @@ export VAGRANT_DEFAULT_PROVIDER=virtualbox
 NNTPSERVER=news.eternal-september.org
 MORE=p
 LESS="-XgmR"
-[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
+
 umask 022
 test -t 0 && stty erase '^?'	# changed from ^h because of emacs help
 stty -ixon                      # disable ^Q and ^S flow control
@@ -338,6 +338,10 @@ alias ecw="emacsclient -s $EMACS_SOCKET -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -s $EMACS_SOCKET -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -s $EMACS_SOCKET -n -a emacs" # do not start a new frame
 
+export EDITOR="${HOME}/bin/edit"
+export ALTERNATE_EDITOR="zile"
+export GROOVY_HOME=/usr/local/opt/groovy/libexec
+
 function ediff {
     emacs --eval "(ediff \"$1\" \"$2\")"
 }
@@ -345,10 +349,6 @@ function ediff {
 function q { w3m -dump "http://google.com/search?q=$*" | more; }
 function traffic { netstat -w1 -I"$@"; }
 function qlook { qlmanage -p "$@" >& /dev/null & }
-function mount_sshfs {
-    if [ ! -d /tmp/$1 ]; then mkdir /tmp/$1; fi
-    sshfs jacksond@$1: /tmp/$1 -ocache=no -onolocalcaches -ovolname=$1
-}
 
 if [[ -f ~/Library/LaunchAgents/gnu.emacs.daemon.plist ]]; then
     alias emacs_load="launchctl load -w ~/Library/LaunchAgents/gnu.emacs.daemon.plist"
@@ -378,9 +378,8 @@ alias ecw="emacsclient -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -n -a emacs" # do not start a new frame
 # export EDITOR="emacsclient -t"
-export EDITOR="${HOME}/bin/edit"
+[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
 export ALTERNATE_EDITOR="zile"
-export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 ## pass options to free ##
 alias meminfo='free -m -l -t'

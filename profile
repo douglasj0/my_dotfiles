@@ -15,9 +15,7 @@ MANPATH=/usr/local/share/man:/usr/local/man:/usr/share/man:/usr/X11/man
 TMPDIR=/tmp
 export PATH MANPATH TMPDIR
 
-###
 # pyenv darwin
-###
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 ;; # end Darwin
@@ -30,14 +28,11 @@ MANPATH=/usr/local/share/man:/usr/share/man:/usr/X11R6/man
 TMPDIR=/tmp
 export PATH MANPATH TMPDIR
 
-###
 # pyenv linux
-###
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-
 ;; # end Linux
 
 *)
