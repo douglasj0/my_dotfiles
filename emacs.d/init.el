@@ -38,11 +38,8 @@
 (use-package try
   :ensure t)
 
-;; Load org-plus-contrib
-(load "~/.emacs.d/org-plus-contrib.el")
-
-;; Load emacs-init org file
-(require 'org)
+;; Load org-plus-contrib for org-babel
+(load "~/.emacs.d/org-init.el")
 (org-babel-load-file
   (expand-file-name "emacs-init.org"
                      user-emacs-directory))
