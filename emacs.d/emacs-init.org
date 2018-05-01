@@ -1250,6 +1250,7 @@ last sentence."
 ;; Info and setup
 ;; https://realpython.com/blog/python/emacs-the-best-python-editor/
 ;; https://github.com/jorgenschaefer/elpy
+;; https://emacs.stackexchange.com/questions/10065/how-can-i-defer-loading-elpy-using-use-package
 ;; User manual:  http://elpy.readthedocs.io/en/latest/
 ;; Setup python env first:
 ;;   pip install jedi flake8 autopep8 yapf
@@ -1261,6 +1262,7 @@ last sentence."
 (use-package elpy
   :ensure t
   :commands elpy
+  :init (with-eval-after-load 'python (elpy-enable))
   :config
     ;; Explicitly choose backend
     (setq elpy-rpc-backend "jedi")
