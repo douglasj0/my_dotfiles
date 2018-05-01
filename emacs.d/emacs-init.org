@@ -348,7 +348,7 @@
   bookmark-save-flag 1)                   ;; autosave each change)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
-* OS Specific Settings
+* OS specific settings
 ** Linux settings
 #+BEGIN_SRC emacs-lisp
 ;;; -=Linux specific settings
@@ -422,7 +422,6 @@
 ; https://github.com/purcell/exec-path-from-shell
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
-
 ))
 #+END_SRC
 * Misc functions
@@ -810,7 +809,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
     (delete-frame (selected-frame))))
 (global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
 #+END_SRC
-* Better Defaults
+* Better defaults
 #+BEGIN_SRC emacs-lisp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; -- better-defaults  (moved into init.el to avoid confusion)
@@ -852,7 +851,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
       backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 #+END_SRC
-* daily log
+* Daily log
 #+BEGIN_SRC emacs-lisp
 ;;; -- daily log -
 
@@ -910,46 +909,7 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
-
-* deft
-#+BEGIN_SRC emacs-lisp
-;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
-;;; directories of plain text notes.  http://jblevins.org/projects/deft/
-;;; http://jblevins.org/git/deft.git
-(autoload 'deft "deft" "mode for working with text notes" t)
-
-(setq
-  deft-extension "txt"
-  deft-directory "~/org/notes"
-  deft-text-mode 'org-mode
-  deft-use-filename-as-title t
-  deft-recursive t
-  deft-ignore-file-regexp "archive\.*")
-;(global-set-key (kbd "<f8>") 'deft))
-(global-set-key (kbd "C-c C-g") 'deft-find-file)
-
-;; Notational Velocity provides a show-hide function key, letting you pop
-;; in-and-out of the interface quickly. I recreated a crude version of this
-;; in Deft, bound to f6.
-(define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
-(setq deft-text-mode 'deft-note-mode)
-(defun kill-all-deft-notes ()
-  (interactive)
-  (save-excursion
-    (let((count 0))
-      (dolist(buffer (buffer-list))
-        (set-buffer buffer)
-        (when (not (eq nil deft-note-mode))
-          (setq count (1+ count))
-          (kill-buffer buffer)))
-      )))
-(defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
-                                          (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
-                                        (deft)
-                                        ))
-(global-set-key [f8] 'deft-or-close)
-#+END_SRC
-* dired
+* Dired
 #+BEGIN_SRC emacs-lisp
 ;;; -- dired - directory listing buffer
 ;;; http://www.emacswiki.org/emacs/DiredPlus
@@ -970,34 +930,6 @@ last sentence."
 ;(setq dired-recursive-deletes 'top)
 ;; disable line wrapping in dired mode
 (add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
-
-;;; http://stackoverflow.com/questions/1824696/function-to-call-same-shell-command-in-dired
-;;; http://blog.nguyenvq.com/2009/12/01/file-management-emacs-dired-to-replace-finder-in-mac-os-x-and-other-os/
-;; (defun dired-open ()
-;;   (interactive)
-;;   (save-window-excursion
-;;     (dired-do-async-shell-command
-;;      "open" current-prefix-arg
-;;      (dired-get-marked-files t current-prefix-arg))))
-;;   (define-key dired-mode-map (kbd "C-o") 'dired-open)
-
-;;; Open the current directory in desktop
-;;; http://xahlee.blogspot.com/2012/01/emacs-dired-opening-files-in-external.html
-;; (defun open-in-desktop ()
-;;   "Open the current file in desktop.
-;; Works in Microsoft Windows, Mac OS X, Linux."
-;;   (interactive)
-;;   (cond
-;;    ((string-equal system-type "windows-nt")
-;;     (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
-;;    ((string-equal system-type "darwin") (shell-command "open ."))
-;;    ((string-equal system-type "gnu/linux") (shell-command "xdg-open ."))
-;;    ) )
-;; (define-key dired-mode-map (kbd "C-;") 'open-in-desktop)
-
-;; Make sizes human-readable by default, sort version numbers
-;; correctly, and put dotfiles and capital-letters first.
-;(setq-default dired-listing-switches "-alhvi")
 
 ;;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
@@ -1024,25 +956,8 @@ last sentence."
 ;; default destination.
 (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
 #+END_SRC
-* dumb-jump
-#+BEGIN_SRC emacs-lisp
-;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
-;;; alternative Emacs packages for other languages
-;;; - Tags supports multiple languages
-;;; - GNU Global supports multiple languages
-;;; - Tern for JavaScript
-;;; - elpy for Python
-;;; - robe for Ruby
 
-;; Setup keybindinds
-(define-key prog-mode-map (kbd "M-g j") 'dumb-jump-go)
-(define-key prog-mode-map (kbd "M-g i") 'dumb-jump-go-prompt)
-(define-key prog-mode-map (kbd "M-g x") 'dumb-jump-go-prefer-external)
-(define-key prog-mode-map (kbd "M-g z") 'dumb-jump-go-prefer-external-other-window)
-(setq dumb-jump-selector 'ivy)
-#+END_SRC
-
-* electric help
+* Electric help
 #+BEGIN_SRC emacs-lisp
 ;;; -- ehelp (Electric help)
 ;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
@@ -1051,59 +966,7 @@ last sentence."
 (require 'ehelp)
 (define-key global-map "\C-h" 'ehelp-command)
 #+END_SRC
-* elpy
-#+BEGIN_SRC emacs-lisp
-;;; -- elpy - Emacs Python IDE
-;; Info and setup
-;; https://realpython.com/blog/python/emacs-the-best-python-editor/
-;; https://github.com/jorgenschaefer/elpy
-;; User manual:  http://elpy.readthedocs.io/en/latest/
-;; Setup python env first:
-;;   pip install jedi flake8 autopep8 yapf
-;; To use elpy, just add the following to your .emacs:
-(when (require 'elpy nil t)
-  (elpy-enable))
-;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
-;(elpy-clean-modeline)
-
-;; Explicitly choose backend
-(setq elpy-rpc-backend "jedi")
-
-;; replace flymake with flycheck for on-the-fly checking
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-;; Emable pep8 auto correct erros on save
-;(require 'py-autopep8)
-;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-
-;; Use ipython as interpeter instead of just python
-;; https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-
-;; use pdb with Elpy
-(setq gud-pdb-command-name "python -m pdb")
-#+END_SRC
-* flycheck
-#+BEGIN_SRC emacs-lisp
-;;; -- flycheck
-(require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
-;;; Disable flycheck running checkdoc against init.el
-;;; http://stackoverflow.com/questions/15552349/flycheck-how-to-disable-warnning-while-edit-emacs-lisp-scripts
-;(eval-after-load 'flycheck (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))  ;; ver 0.16+
-(eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
-#+END_SRC
-* git gutter
-#+BEGIN_SRC emacs-lisp
-;;; -- git-gutter
-;;; https://github.com/syohex/emacs-git-gutter
-(global-git-gutter-mode t)
-#+END_SRC
-* gnus
+* Gnus
 #+BEGIN_SRC emacs-lisp
 ;;; -- gnus - Mail and News reader
 
@@ -1127,7 +990,7 @@ last sentence."
 ;; show even if there are no articles
 (setq gnus-permanently-visible-groups ".*")
 #+END_SRC
-* ibuffer
+* Ibuffer
 #+BEGIN_SRC emacs-lisp
 ;;; -- ibuffer - *Nice* buffer switching
 ;;
@@ -1234,7 +1097,7 @@ last sentence."
              (ibuffer-auto-mode 1)
              (ibuffer-switch-to-saved-filter-groups "default")))
 #+END_SRC
-* ispell
+* Ispell
 #+BEGIN_SRC emacs-lisp
 ;;; -- ispell - interactive spell
 ;;; Set ispell checks to use aspell
@@ -1246,320 +1109,7 @@ last sentence."
      ;; sug-mode=fast is more accurate, slower then ultra
      (setq ispell-extra-args '("--sug-mode=fast"))))
 #+END_SRC
-* ivy
-#+BEGIN_SRC emacs-lisp
-;;; -- ivy-mode - a generic completion mechanism for Emacs
-;;; swiper - an alternative to isearch uses ivy to show overview of all matches
-;;; https://github.com/abo-abo/swiper
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-virtual-abbreviate 'full)
-(setq enable-recursive-minibuffers t)
-
-;; Ivy-based interface to standard commands
-(global-set-key (kbd "C-s") 'swiper)
-;(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "C-x C-r") 'counsel-recentf)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-
-;; Ivy-based interface to shell and system tools
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-
-(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-
-;; disable M-x filter "^"
-(setq ivy-initial-inputs-alist nil)
-#+END_SRC
-* magit
-#+BEGIN_SRC emacs-lisp
-;;; -- magit-mode - emacs mode for interacting with the Git vcs
-(global-set-key (kbd "C-c g") 'magit-status)  ;;
-(setq magit-completing-read-function 'ivy-completing-read)
-#+END_SRC
-* neotree
-#+BEGIN_SRC emacs-lisp
-;; -- neo-tree
-;; Emacs version of Vim's nerdtree
-(global-set-key [f5] 'neotree-toggle)
-#+END_SRC
-* org-mode
-#+BEGIN_SRC emacs-lisp
-;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
-;; planning, and authoring with a fast and effective plain-text system
-;;
-;; Info:
-;;   Call up the info with C-h i.
-;;   Then call g (Info-goto-node).
-;;   Enter (org) at the prompt.
-
-;(message "*** Loaded org-mode-init.el")
-(require 'org)
-(require 'org-contacts) ;takes 0.59s To load
-
-;; Load additional exporters
-;(eval-after-load 'org
-;      (lambda()
-;        (require 'ox-md)
-;        (require 'ox-odt)
-;        (require 'ox-opml)
-;        (require 'ox-confluence)))
-
-;; Bind C-h o to org-info
-(define-key global-map (kbd "C-h o") 'org-info)
-
-; The following lines are always needed.  Choose your own keys.
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-(global-set-key "\C-cc" 'org-capture)
-
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/org")
-
-;; Open all txt files in org-mode
-(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
-
-
-;;; Agenda
-;; Agenda window setup
-(setq org-agenda-window-setup 'current-window) ;; don't kill my window setup
-
-;; Include emacs diary, not needed if using org-anniversary
-;(setq org-agenda-include-diary t)
-
-;; Custom agenda commands
-;; http://members.optusnet.com.au/~charles57/GTD/mydotemacs.txt
-(setq org-agenda-custom-commands
-'(
-("P" "Projects"
-              ((tags "PROJECT")))
-
-("H" "Office and Home Lists"
-     ((agenda)
-          (tags-todo "OFFICE")
-          (tags-todo "HOME")
-          (tags-todo "COMPUTER")
-          (tags-todo "DVD")
-          (tags-todo "READING")))
-
-("D" "Daily Action List"
-     ((agenda "" ((org-agenda-ndays 1)
-                     (org-agenda-sorting-strategy
-                        (quote ((agenda time-up priority-down tag-up))))
-                     (org-deadline-warning-days 0)
-                     ))))))
-
-
-;;; Capture
-;; Setup default target for notes and a global hotkey for new ones
-;; NOTE:  Need org-mode version 6.3.6 or later for this to work
-;; http://stackoverflow.com/questions/3622603/org-mode-setup-problem-when-trying-to-use-capture
-(setq org-default-notes-file (expand-file-name "~/org/notes.org"))
-
-;; Capture templates - C-c c t
-;; Based on Sacha Chua's org-capture-tempaltes
-;; http://pages.sachachua.com/.emacs.d/Sacha.html
-(defvar dbj/org-basic-task-template "* TODO %^{Task}
-SCHEDULED: %^t
-:PROPERTIES:
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:END:
-Captured %<%Y-%m-%d %H:%M>
-%?
-" "Basic task data")
-
-(defvar dbj/org-basic-someday-template "* %^{Task}
-:PROPERTIES:
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:END:
-Captured %<%Y-%m-%d %H:%M>
-%?
-
-%i
-" "Basic task data")
-
-(setq org-capture-templates
-      `(("t" "Tasks" entry
-         (file+headline "~/org/gtd/newgtd.org" "Tasks")
-         ,dbj/org-basic-task-template)
-        ("s" "Someday task" entry
-         (file+headline "~/org/gtd/someday.org" "Someday")
-         ,dbj/org-basic-someday-template)
-        ("j" "Journal entry" plain
-         (file+datetree+prompt "~/org/gtd/journal.org")
-         "%i\n%?\n")
-        ("c" "Contact, email" entry (file "~/org/gtd/contacts.org")
-          "* %(org-contacts-template-name)
-:PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:END:")
-        ("C" "Contact, full" entry (file "~/org/gtd/contacts.org")
-          "* %(org-contacts-template-name)
-:PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:PHONE:
-:ALIAS:
-:NICKNAME:
-:IGNORE:
-:ICON:
-:NOTE:
-:ADDRESS:
-:BIRTHDAY:
-:END:")
-        ("n" "Notes" entry
-          (file+datetree "~/org/gtd/notes.org")
-          "* %?\n\n%i\n")
-))
-
-
-;;; Other
-;; When adding new heading below the current heading, the new heading is
-;; placed after the body instead of before it.  C-<RET>
-(setq org-insert-heading-respect-content t)
-
-;; Set Todo keywords, same as:
-;; #+TODO: TODO(t) STARTED(s) WAITING(w) | DONE(d) CANCELED(c)
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "STARTED(s)" "WAITING(w@/!)")
-        (sequence "|" "DONE(d!)" "CANCELED(c@)")))
-
-;; Set Tags, same as:
-;; #+TAGS: home(h) work(w) @computer(c) @phone(p) errants(e)
-(setq org-tag-alist '(("@office" . ?o) ("@home" . ?h) ("computer" . ?c)
-                      ("phone" . ?p) ("reading" . ?r)))
-
-;; Prevent C-k from killing whole subtrees and losing work
-(setq org-special-ctrl-k t)
-
-;; Fontify code buffers in org, instead of grey text
-;; This is especially nice when you open an editing buffer with [Ctrl+c ']
-;; to insert code into the #+begin_src ... #+end_src area.
-(setq org-src-fontify-natively t)
-
-;; org-refile (C-c C-w) settings from:
-;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg34415.html
-;(setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-outline-path-complete-in-steps t)
-;(setq org-completion-use-ido nil)
-(setq org-refile-use-outline-path 'file)
-(setq org-refile-targets '((org-agenda-files :maxlevel . 2)
-                           (nil :maxlevel . 3)))
-
-;; MobileOrg config
-;; M-x org-mobile-push - copy org files to ~/Dropbox/MobileOrg
-;; M-x org-mobile-pull - integrate remove changes into local org files
-;;
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/org")
-;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/org/flagged.org")
-;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/Home/MobileOrg")
-
-;;; Strike-through finished todos
-;; sachachua.com/blog/2012/12/emacs-strike-through-headlines-for-done-tasks-in-org/
-(setq org-fontify-done-headline t)
-(custom-set-faces
- '(org-done ((t (:foreground "PaleGreen"
-                 :weight normal
-                 :strike-through t))))
- '(org-headline-done
-            ((((class color) (min-colors 16) (background dark))
-               (:foreground "LightSalmon" :strike-through t)))))
-
-;;; Make sure to hightlight mysql sql keywords:
-;;; ex. #+BEGIN_SRC sql
-;;;        SELECT foo FROM bar
-;;;     #+END_SRC
-(add-hook 'sql-mode-hook
-          (lambda ()
-            (sql-highlight-mysql-keywords)))
-
-;;; Enable other org-babel langauges
-(org-babel-do-load-languages
-  (quote org-babel-load-languages)
-  (quote ((emacs-lisp . t)
-          ;(asymptote . t) ;Asymptote
-          (awk . t)       ;Awk
-          (C . t)         ;C
-          ;(C++ . t)       ;C++
-          ;(clojure . t)   ;Clojure
-          ;(css . t)       ;CSS
-          ;(d . f)        ;D
-          ;(ditaa . f)     ;ditaa
-          ;(dot . t)       ;Graphviz
-          ;(calc . t)      ; Emacs Calc
-          ;(fortran . t)   ;Fortran
-          ;(gnuplot . t)   ;gnuplot
-          ;(haskell . t)   ;Haskell
-          (java . t)      ;Java
-          (js . t)        ;Javascript
-          ;(latex . t)     ;LaTeX
-          (ledger . f)    ;Ledger
-          (lisp . t)      ;Lisp
-          ;(lilypond . t)  ;Lilypond
-          ;(lua . t)       ;Lua
-          ;(matlab . t)    ;MATLAB
-          ;(mscgen . t)    ;Mscgen
-          ;(ocaml . t)     ;Objective Caml
-          ;(octave . t)    ;octave
-          (org . t)       ;Org mode
-          ;(oz . f)        ;Oz
-          (perl . t)      ;Perl
-          ;(plantuml . t)  ;Plantuml
-          ;(processing . t) ;Processing.js
-          (python . t)    ;Python
-          ;(R . t)         ;R
-          (ruby . t)      ;Ruby
-          ;(sass . t)      ;Sass
-          ;(scheme . t)    ;Scheme
-          (screen . t)    ;GNU Screen
-          (sed . t)       ;Sed
-          (shell . t)     ;shell
-          (sql . t)       ; SQL
-          ;(sqlite .t)     ;SQLite
-)))
-#+END_SRC
-* projectile
-#+BEGIN_SRC emacs-lisp
-;;; -- projectile - project managent (works with helm)
-;;; Project navigation and management library for Emacs
-;;; https://github.com/bbatsov/projectile
-;;; http://batsov.com/projectile/
-;;; Keybindings: https://projectile.readthedocs.io/en/latest/usage/
-
-;; put bookmark in cache directory
-(setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
-
-;; use helm projectile C-c p h
-(projectile-global-mode)
-;(setq projectile-completion-system 'helm)
-;;(helm-projectile-on)
-
-;; force use external commands for indexing
-(setq projectile-indexing-method 'alien)
-
-;; enable caching unconditionally use this snippet of code:
-(setq projectile-enable-caching t)
-
-;;(setq projectile-switch-project-action 'helm-projectile-find-file)
-;(setq projectile-switch-project-action 'helm-projectile)
-(setq projectile-completion-system 'ivy)
-#+END_SRC
-
-* recentf
+* Recentf
 #+BEGIN_SRC emacs-lisp
 ;;; -- recentf - a minor mode that builds a list of recently opened files
 ;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
@@ -1572,25 +1122,7 @@ Captured %<%Y-%m-%d %H:%M>
 ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;(global-set-key (kbd "C-x C-r") 'helm-recentf)
 #+END_SRC
-* shell-pop
-#+BEGIN_SRC emacs-lisp
-;;; -- shell-pop
-;;; https://github.com/kyagi/shell-pop-el
-(require 'shell-pop)
-  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  (setq shell-pop-term-shell "/bin/bash")
-  ;(setq shell-pop-universal-key "C-t")
-  (global-set-key (kbd "C-c t") 'shell-pop)
-  ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-#+END_SRC
-* switch-window
-#+BEGIN_SRC emacs-lisp
-;;; -- switch-window - a C-x o replacment for multiple window movement
-(require 'switch-window)
-(global-set-key (kbd "C-x o") 'switch-window)
-#+END_SRC
-* tramp
+* Tramp
 #+BEGIN_SRC emacs-lisp
 ;;; -- tramp- edit files on remote servers
 (autoload 'tramp "tramp" "Tramp mode" t)
@@ -1625,4 +1157,311 @@ Captured %<%Y-%m-%d %H:%M>
 ;; Set remote shell to be /bin/bash
 ;; http://superuser.com/questions/454288/how-to-specify-for-emacs-tramp-which-remote-shell-to-open
 (setq explicit-shell-file-name "/bin/bash")
+#+END_SRC
+* color-moccur
+#+BEGIN_SRC emacs-lisp
+;(use-package color-moccur
+;  :ensure t)
+#+END_SRC
+* deft
+#+BEGIN_SRC emacs-lisp
+;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
+;;; directories of plain text notes.  http://jblevins.org/projects/deft/
+;;; http://jblevins.org/git/deft.git
+(use-package deft
+  :ensure t
+  :config
+    (setq
+      deft-extension "txt"
+      deft-directory "~/org/notes"
+      deft-text-mode 'org-mode
+      deft-use-filename-as-title t
+      deft-recursive t
+      deft-ignore-file-regexp "archive\.*")
+    ;(global-set-key (kbd "<f8>") 'deft))
+    (global-set-key (kbd "C-c C-g") 'deft-find-file)
+
+    ;; Notational Velocity provides a show-hide function key, letting you pop
+    ;; in-and-out of the interface quickly. I recreated a crude version of this
+    ;; in Deft, bound to f6.
+    (define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
+    (setq deft-text-mode 'deft-note-mode)
+    (defun kill-all-deft-notes ()
+      (interactive)
+      (save-excursion
+        (let((count 0))
+          (dolist(buffer (buffer-list))
+            (set-buffer buffer)
+            (when (not (eq nil deft-note-mode))
+              (setq count (1+ count))
+              (kill-buffer buffer)))
+          )))
+    (defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
+                                              (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
+                                            (deft)
+                                            ))
+    (global-set-key [f8] 'deft-or-close)
+)
+#+END_SRC
+* dumb-jump
+#+BEGIN_SRC emacs-lisp
+;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
+;;; alternative Emacs packages for other languages
+;;; - Tags supports multiple languages
+;;; - GNU Global supports multiple languages
+;;; - Tern for JavaScript
+;;; - elpy for Python
+;;; - robe for Ruby
+(use-package dumb-jump
+  :ensure t
+  :config
+    ;; Setup keybindinds
+    (define-key prog-mode-map (kbd "M-g j") 'dumb-jump-go)
+    (define-key prog-mode-map (kbd "M-g i") 'dumb-jump-go-prompt)
+    (define-key prog-mode-map (kbd "M-g x") 'dumb-jump-go-prefer-external)
+    (define-key prog-mode-map (kbd "M-g z") 'dumb-jump-go-prefer-external-other-window)
+    (setq dumb-jump-selector 'ivy)
+)
+#+END_SRC
+* flycheck
+#+BEGIN_SRC emacs-lisp
+;;; -- flycheck
+;(require 'flycheck)
+(use-package flycheck
+  :ensure t
+  :config
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+
+    ;;; Disable flycheck running checkdoc against init.el
+    ;;; http://stackoverflow.com/questions/15552349/flycheck-how-to-disable-warnning-while-edit-emacs-lisp-scripts
+    ;(eval-after-load 'flycheck (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))  ;; ver 0.16+
+    (eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
+)
+#+END_SRC
+* elpy
+#+BEGIN_SRC emacs-lisp
+;;; -- elpy - Emacs Python IDE
+;; Info and setup
+;; https://realpython.com/blog/python/emacs-the-best-python-editor/
+;; https://github.com/jorgenschaefer/elpy
+;; User manual:  http://elpy.readthedocs.io/en/latest/
+;; Setup python env first:
+;;   pip install jedi flake8 autopep8 yapf
+;; To use elpy, just add the following to your .emacs:
+;(when (require 'elpy nil t)
+;  (elpy-enable))
+;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
+;(elpy-clean-modeline)
+(use-package elpy
+  :ensure t
+  :config
+    ;; Explicitly choose backend
+    (setq elpy-rpc-backend "jedi")
+
+    ;; replace flymake with flycheck for on-the-fly checking
+    (when (require 'flycheck nil t)
+      (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+      (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+    ;; Emable pep8 auto correct erros on save
+    ;(require 'py-autopep8)
+    ;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+    ;; Use ipython as interpeter instead of just python
+    ;; https://elpy.readthedocs.io/en/latest/ide.html#interpreter-setup
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i --simple-prompt")
+
+    ;; use pdb with Elpy
+    (setq gud-pdb-command-name "python -m pdb")
+)
+#+END_SRC
+* git gutter
+#+BEGIN_SRC emacs-lisp
+;;; -- git-gutter - show icon in gutter area indicating if ins, mod or del
+;;; https://github.com/syohex/emacs-git-gutter
+(use-package git-gutter
+  :ensure t
+  :config
+    (global-git-gutter-mode t)
+)
+#+END_SRC
+* ivy
+#+BEGIN_SRC emacs-lisp
+;;; -- ivy-mode - a generic completion mechanism for Emacs
+;;; swiper - an alternative to isearch uses ivy to show overview of all matches
+;;; https://github.com/abo-abo/swiper
+(use-package ivy
+  :ensure t
+  :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-virtual-abbreviate 'full)
+    (setq enable-recursive-minibuffers t)
+
+    ;; Ivy-based interface to standard commands
+    (global-set-key (kbd "C-s") 'swiper)
+    ;(global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "C-x C-r") 'counsel-recentf)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+    ;; Ivy-based interface to shell and system tools
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+    ;; disable M-x filter "^"
+    (setq ivy-initial-inputs-alist nil)
+)
+#+END_SRC
+* ivy's counsel
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :ensure t)
+#+END_SRC
+* ivy's counsel-projectile
+#+BEGIN_SRC emacs-lisp
+;;; projectile ivy integration
+(use-package counsel-projectile
+  :ensure t)
+#+END_SRC
+* exec-path-from-shell
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t)
+#+END_SRC
+* json-mode
+#+BEGIN_SRC emacs-lisp
+;;; json-mode - https://github.com/joshwnj/json-mode
+(use-package json-mode
+  :ensure t)
+#+END_SRC
+* magit
+#+BEGIN_SRC emacs-lisp
+;;; -- magit-mode - emacs mode for interacting with the Git vcs
+(use-package magit
+  :ensure t
+  :config
+    (global-set-key (kbd "C-c g") 'magit-status)  ;;
+    (setq magit-completing-read-function 'ivy-completing-read)
+)
+#+END_SRC
+* markdown-mode
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :ensure t)
+#+END_SRC
+* multi-term
+#+BEGIN_SRC emacs-lisp
+(use-package multi-term
+  :ensure t)
+#+END_SRC
+* neotree
+#+BEGIN_SRC emacs-lisp
+;; -- neotree
+;; Emacs version of Vim's nerdtree
+(use-package neotree
+  :ensure t
+  :config
+    (global-set-key [f5] 'neotree-toggle)
+)
+#+END_SRC
+* projectile
+#+BEGIN_SRC emacs-lisp
+;;; -- projectile - project managent (works with helm)
+;;; Project navigation and management library for Emacs
+;;; https://github.com/bbatsov/projectile
+;;; http://batsov.com/projectile/
+;;; Keybindings: https://projectile.readthedocs.io/en/latest/usage/
+
+(use-package projectile
+  :ensure t
+  :config
+    ;; put bookmark in cache directory
+    (setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
+
+    ;; use helm projectile C-c p h
+    (projectile-global-mode)
+    ;(setq projectile-completion-system 'helm)
+    ;;(helm-projectile-on)
+
+    ;; force use external commands for indexing
+    (setq projectile-indexing-method 'alien)
+
+    ;; enable caching unconditionally use this snippet of code:
+    (setq projectile-enable-caching t)
+
+    ;;(setq projectile-switch-project-action 'helm-projectile-find-file)
+    ;(setq projectile-switch-project-action 'helm-projectile)
+    (setq projectile-completion-system 'ivy)
+)
+#+END_SRC
+* py-autopep8
+#+BEGIN_SRC emacs-lisp
+;;; automaticly apply pep8 fixes on file save
+(use-package py-autopep8
+  :ensure t)
+#+END_SRC
+* pydoc-info
+#+BEGIN_SRC emacs-lisp
+;;;  pydoc-info
+(use-package pydoc-info
+  :ensure t)
+#+END_SRC
+* restclient
+#+BEGIN_SRC emacs-lisp
+;;; REST client for emacs
+(use-package restclient
+  :ensure t)
+#+END_SRC
+* s
+#+BEGIN_SRC emacs-lisp
+;;; The long lost Emacs string manipulation library
+(use-package s
+  :ensure t)
+#+END_SRC
+* shell-pop
+#+BEGIN_SRC emacs-lisp
+;;; -- shell-pop - Pop up a quick shell
+;;; https://github.com/kyagi/shell-pop-el
+;(require 'shell-pop)
+(use-package shell-pop
+  :ensure t
+  :config
+    (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+    (setq shell-pop-term-shell "/bin/bash")
+    ;(setq shell-pop-universal-key "C-t")
+    (global-set-key (kbd "C-c t") 'shell-pop)
+    ;; need to do this manually or not picked up by `shell-pop'
+    (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+)
+#+END_SRC
+* switch-window
+#+BEGIN_SRC emacs-lisp
+(use-package switch-window
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x o") 'switch-window)
+)
+#+END_SRC
+* yasnippet
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :ensure t)
+#+END_SRC
+* zenburn-theme
+#+BEGIN_SRC emacs-lisp
+(use-package zenburn-theme
+   :ensure t)
 #+END_SRC
