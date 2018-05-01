@@ -15,6 +15,20 @@ bind 'set bell-style visible'		# No beeping
 bind 'set show-all-if-ambiguous on'	# Tab once for complete
 bind 'set visible-stats on'		# Show file info in complete
 
+# vagrant on Fedora 21 wants to use libvirt, force it to virtualbox
+export VAGRANT_DEFAULT_PROVIDER=virtualbox
+
+#NNTPSERVER=nntp.aioe.org
+NNTPSERVER=news.eternal-september.org
+MORE=p
+LESS="-XgmR"
+[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
+umask 022
+test -t 0 && stty erase '^?'	# changed from ^h because of emacs help
+stty -ixon                      # disable ^Q and ^S flow control
+set -o emacs
+GZIP="-9"
+
 
 #############################
 #  Configure shell history  #
@@ -294,6 +308,8 @@ else
   TERM=xterm-256color
 fi
 
+export CLICOLOR=1
+
 alias ldd="otool -L"
 alias vmstat="vm_stat"
 alias truss="dtruss"
@@ -352,6 +368,8 @@ if [[ ! -z $PS1 ]]; then echo ".linux bashrc loaded"; fi	# interactive
 ## Open like command for Linux:  xdg-open or see
 function open { xdg-open "$1" &> /dev/null & }
 
+TERM=xterm-color
+
 ###
 # Configure Emacs and Emacsclient
 # adapted from http://philipweaver.blogspot.com/2009/08/emacs-23.html
@@ -360,6 +378,9 @@ alias ecw="emacsclient -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -n -a emacs" # do not start a new frame
 # export EDITOR="emacsclient -t"
+export EDITOR="${HOME}/bin/edit"
+export ALTERNATE_EDITOR="zile"
+export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 ## pass options to free ##
 alias meminfo='free -m -l -t'
