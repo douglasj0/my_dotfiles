@@ -54,6 +54,9 @@
 
 * Themes and housekeeping
 #+BEGIN_SRC emacs-lisp
+;;; Work around for "nesting exceeds 'max-lisp-eval-depth'" error
+;(setq max-lisp-eval-depth 10000)
+
 ;;; Only use Themes in GUI. Set color theme (load-theme) for >= Emacs 24
 (if (fboundp 'load-theme)
     (if (display-graphic-p)
@@ -1170,6 +1173,8 @@ last sentence."
 ;;; http://jblevins.org/git/deft.git
 (use-package deft
   :ensure t
+  :commands deft
+  :bind ("<f8>" . deft-or-close)
   :config
     (setq
       deft-extension "txt"
@@ -1200,7 +1205,6 @@ last sentence."
                                               (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
                                             (deft)
                                             ))
-    (global-set-key [f8] 'deft-or-close)
 )
 #+END_SRC
 * dumb-jump
@@ -1214,6 +1218,7 @@ last sentence."
 ;;; - robe for Ruby
 (use-package dumb-jump
   :ensure t
+  :commands dumb-jump
   :config
     ;; Setup keybindinds
     (define-key prog-mode-map (kbd "M-g j") 'dumb-jump-go)
@@ -1229,6 +1234,7 @@ last sentence."
 ;(require 'flycheck)
 (use-package flycheck
   :ensure t
+  :commands flycheck
   :config
     (add-hook 'after-init-hook #'global-flycheck-mode)
 
@@ -1254,6 +1260,7 @@ last sentence."
 ;(elpy-clean-modeline)
 (use-package elpy
   :ensure t
+  :commands elpy
   :config
     ;; Explicitly choose backend
     (setq elpy-rpc-backend "jedi")
@@ -1293,74 +1300,73 @@ last sentence."
 ;;; https://github.com/abo-abo/swiper
 (use-package ivy
   :ensure t
+  :commands ivy
+  :bind (("C-s"     . swiper) ;; Ivy-based interface to standard commands
+         ("C-x C-r" . counsel-recentf)
+         ("<f6>"    . ivy-resume)
+         ("M-x"     . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("<f1> f"  . counsel-describe-function)
+         ("<f1> v"  . counsel-describe-variable)
+         ("<f1> l"  . counsel-find-library)
+         ("<f2> i"  . counsel-info-lookup-symbol)
+         ("<f2> u"  . counsel-unicode-char)
+         ("C-c g"   . counsel-git) ;;; Ivy-based interface to shell and system tools
+         ("C-c j"   . counsel-git-grep)
+         ("C-c k"   . counsel-ag)
+         ("C-x l"   . counsel-locate)
+         ("C-S-o"   . counsel-rhythmbox)
+         ("C-r"     . counsel-expression-history)) ;; disable M-x filter
   :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
     (setq ivy-virtual-abbreviate 'full)
     (setq enable-recursive-minibuffers t)
-
-    ;; Ivy-based interface to standard commands
-    (global-set-key (kbd "C-s") 'swiper)
-    ;(global-set-key (kbd "C-c C-r") 'ivy-resume)
-    (global-set-key (kbd "C-x C-r") 'counsel-recentf)
-    (global-set-key (kbd "<f6>") 'ivy-resume)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    (global-set-key (kbd "<f1> l") 'counsel-find-library)
-    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-
-    ;; Ivy-based interface to shell and system tools
-    (global-set-key (kbd "C-c g") 'counsel-git)
-    (global-set-key (kbd "C-c j") 'counsel-git-grep)
-    (global-set-key (kbd "C-c k") 'counsel-ag)
-    (global-set-key (kbd "C-x l") 'counsel-locate)
-    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-
-    ;; disable M-x filter "^"
     (setq ivy-initial-inputs-alist nil)
 )
 #+END_SRC
 * ivy's counsel
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
-  :ensure t)
+  :ensure t
+  :commands counsel)
 #+END_SRC
 * ivy's counsel-projectile
 #+BEGIN_SRC emacs-lisp
 ;;; projectile ivy integration
 (use-package counsel-projectile
-  :ensure t)
+  :ensure t
+  :commands counsel-projectile)
 #+END_SRC
 * exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
 (use-package exec-path-from-shell
-  :ensure t)
+  :ensure t
+  :commands exec-path-from-shell)
 #+END_SRC
 * json-mode
 #+BEGIN_SRC emacs-lisp
 ;;; json-mode - https://github.com/joshwnj/json-mode
 (use-package json-mode
-  :ensure t)
+  :ensure t
+  :commands json-mode)
 #+END_SRC
 * magit
 #+BEGIN_SRC emacs-lisp
 ;;; -- magit-mode - emacs mode for interacting with the Git vcs
 (use-package magit
   :ensure t
+  :commands magit
+  :bind ("C-c g" . magit-status)
   :config
-    (global-set-key (kbd "C-c g") 'magit-status)  ;;
     (setq magit-completing-read-function 'ivy-completing-read)
 )
 #+END_SRC
 * markdown-mode
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
-  :ensure t)
+  :ensure t
+  :commands markdown-mode)
 #+END_SRC
 * multi-term
 #+BEGIN_SRC emacs-lisp
@@ -1373,8 +1379,7 @@ last sentence."
 ;; Emacs version of Vim's nerdtree
 (use-package neotree
   :ensure t
-  :config
-    (global-set-key [f5] 'neotree-toggle)
+  :bind ("<f5>" . neotree-toggle)
 )
 #+END_SRC
 * projectile
@@ -1439,11 +1444,11 @@ last sentence."
 ;(require 'shell-pop)
 (use-package shell-pop
   :ensure t
+  :bind ("C-c t" . shell-pop)
   :config
     (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
     (setq shell-pop-term-shell "/bin/bash")
     ;(setq shell-pop-universal-key "C-t")
-    (global-set-key (kbd "C-c t") 'shell-pop)
     ;; need to do this manually or not picked up by `shell-pop'
     (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
@@ -1452,8 +1457,7 @@ last sentence."
 #+BEGIN_SRC emacs-lisp
 (use-package switch-window
   :ensure t
-  :config
-  (global-set-key (kbd "C-x o") 'switch-window)
+  :bind ("C-x o" . switch-window)
 )
 #+END_SRC
 * yasnippet
