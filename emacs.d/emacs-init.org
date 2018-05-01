@@ -912,259 +912,12 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
-* Dired
-#+BEGIN_SRC emacs-lisp
-;;; -- dired - directory listing buffer
-;;; http://www.emacswiki.org/emacs/DiredPlus
-
-;;; Toggle Unix hidden file display (M-o)
-;(require 'dired+ nil 'noerror) ;; uber enhanced dired, very large?
-(require 'dired-x nil 'noerror) ;included with emacs
-(define-key ctl-x-map   "d" 'diredp-dired-files)
-(define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
-
-;; hide hidden files by default, use (M-o) to show
-(setq dired-omit-files "^\\...+$")
-(add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
-
-;;; New dired+ option is to hide file details, can be togged with '('
-;(setq diredp-hide-details-initially-flag -1) ;doesn't seem to work
-;(setq global-dired-hide-details-mode -1)
-;(setq dired-recursive-deletes 'top)
-;; disable line wrapping in dired mode
-(add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
-
-;;; Auto-refresh dired on file change
-(add-hook 'dired-mode-hook 'auto-revert-mode)
-
-;; Handle zip compression
-(defvar dired-compress-file-suffixes)
-(eval-after-load "dired-aux"
-  '(add-to-list 'dired-compress-file-suffixes
-                '("\\.zip\\'" ".zip" "unzip")))
-
-;; Configure direx jump
-(autoload 'dired-jump "dired-x"
-  "Jump to Dired buffer corresponding to current buffer." t)
-
-(autoload 'dired-jump-other-window "dired-x"
-  "Like \\[dired-jump] (dired-jump) but in other window." t)
-
-(define-key global-map "\C-x\C-j" 'dired-jump)
-(define-key global-map "\C-x4\C-j" 'dired-jump-other-window)
-
-;; enable side-by-side dired buffer targets
-;; Split your window, split-window-vertically & go to another dired directory.
-;; When you will press C to copy, the other dir in the split pane will be
-;; default destination.
-(setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
-#+END_SRC
-
-* Electric help
-#+BEGIN_SRC emacs-lisp
-;;; -- ehelp (Electric help)
-;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
-;; Provides: SPC to scroll, DEL to scroll back, q to exit, r to retain
-;; Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
-(require 'ehelp)
-(define-key global-map "\C-h" 'ehelp-command)
-#+END_SRC
-* Gnus
-#+BEGIN_SRC emacs-lisp
-;;; -- gnus - Mail and News reader
-
-;;; Define how Gnus is to fetch news
-;(setq gnus-select-method '(nntp "nntp.aioe.org"))
-(setq gnus-select-method '(nntp "news.eternal-september.org"))
-;(setq nntp-authinfo-file "~/.authinfo.gpg") ;use gpg encrypted authfile
-(setq nntp-authinfo-function 'nntp-send-authinfo)
-
-;; setup summary buffer
-(setq gnus-summary-line-format "%U%R%z%(%[%4L: %-20,20f%]%)%B %s\n"
-      gnus-summary-same-subject "")
-
-(setq gnus-sum-thread-tree-root " >"
-      gnus-sum-thread-tree-single-indent "  "
-      gnus-sum-thread-tree-vertical "|"
-      gnus-sum-thread-tree-indent " "
-      gnus-sum-thread-tree-leaf-with-other "+-> "
-      gnus-sum-thread-tree-single-leaf "`-> ")
-
-;; show even if there are no articles
-(setq gnus-permanently-visible-groups ".*")
-#+END_SRC
-* Ibuffer
-#+BEGIN_SRC emacs-lisp
-;;; -- ibuffer - *Nice* buffer switching
-;;
-;; ibuffer filtering
-;;
-;; Search all marked buffers
-;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
-;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
-;;   ‘U’ - Replace by regexp in each of the marked buffers.
-;;   ‘Q’ - Query replace in each of the marked buffers.
-;;   ‘I’ - As above, with a regular expression.
-
-(autoload 'ibuffer "ibuffer" "List buffers." t)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-;; Don't show empty buffer groups
-(setq ibuffer-show-empty-filter-groups nil)
-
-;; work groups for ibuffer
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("version control" (or (mode . svn-status-mode)
-                   (mode . svn-log-edit-mode)
-                   (name . "^\\*svn-")
-                   (name . "^\\*vc\\*$")
-                   (name . "^\\*Annotate")
-                   (name . "^\\*vc-")
-                   (name . "^\\*git-")
-                   (name . "^\\*magit")))
-         ("emacs" (or (name . "^\\*scratch\\*$")
-                      (name . "^\\*Messages\\*$")
-                      (name . "^TAGS\\(<[0-9]+>\\)?$")
-                      (name . "^\\*info\\*$")
-                      (name . "^\\*Occur\\*$")
-                      (name . "^\\*grep\\*$")
-                      (name . "^\\*Compile-Log\\*$")
-                      (name . "^\\*Backtrace\\*$")
-                      (name . "^\\*Process List\\*$")
-                      (name . "^\\*gud\\*$")
-                      (name . "^\\*Man")
-                      (name . "^\\*WoMan")
-                      (name . "^\\*Kill Ring\\*$")
-                      (name . "^\\*Completions\\*$")
-                      (name . "^\\*tramp")
-                      (name . "^\\*shell\\*$")
-                      (name . "^\\*compilation\\*$")))
-         ("Helm" (or (name . "\*helm\*")))
-         ("Help" (or (name . "\*Help\*")
-                     (name . "\*Apropos\*")
-                     (name . "\*info\*")))
-         ("emacs-source" (or (mode . emacs-lisp-mode)
-                             (filename . "/Applications/Emacs.app")
-                             (filename . "/bin/emacs")))
-         ("emacs-config" (or (filename . ".emacs.d")
-                             (filename . "emacs-config")))
-        ("org" (or (name . "^\\*org-")
-                    (name . "^\\*Org")
-                    (mode . org-mode)
-                    (mode . muse-mode)
-                    (name . "^\\*Calendar\\*$")
-                    (name . "^+current$")
-                    (name . "^diary$")
-                    (name . "^\\*Agenda")))
-         ("latex" (or (mode . latex-mode)
-                      (mode . LaTeX-mode)
-                      (mode . bibtex-mode)
-                      (mode . reftex-mode)))
-         ("dired" (or (mode . dired-mode)))
-         ("perl" (mode . cperl-mode))
-         ("erc" (mode . erc-mode))
-         ("shell" (or (mode . shell-mode)
-                        (name . "^\\*terminal\\*$")
-                        (name . "^\\*ansi-term\\*$")
-                        (name . "^\\*shell\\*$")
-                        (name . "^\\*eshell\\*$")))
-         ("gnus" (or (name . "^\\*gnus trace\\*$")
-                        (mode . message-mode)
-                        (mode . bbdb-mode)
-                        (mode . mail-mode)
-                        (mode . gnus-group-mode)
-                        (mode . gnus-summary-mode)
-                        (mode . gnus-article-mode)
-                        (name . "^\\.bbdb$")
-                        (name . "^\\.newsrc-dribble"))))))
-
-;; Order the groups so the order is : [Default], [agenda], [emacs]
-(defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-                                                 activate)
-  (setq ad-return-value (nreverse ad-return-value)))
-
-;; Hide the following buffers
-;;(setq ibuffer-never-show-predicates
-;;      (list "\\*Completions\\*"
-;;            "\\*vc\\*"))
-
-;; Enable ibuffer expert mode, don't prompt on buffer deletes
-(setq ibuffer-expert t)
-
-;; Load the 'work' group, can set to load groups by location
-;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
-;; list up to date. I turn it on in my ibuffer-mode-hook:
-(add-hook 'ibuffer-mode-hook
-          '(lambda ()
-             (ibuffer-auto-mode 1)
-             (ibuffer-switch-to-saved-filter-groups "default")))
-#+END_SRC
-* Ispell
-#+BEGIN_SRC emacs-lisp
-;;; -- ispell - interactive spell
-;;; Set ispell checks to use aspell
-;;; on mac:  `brew install aspell --lang=en` (instead of ispell)
-(eval-after-load "ispell"
-  '(progn
-     (setq ispell-program-name "aspell")
-     (setq ispell-list-command "list")
-     ;; sug-mode=fast is more accurate, slower then ultra
-     (setq ispell-extra-args '("--sug-mode=fast"))))
-#+END_SRC
-* Recentf
-#+BEGIN_SRC emacs-lisp
-;;; -- recentf - a minor mode that builds a list of recently opened files
-;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
-(autoload 'recentf "recentf" "List recent files" t)
-(setq
-  recentf-save-file "~/.emacs.d/cache/recentf"
-  recentf-max-saved-items 200      ;; max save file cache
-  recentf-max-menu-items 15)      ;; max 15 in menu
-(recentf-mode t)                  ;; turn it on
-;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-;(global-set-key (kbd "C-x C-r") 'helm-recentf)
-#+END_SRC
-* Tramp
-#+BEGIN_SRC emacs-lisp
-;;; -- tramp- edit files on remote servers
-(autoload 'tramp "tramp" "Tramp mode" t)
-
-;(custom-set-variables '(tramp-verbose 10)) ;; debugging info
-;(setq tramp-debug-buffer t)
-
-;; we need a bit more funky pattern, as tramp will start $SHELL
-;; (sudo -s), ie., zsh for root user
-(setq shell-prompt-pattern "^[^a-zA-Z].*[#$%>] *")
-;(setq tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
-(setq
-  tramp-default-method "sshx"  ;; inline method w/diff interactive shell
-  ;tramp-default-method "scpx" ;; external method w/diff interactive shell
-  tramp-persistency-file-name "~/.emacs.d/cache/tramp"
-  tramp-auto-save-directory "~/.emacs.d/cache/autosaves"
-  tramp-terminal-type "dumb")  ;; fix remote shell hanging, change .bashrc to
-                               ;; for TERM=dumb and set PS1='$ '
-
-;; fix "ls does not support --dired; see `dired-use-ls-dired' for more details."
-;; it seems that only GNU ls supports --dired
-(setq ls-lisp-use-insert-directory-program nil)
-(require 'ls-lisp)
-
-;; Speed up tramp by disabling version control on remote files
-;; http://www.gnu.org/software/emacs/manual/html_node/tramp/Frequently-Asked-Questions.html
-(setq vc-ignore-dir-regexp
-      (format "\\(%s\\)\\|\\(%s\\)"
-              vc-ignore-dir-regexp
-              tramp-file-name-regexp))
-
-;; Set remote shell to be /bin/bash
-;; http://superuser.com/questions/454288/how-to-specify-for-emacs-tramp-which-remote-shell-to-open
-(setq explicit-shell-file-name "/bin/bash")
-#+END_SRC
 * color-moccur
 #+BEGIN_SRC emacs-lisp
-;(use-package color-moccur
-;  :ensure t)
+(use-package color-moccur
+  :ensure t
+  :disabled
+)
 #+END_SRC
 * deft
 #+BEGIN_SRC emacs-lisp
@@ -1207,6 +960,55 @@ last sentence."
                                             ))
 )
 #+END_SRC
+* dired
+#+BEGIN_SRC emacs-lisp
+;;; -- dired - directory listing buffer
+;;; http://www.emacswiki.org/emacs/DiredPlus
+
+;;; Toggle Unix hidden file display (M-o)
+;;(require 'dired+ nil 'noerror) ;; uber enhanced dired, very large?
+;(require 'dired-x nil 'noerror) ;included with emacs
+(use-package dired-x
+  :ensure nil
+  :bind ("C-x C-j"   . dired-jump)
+        ("C-x 4 C-j" . dired-jump-other-window)
+        ("C-x d"     . diredp-dired-files)
+        ("C-x 4 d"   . diredp-dired-files-other-window)
+  :config
+    ;; hide hidden files by default, use (M-o) to show
+    (setq dired-omit-files "^\\...+$")
+    (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
+
+    ;;; New dired+ option is to hide file details, can be togged with '('
+    ;(setq diredp-hide-details-initially-flag -1) ;doesn't seem to work
+    ;(setq global-dired-hide-details-mode -1)
+    ;(setq dired-recursive-deletes 'top)
+    ;; disable line wrapping in dired mode
+    (add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
+
+    ;;; Auto-refresh dired on file change
+    (add-hook 'dired-mode-hook 'auto-revert-mode)
+
+    ;; Handle zip compression
+    (defvar dired-compress-file-suffixes)
+    (eval-after-load "dired-aux"
+      '(add-to-list 'dired-compress-file-suffixes
+                    '("\\.zip\\'" ".zip" "unzip")))
+
+    ;; Configure direx jump
+    (autoload 'dired-jump "dired-x"
+      "Jump to Dired buffer corresponding to current buffer." t)
+
+    (autoload 'dired-jump-other-window "dired-x"
+      "Like \\[dired-jump] (dired-jump) but in other window." t)
+
+    ;; enable side-by-side dired buffer targets
+    ;; Split your window, split-window-vertically & go to another dired directory.
+    ;; When you will press C to copy, the other dir in the split pane will be
+    ;; default destination.
+    (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
+)
+#+END_SRC
 * dumb-jump
 #+BEGIN_SRC emacs-lisp
 ;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
@@ -1218,13 +1020,13 @@ last sentence."
 ;;; - robe for Ruby
 (use-package dumb-jump
   :ensure t
+  :disabled
   :commands dumb-jump
+  :bind (("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
   :config
-    ;; Setup keybindinds
-    (define-key prog-mode-map (kbd "M-g j") 'dumb-jump-go)
-    (define-key prog-mode-map (kbd "M-g i") 'dumb-jump-go-prompt)
-    (define-key prog-mode-map (kbd "M-g x") 'dumb-jump-go-prefer-external)
-    (define-key prog-mode-map (kbd "M-g z") 'dumb-jump-go-prefer-external-other-window)
     (setq dumb-jump-selector 'ivy)
 )
 #+END_SRC
@@ -1244,6 +1046,19 @@ last sentence."
     (eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
 )
 #+END_SRC
+
+* electric help
+#+BEGIN_SRC emacs-lisp
+;;; -- ehelp (Electric help)
+;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
+;; Provides: SPC to scroll, DEL to scroll back, q to exit, r to retain
+;; Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
+(use-package ehelp
+  :ensure t
+  :disabled
+  :bind ("\C-h" . ehelp-command)
+)
+#+END_SRC
 * elpy
 #+BEGIN_SRC emacs-lisp
 ;;; -- elpy - Emacs Python IDE
@@ -1261,7 +1076,7 @@ last sentence."
 ;(elpy-clean-modeline)
 (use-package elpy
   :ensure t
-  :commands elpy
+  :commands elpy-enable
   :init (with-eval-after-load 'python (elpy-enable))
   :config
     ;; Explicitly choose backend
@@ -1285,6 +1100,12 @@ last sentence."
     (setq gud-pdb-command-name "python -m pdb")
 )
 #+END_SRC
+* exec-path-from-shell
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :commands exec-path-from-shell)
+#+END_SRC
 * git gutter
 #+BEGIN_SRC emacs-lisp
 ;;; -- git-gutter - show icon in gutter area indicating if ins, mod or del
@@ -1295,6 +1116,155 @@ last sentence."
     (global-git-gutter-mode t)
 )
 #+END_SRC
+* gnus
+#+BEGIN_SRC emacs-lisp
+;;; -- gnus - Mail and News reader
+(use-package gnus
+  :ensure nil
+  :custom
+    ;;; Define how Gnus is to fetch news
+    ;(setq gnus-select-method '(nntp "nntp.aioe.org"))
+    (gnus-select-method '(nntp "news.eternal-september.org"))
+    ;(setq nntp-authinfo-file "~/.authinfo.gpg") ;use gpg encrypted authfile
+    (nntp-authinfo-function 'nntp-send-authinfo)
+
+    ;; setup summary buffer
+    (gnus-summary-line-format "%U%R%z%(%[%4L: %-20,20f%]%)%B %s\n")
+    (gnus-summary-same-subject "")
+    (gnus-sum-thread-tree-root " >")
+    (gnus-sum-thread-tree-single-indent "  ")
+    (gnus-sum-thread-tree-vertical "|")
+    (gnus-sum-thread-tree-indent " ")
+    (gnus-sum-thread-tree-leaf-with-other "+-> ")
+    (gnus-sum-thread-tree-single-leaf "`-> ")
+
+    ;; show even if there are no articles
+    (gnus-permanently-visible-groups ".*")
+)
+#+END_SRC
+* ibuffer
+#+BEGIN_SRC emacs-lisp
+;;; -- ibuffer - *Nice* buffer switching
+;;
+;; ibuffer filtering
+;;
+;; Search all marked buffers
+;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
+;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+;;   ‘U’ - Replace by regexp in each of the marked buffers.
+;;   ‘Q’ - Query replace in each of the marked buffers.
+;;   ‘I’ - As above, with a regular expression.
+(use-package ibuffer
+  :ensure nil
+  :bind ( "C-x C-b" . ibuffer)
+  :config
+    ;; Don't show empty buffer groups
+    (setq ibuffer-show-empty-filter-groups nil)
+
+    ;; work groups for ibuffer
+    (setq ibuffer-saved-filter-groups
+          '(("default"
+             ("version control" (or (mode . svn-status-mode)
+                       (mode . svn-log-edit-mode)
+                       (name . "^\\*svn-")
+                       (name . "^\\*vc\\*$")
+                       (name . "^\\*Annotate")
+                       (name . "^\\*vc-")
+                       (name . "^\\*git-")
+                       (name . "^\\*magit")))
+             ("emacs" (or (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")
+                          (name . "^TAGS\\(<[0-9]+>\\)?$")
+                          (name . "^\\*info\\*$")
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*grep\\*$")
+                          (name . "^\\*Compile-Log\\*$")
+                          (name . "^\\*Backtrace\\*$")
+                          (name . "^\\*Process List\\*$")
+                          (name . "^\\*gud\\*$")
+                          (name . "^\\*Man")
+                          (name . "^\\*WoMan")
+                          (name . "^\\*Kill Ring\\*$")
+                          (name . "^\\*Completions\\*$")
+                          (name . "^\\*tramp")
+                          (name . "^\\*shell\\*$")
+                          (name . "^\\*compilation\\*$")))
+             ("Helm" (or (name . "\*helm\*")))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))
+             ("emacs-source" (or (mode . emacs-lisp-mode)
+                                 (filename . "/Applications/Emacs.app")
+                                 (filename . "/bin/emacs")))
+             ("emacs-config" (or (filename . ".emacs.d")
+                                 (filename . "emacs-config")))
+            ("org" (or (name . "^\\*org-")
+                        (name . "^\\*Org")
+                        (mode . org-mode)
+                        (mode . muse-mode)
+                        (name . "^\\*Calendar\\*$")
+                        (name . "^+current$")
+                        (name . "^diary$")
+                        (name . "^\\*Agenda")))
+             ("latex" (or (mode . latex-mode)
+                          (mode . LaTeX-mode)
+                          (mode . bibtex-mode)
+                          (mode . reftex-mode)))
+             ("dired" (or (mode . dired-mode)))
+             ("perl" (mode . cperl-mode))
+             ("erc" (mode . erc-mode))
+             ("shell" (or (mode . shell-mode)
+                            (name . "^\\*terminal\\*$")
+                            (name . "^\\*ansi-term\\*$")
+                            (name . "^\\*shell\\*$")
+                            (name . "^\\*eshell\\*$")))
+             ("gnus" (or (name . "^\\*gnus trace\\*$")
+                            (mode . message-mode)
+                            (mode . bbdb-mode)
+                            (mode . mail-mode)
+                            (mode . gnus-group-mode)
+                            (mode . gnus-summary-mode)
+                            (mode . gnus-article-mode)
+                            (name . "^\\.bbdb$")
+                            (name . "^\\.newsrc-dribble"))))))
+
+    ;; Order the groups so the order is : [Default], [agenda], [emacs]
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+    ;; Hide the following buffers
+    ;;(setq ibuffer-never-show-predicates
+    ;;      (list "\\*Completions\\*"
+    ;;            "\\*vc\\*"))
+
+    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
+    (setq ibuffer-expert t)
+
+    ;; Load the 'work' group, can set to load groups by location
+    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+    ;; list up to date. I turn it on in my ibuffer-mode-hook:
+    (add-hook 'ibuffer-mode-hook
+              '(lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
+)
+#+END_SRC
+* ispell
+#+BEGIN_SRC emacs-lisp
+;;; -- ispell - interactive spell
+;;; Set ispell checks to use aspell
+;;; on mac:  `brew install aspell --lang=en` (instead of ispell)
+(use-package ispell
+  :ensure nil
+  :defer t
+  :custom
+     (ispell-program-name "aspell")
+     (ispell-list-command "list")
+     ;; sug-mode=fast is more accurate, slower then ultra
+     (ispell-extra-args '("--sug-mode=fast"))
+)
+#+END_SRC
 * ivy
 #+BEGIN_SRC emacs-lisp
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
@@ -1302,6 +1272,7 @@ last sentence."
 ;;; https://github.com/abo-abo/swiper
 (use-package ivy
   :ensure t
+  :init (ivy-mode 1)
   :commands ivy
   :bind (("C-s"     . swiper) ;; Ivy-based interface to standard commands
          ("C-x C-r" . counsel-recentf)
@@ -1313,14 +1284,13 @@ last sentence."
          ("<f1> l"  . counsel-find-library)
          ("<f2> i"  . counsel-info-lookup-symbol)
          ("<f2> u"  . counsel-unicode-char)
-         ("C-c g"   . counsel-git) ;;; Ivy-based interface to shell and system tools
+         ("C-c G"   . counsel-git) ;;; Ivy-based interface to shell and system tools
          ("C-c j"   . counsel-git-grep)
          ("C-c k"   . counsel-ag)
          ("C-x l"   . counsel-locate)
          ("C-S-o"   . counsel-rhythmbox)
          ("C-r"     . counsel-expression-history)) ;; disable M-x filter
   :config
-    (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
     (setq ivy-virtual-abbreviate 'full)
     (setq enable-recursive-minibuffers t)
@@ -1339,12 +1309,6 @@ last sentence."
 (use-package counsel-projectile
   :ensure t
   :commands counsel-projectile)
-#+END_SRC
-* exec-path-from-shell
-#+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :ensure t
-  :commands exec-path-from-shell)
 #+END_SRC
 * json-mode
 #+BEGIN_SRC emacs-lisp
@@ -1381,6 +1345,7 @@ last sentence."
 ;; Emacs version of Vim's nerdtree
 (use-package neotree
   :ensure t
+  :disabled
   :bind ("<f5>" . neotree-toggle)
 )
 #+END_SRC
@@ -1427,6 +1392,23 @@ last sentence."
 (use-package pydoc-info
   :ensure t)
 #+END_SRC
+* recentf
+#+BEGIN_SRC emacs-lisp
+;;; -- recentf - a minor mode that builds a list of recently opened files
+;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
+;(autoload 'recentf "recentf" "List recent files" t)
+(use-package recentf
+  :ensure nil
+  :init (recentf-mode 1) ;; turn it on
+  :custom
+     (recentf-save-file "~/.emacs.d/cache/recentf")
+     (recentf-auto-cleanup 200)
+     (recentf-max-saved-items 200)      ;; max save file cache
+     (recentf-max-menu-items 15)      ;; max 15 in menu
+    ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+    ;(global-set-key (kbd "C-x C-r") 'helm-recentf)
+)
+#+END_SRC
 * restclient
 #+BEGIN_SRC emacs-lisp
 ;;; REST client for emacs
@@ -1460,6 +1442,45 @@ last sentence."
 (use-package switch-window
   :ensure t
   :bind ("C-x o" . switch-window)
+)
+#+END_SRC
+* tramp
+#+BEGIN_SRC emacs-lisp
+;;; -- tramp- edit files on remote servers
+;(autoload 'tramp "tramp" "Tramp mode" t)
+(use-package tramp
+  :ensure nil
+  :config
+    ;(custom-set-variables '(tramp-verbose 10)) ;; debugging info
+    ;(setq tramp-debug-buffer t)
+
+    ;; we need a bit more funky pattern, as tramp will start $SHELL
+    ;; (sudo -s), ie., zsh for root user
+    (setq shell-prompt-pattern "^[^a-zA-Z].*[#$%>] *")
+    ;(setq tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
+    (setq
+      tramp-default-method "sshx"  ;; inline method w/diff interactive shell
+      ;tramp-default-method "scpx" ;; external method w/diff interactive shell
+      tramp-persistency-file-name "~/.emacs.d/cache/tramp"
+      tramp-auto-save-directory "~/.emacs.d/cache/autosaves"
+      tramp-terminal-type "dumb")  ;; fix remote shell hanging, change .bashrc to
+                                   ;; for TERM=dumb and set PS1='$ '
+
+    ;; fix "ls does not support --dired; see `dired-use-ls-dired' for more details."
+    ;; it seems that only GNU ls supports --dired
+    (setq ls-lisp-use-insert-directory-program nil)
+    (require 'ls-lisp)
+
+    ;; Speed up tramp by disabling version control on remote files
+    ;; http://www.gnu.org/software/emacs/manual/html_node/tramp/Frequently-Asked-Questions.html
+    (setq vc-ignore-dir-regexp
+          (format "\\(%s\\)\\|\\(%s\\)"
+                  vc-ignore-dir-regexp
+                  tramp-file-name-regexp))
+
+    ;; Set remote shell to be /bin/bash
+    ;; http://superuser.com/questions/454288/how-to-specify-for-emacs-tramp-which-remote-shell-to-open
+    (setq explicit-shell-file-name "/bin/bash")
 )
 #+END_SRC
 * yasnippet
