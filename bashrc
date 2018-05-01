@@ -62,12 +62,12 @@ shopt -s checkwinsize   # check term row/column size after each command before p
 ###############
 #  Functions  #
 ###############
-function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
-function psg { ps -aef | grep $* | grep -v grep ; }  # sysv ps
-function psb { ps aux | grep $* | grep -v grep ; }  # bsd ps
-function lhd { last $* | head ; }
-function calc { awk "BEGIN{ print $* }" ;}
-function rmd { pandoc $1 | lynx -stdin ;}
+function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command; }
+function psg { ps -aef | grep $* | grep -v grep; }  # sysv ps
+function psb { ps aux | grep $* | grep -v grep; }  # bsd ps
+function lhd { last $* | head; }
+function calc { awk "BEGIN{ print $* }"; }
+function rmd { pandoc $1 | lynx -stdin ; }
 
 # get mac addr
 function mac { ping -c 2 $1 > /dev/null 2>&1; arp $1 | awk '{print $3}' | tail -1; }
@@ -84,7 +84,7 @@ rot13 () {	# For some reason, rot13 pops up everywhere
 top10 () { history | awk '{print $2}' | awk 'BEGIN {FS="|"} {print $1}' | sort | uniq -c | sort -nr | head -10; }
 
 # History unique grep search / to re-use a line found !123:p / !123
-hugs () { history | grep -i -- "$1" | sort -k2 -u | grep -v 'hugs' | sort -n ; }
+hugs () { history | grep -i -- "$1" | sort -k2 -u | grep -v 'hugs' | sort -n; }
 
 ## Extract common archive formats
 extract () {
