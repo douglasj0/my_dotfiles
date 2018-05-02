@@ -1317,6 +1317,16 @@ last sentence."
   :ensure t
   :commands json-mode)
 #+END_SRC
+* linum-mode
+#+BEGIN_SRC emacs-lisp
+(use-package linum-mode
+  :ensure nil
+  :defer t
+  :bind ("C-<f6>" . linum-mode)
+  :config
+    ;(setq linum-format "%d ") ;put space between linenumber and text
+)
+#+END_SRC
 * magit
 #+BEGIN_SRC emacs-lisp
 ;;; -- magit-mode - emacs mode for interacting with the Git vcs
