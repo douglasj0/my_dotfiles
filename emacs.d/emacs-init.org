@@ -926,18 +926,17 @@ last sentence."
 ;;; http://jblevins.org/git/deft.git
 (use-package deft
   :ensure t
-  :commands deft
   :bind ("<f8>" . deft-or-close)
+        ("C-c C-g" . deft-find-file)
+  :commands (deft)
   :config
     (setq
-      deft-extension "txt"
+      deft-extensions '("txt" "org" "md")
       deft-directory "~/org/notes"
       deft-text-mode 'org-mode
       deft-use-filename-as-title t
       deft-recursive t
       deft-ignore-file-regexp "archive\.*")
-    ;(global-set-key (kbd "<f8>") 'deft))
-    (global-set-key (kbd "C-c C-g") 'deft-find-file)
 
     ;; Notational Velocity provides a show-hide function key, letting you pop
     ;; in-and-out of the interface quickly. I recreated a crude version of this
