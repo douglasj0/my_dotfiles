@@ -24,7 +24,7 @@
       '(
         ("elpy"  . "https://jorgenschaefer.github.io/packages/")
         ("gnu"   . "https://elpa.gnu.org/packages/")
-        ("org"   . "http://orgmode.org/elpa/")
+        ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "http://melpa.org/packages/")
 ))
 
@@ -43,7 +43,7 @@
   :ensure t)
 
 ;; Load org-plus-contrib for org-babel
-(load "~/.emacs.d/org-init.el")
+(load "~/.emacs.d/org-init.el") ; load org-mode config
 (org-babel-load-file
   (expand-file-name "emacs-init.org"
                      user-emacs-directory))
