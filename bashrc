@@ -360,6 +360,10 @@ if [[ -f ~/Library/mysql/com.mysql.mysqld.plist ]]; then
     alias start_mysql="sudo launchctl load ~/Library/mysql/com.mysql.mysqld.plist"
     alias stop_mysql="sudo launchctl unload ~/Library/mysql/com.mysql.mysqld.plist"
 fi
+
+# pyenv darwin
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
@@ -428,6 +432,12 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 googlesay(){ curl -A RG translate\.google\.com/translate_tts -d "tl=en&q=$@" |mpg123 -; };
+
+# pyenv linux
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 ;; # end Linux
 
 *)
