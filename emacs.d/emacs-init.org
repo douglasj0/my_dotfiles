@@ -57,6 +57,12 @@
 ;;; Work around for "nesting exceeds 'max-lisp-eval-depth'" error
 ;(setq max-lisp-eval-depth 10000)
 
+;;; Fix for path error from exec-path-from-shell
+;;; I've moved PATH and aliases around, but pyenv init triggers it
+(setq exec-path-from-shell-arguments '("-l"))
+;;; or
+;(setq exec-path-from-shell-check-startup-files nil)
+
 ;;; Only use Themes in GUI. Set color theme (load-theme) for >= Emacs 24
 (if (fboundp 'load-theme)
     (if (display-graphic-p)
