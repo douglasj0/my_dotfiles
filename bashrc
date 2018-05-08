@@ -292,6 +292,15 @@ if [ -e ${HOME}/.workrc ]; then
 fi
 
 
+###
+# pyenv functions
+###
+rt-activate() {
+  pyenv activate research-tools
+  cd ~/projects/CBT/research_tools
+}
+
+
 ###################
 #   OS Specific   #
 ###################
