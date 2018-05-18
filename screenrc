@@ -78,5 +78,5 @@ caption always "%{= kc}[%H] %?%-Lw%?%{= kY}%50>%n*%f %t%?(%u)%?%{= kc}%?%+Lw%?%<
 #setenv SSH_AUTH_SOCK $HOME/.ssh/ssh_auth_sock
 
 # screens
-screen -t orlok
+screen -t main
 select 0
