@@ -186,13 +186,6 @@
 ;;; Works great with new text, editing existing text is very annoying
 ;(electric-pair-mode 1)
 
-;;; Set the mode based on the buffer name.  Thanks to `__jim__'.
-;;; http://www.reddit.com/r/emacs/comments/d2t4q/scratch_buffers_for_emacs/c0x7a68
-(setq-default major-mode
-              (lambda ()
-                (let ((buffer-file-name (or buffer-file-name (buffer-name))))
-                  (set-auto-mode))))
-
 ;;; Kill line backwards
 ;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
 (global-set-key (kbd "C-<backspace>") (lambda ()

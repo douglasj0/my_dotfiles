@@ -300,6 +300,10 @@ rt-activate() {
   cd ~/projects/CBT/research_tools
 }
 
+# pyenv keep prompt - from Jody:
+# Fuck you, I *LIKE* my prompt that way
+#export VIRTUAL_ENV_DISABLE_PROMPT=1
+#export PYENV_VIRTUALENV_DISABLE_PROMPT=0
 
 ###################
 #   OS Specific   #

@@ -4,9 +4,6 @@
 ;;; doug@jacksonspub.com                                                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Keep track of loading time
-(defconst emacs-start-time (current-time))
-
 ;;; Load Customizations if they exist
 (setq custom-file "~/Dropbox/Home/elisp/custom.el")
 (load custom-file 'noerror)
@@ -49,6 +46,6 @@
                      user-emacs-directory))
 
 ;; Message how long it took to load everything (minus packages)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                           emacs-start-time))))
-(message "Loading settings...done (%.3fs)" elapsed))
+;(let ((elapsed (float-time (time-subtract (current-time)
+;                                           emacs-start-time))))
+;(message "Loading settings...done (%.1fs)" elapsed))

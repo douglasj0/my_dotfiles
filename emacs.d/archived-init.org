@@ -2860,3 +2860,12 @@ last sentence."
 ;; Make sizes human-readable by default, sort version numbers
 ;; correctly, and put dotfiles and capital-letters first.
 ;(setq-default dired-listing-switches "-alhvi")
+
+
+** Removed as it was causing max-lisp-eval-depth errors
+;;; Set the mode based on the buffer name.  Thanks to `__jim__'.
+;;; http://www.reddit.com/r/emacs/comments/d2t4q/scratch_buffers_for_emacs/c0x7a68
+(setq-default major-mode
+              (lambda ()
+                (let ((buffer-file-name (or buffer-file-name (buffer-name))))
+                  (set-auto-mode))))
