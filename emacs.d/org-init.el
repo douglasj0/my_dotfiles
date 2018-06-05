@@ -18,11 +18,12 @@
         ("C-c b" . org-iswitchb)
         ("C-c c" . org-capture)
   :config
-    ;; Load additional exporters
+    ;; Load additional exporters, or limit them with:  (setq org-export-backends '(ascii html latex odt))
     ;(eval-after-load 'org
     ;      (lambda()
-    ;        (require 'ox-md)
-    ;        (require 'ox-odt)
+    ;        (require 'ox-texinfo) ; texi and info
+    ;        (require 'ox-md)      ; markdown
+    ;        (require 'ox-odt)     ; opendoc text
     ;        (require 'ox-opml)
     ;        (require 'ox-confluence)))
 
