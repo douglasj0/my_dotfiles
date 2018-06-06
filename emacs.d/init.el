@@ -4,19 +4,9 @@
 ;;; doug@jacksonspub.com                                                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Load Customizations if they exist
-(setq custom-file "~/Dropbox/Home/elisp/custom.el")
-(load custom-file 'noerror)
-
-;;; Add 'info' and 'elisp' to load-path (C-h v load-path RET)
-(add-to-list 'Info-default-directory-list "~/.emacs.d/info")
-(add-to-list 'load-path "~/.emacs.d/elisp/") ;; elisp packages not in pkg manager
-
 ;; To manually update installed packages:  M-x package-list-packages U x
 (require 'package)
 (setq package-enable-at-startup nil)
-;(add-to-list 'package-archives
-;             '("melpa" . "http://melpa.org/packages/"))
 (setq package-archives
       '(
         ("elpy"  . "https://jorgenschaefer.github.io/packages/")
@@ -24,28 +14,25 @@
         ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "http://melpa.org/packages/")
 ))
-
 (package-initialize)
 
 ;; use-package - https://github.com/jwiegley/use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
 (eval-when-compile
   (require 'use-package))
 
 ;; Test out a package without installing it
-(use-package try
-  :ensure t)
+;(use-package try
+;  :ensure t)
 
 ;; Load org-plus-contrib for org-babel
-(load "~/.emacs.d/org-init.el") ; load org-mode config
-(org-babel-load-file
-  (expand-file-name "emacs-init.org"
-                     user-emacs-directory))
+(use-package org
+  :mode (("\\.org$" . org-mode))
+  :ensure org-plus-contrib
+)
 
-;; Message how long it took to load everything (minus packages)
-;(let ((elapsed (float-time (time-subtract (current-time)
-;                                           emacs-start-time))))
-;(message "Loading settings...done (%.1fs)" elapsed))
+;; org-babel
+(org-babel-load-file (expand-file-name "emacs-init.org"
+                     user-emacs-directory))
