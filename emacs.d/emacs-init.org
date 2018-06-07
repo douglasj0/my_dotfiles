@@ -919,8 +919,15 @@ last sentence."
 #+BEGIN_SRC emacs-lisp
 (use-package color-moccur
   :ensure t
-  :disabled
-)
+  :commands (isearch-moccur isearch-all)
+  :bind (("M-s O" . moccur)
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
+  :init
+  (setq isearch-lazy-highlight t)
+  :config
+  (use-package moccur-edit))
 #+END_SRC
 * deft
 #+BEGIN_SRC emacs-lisp
@@ -1091,6 +1098,31 @@ last sentence."
   :ensure t
   :commands exec-path-from-shell)
 #+END_SRC
+* eyebrowse
+https://github.com/wasamasa/eyebrowse
+
+About
+eyebrowse is a global minor mode for Emacs that allows you to manage your window configurations in a simple manner, just like tiling window managers like i3wm with their workspaces do. It displays their current state in the modeline by default. The behaviour is modeled after ranger, a file manager written in Python.
+
+Keybindings
+| Key bind  | Function                         |
+|-----------+----------------------------------|
+| C-c C-w < | Switch to previous window config |
+| C-c C-w > | Switch to next window config     |
+| C-c C-w ' | Switch to last window config     |
+| C-c C-w " | Close current window config      |
+| C-c C-w , | Rename current window config     |
+| C-c C-w 0 | Switch to window config 0        |
+| ...   ... |                                  |
+| C-c C-w 9 | Switch to window config 9        |
+
+#+BEGIN_SRC emacs-lisp
+(use-package eyebrowse
+   :ensure t)
+   :config
+   (eyebrowse-mode t)
+#+END_SRC
+
 * git gutter
 #+BEGIN_SRC emacs-lisp
 ;;; -- git-gutter - show icon in gutter area indicating if ins, mod or del
