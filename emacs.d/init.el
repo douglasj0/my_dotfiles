@@ -4,6 +4,11 @@
 ;;; doug@jacksonspub.com                                                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; whoami?
+(setq
+ user-full-name "Douglas Jackson"
+ user-mail-address "dbjackson@gmail.com")
+
 ;; To manually update installed packages:  M-x package-list-packages U x
 (require 'package)
 (setq package-enable-at-startup nil)

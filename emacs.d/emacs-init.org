@@ -1032,23 +1032,6 @@ last sentence."
     (setq dumb-jump-selector 'ivy)
 )
 #+END_SRC
-* flycheck
-#+BEGIN_SRC emacs-lisp
-;;; -- flycheck
-;(require 'flycheck)
-(use-package flycheck
-  :ensure t
-  :commands flycheck
-  :config
-    (add-hook 'after-init-hook #'global-flycheck-mode)
-
-    ;;; Disable flycheck running checkdoc against init.el
-    ;;; http://stackoverflow.com/questions/15552349/flycheck-how-to-disable-warnning-while-edit-emacs-lisp-scripts
-    ;(eval-after-load 'flycheck (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))  ;; ver 0.16+
-    (eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
-)
-#+END_SRC
-
 * electric help
 #+BEGIN_SRC emacs-lisp
 ;;; -- ehelp (Electric help)
