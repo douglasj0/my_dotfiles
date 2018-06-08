@@ -1604,6 +1604,16 @@ Captured %<%Y-%m-%d %H:%M>
           ;(sqlite .t)     ;SQLite
 )))
 #+END_SRC
+* osx-trash
+#+BEGIN_SRC emacs-lisp
+(use-package osx-trash
+   :ensure t
+   :config
+   (when (eq system-type 'darwin)
+     (osx-trash-setup))
+   (setq delete-by-moving-to-trash t)
+)
+#+END_SRC
 * projectile
 #+BEGIN_SRC emacs-lisp
 ;;; -- projectile - project managent (works with helm)
