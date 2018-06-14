@@ -1283,6 +1283,8 @@ Keybindings
 )
 #+END_SRC
 * ivy
+http://cestlaz.github.io/posts/using-emacs-6-swiper/
+
 #+BEGIN_SRC emacs-lisp
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
 ;;; swiper - an alternative to isearch uses ivy to show overview of all matches
@@ -1306,7 +1308,8 @@ Keybindings
          ("C-c k"   . counsel-ag)
          ("C-x l"   . counsel-locate)
          ("C-S-o"   . counsel-rhythmbox)
-         ("C-r"     . counsel-expression-history)) ;; disable M-x filter
+         ;("C-r"     . counsel-expression-history)) ;; disable M-x filter
+         ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
   :config
     (setq ivy-use-virtual-buffers t)
     (setq ivy-virtual-abbreviate 'full)
@@ -1366,7 +1369,7 @@ Keybindings
 (use-package multi-term
   :ensure t)
 #+END_SRC
-* neotree
+* neotreetest
 #+BEGIN_SRC emacs-lisp
 ;; -- neotree
 ;; Emacs version of Vim's nerdtree
@@ -1746,6 +1749,19 @@ Captured %<%Y-%m-%d %H:%M>
     ;; Set remote shell to be /bin/bash
     ;; http://superuser.com/questions/454288/how-to-specify-for-emacs-tramp-which-remote-shell-to-open
     (setq explicit-shell-file-name "/bin/bash")
+)
+#+END_SRC
+* visual-regexp
+https://github.com/benma/visual-regexp.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package visual-regexp
+   :ensure t
+   :config
+   (define-key global-map (kbd "C-c r") 'vr/replace)
+   (define-key global-map (kbd "C-c q") 'vr/query-replace)
+   ;; if you use multiple-cursors, this is for you:
+   (define-key global-map (kbd "C-c m") 'vr/mc-mark)
 )
 #+END_SRC
 * yasnippet
