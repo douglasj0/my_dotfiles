@@ -430,7 +430,7 @@
   ;(setq exec-path-from-shell-check-startup-files nil)
 ))
 #+END_SRC
-* Misc functions
+* Functions
 #+BEGIN_SRC emacs-lisp
 ;;; ---------------------------------------------------------------------------
 ;;; Toggles term between line mode and char mode
@@ -1283,6 +1283,7 @@ Keybindings
 )
 #+END_SRC
 * ivy
+https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
 
 #+BEGIN_SRC emacs-lisp
@@ -1308,22 +1309,24 @@ http://cestlaz.github.io/posts/using-emacs-6-swiper/
          ("C-c k"   . counsel-ag)
          ("C-x l"   . counsel-locate)
          ("C-S-o"   . counsel-rhythmbox)
-         ;("C-r"     . counsel-expression-history)) ;; disable M-x filter
          ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
   :config
     (setq ivy-use-virtual-buffers t)
-    (setq ivy-virtual-abbreviate 'full)
     (setq enable-recursive-minibuffers t)
+    (setq ivy-virtual-abbreviate 'full)
     (setq ivy-initial-inputs-alist nil)
+    (setq ivy-display-style 'fancy)
 )
 #+END_SRC
-* ivy's counsel
+
+ivy counsel
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
   :ensure t
   :commands counsel)
 #+END_SRC
-* ivy's counsel-projectile
+
+ivy counsel-projectile
 #+BEGIN_SRC emacs-lisp
 ;;; projectile ivy integration
 (use-package counsel-projectile
@@ -1705,6 +1708,7 @@ Captured %<%Y-%m-%d %H:%M>
     (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
 #+END_SRC
+
 * switch-window
 #+BEGIN_SRC emacs-lisp
 (use-package switch-window

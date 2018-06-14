@@ -2869,3 +2869,18 @@ last sentence."
               (lambda ()
                 (let ((buffer-file-name (or buffer-file-name (buffer-name))))
                   (set-auto-mode))))
+
+
+* smex
+https://www.emacswiki.org/emacs/Smex
+https://github.com/nonsequitur/smex
+
+NOTE: ivy will use smex if its installed
+#+BEGIN_SRC emacs-lisp
+;(use-package smex
+;   :ensure f
+;   :init (smex-initialize)
+;   :config
+;     (setq smex-save-file "~/.emacs.d/cache/smex-items")
+;)
+#+END_SRC
