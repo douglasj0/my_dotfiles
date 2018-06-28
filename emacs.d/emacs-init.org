@@ -1316,6 +1316,7 @@ http://cestlaz.github.io/posts/using-emacs-6-swiper/
     (setq ivy-virtual-abbreviate 'full)
     (setq ivy-initial-inputs-alist nil)
     (setq ivy-display-style 'fancy)
+    (setq ivy-dynamic-exhibit-delay-ms 250)
 )
 #+END_SRC
 
