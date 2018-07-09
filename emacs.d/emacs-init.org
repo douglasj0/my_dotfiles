@@ -929,6 +929,20 @@ last sentence."
   :config
   (use-package moccur-edit))
 #+END_SRC
+* deadgrep
+# https://github.com/Wilfred/deadgrep
+# https://github.com/Malabarba/spinner.el
+#+BEGIN_SRC emacs-lisp
+(use-package spinner
+  :ensure t)
+
+(use-package deadgrep
+  :ensure t
+  :requires spinner
+  :config
+  (global-set-key (kbd "<f5>") #'deadgrep)
+)
+#+END_SRC
 * deft
 #+BEGIN_SRC emacs-lisp
 ;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing

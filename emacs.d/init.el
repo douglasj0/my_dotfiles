@@ -15,7 +15,7 @@
 (setq package-archives
       '(
         ("elpy"  . "https://jorgenschaefer.github.io/packages/")
-        ("gnu"   . "https://elpa.gnu.org/packages/")
+        ("gnu"   . "http://elpa.gnu.org/packages/")
         ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "http://melpa.org/packages/")
 ))
