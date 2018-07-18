@@ -1109,6 +1109,10 @@ last sentence."
 
 * esh-autosuggest
 https://github.com/dieggsy/esh-autosuggest/
+Keybindings
+. <right> and C-f are used to select the suggestion.
+. M-<right> and M-f are used to select the nnext word in the suggsetion.
+
 #+BEGIN_SRC emacs-lisp
 (use-package esh-autosuggest
   :ensure t
