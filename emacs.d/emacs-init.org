@@ -1106,6 +1106,18 @@ last sentence."
     (setq gud-pdb-command-name "python -m pdb")
 )
 #+END_SRC
+
+* esh-autosuggest
+https://github.com/dieggsy/esh-autosuggest/
+#+BEGIN_SRC emacs-lisp
+(use-package esh-autosuggest
+  :ensure t
+  :hook (eshell-mode . esh-autosuggest-mode)
+  ;; If you have use-package-hook-name-suffix set to nil, uncomment and use the
+  ;; line below instead:
+  ;; :hook (eshell-mode-hook . esh-autosuggest-mode)
+)
+#+END_SRC
 * exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
 (use-package exec-path-from-shell

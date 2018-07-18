@@ -276,7 +276,7 @@ function parse_git_dirty {
 
 # Shell Prompt
 # if CHIC02RR812G8WP change to thorn
-if [[ ${HOSTNAME} == "CHIC02RR812G8WP.grubhub.local" ]];then
+if [[ ${HOSTNAME} == "C02RR812G8WP.grubhub.local" ]]; then
   PS1="${YELLOW}\u${RESET}${WHITE}@thorn ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 else
   PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
