@@ -1204,6 +1204,14 @@ Keybindings
     (gnus-permanently-visible-groups ".*")
 )
 #+END_SRC
+* groovy-mode
+#+BEGIN_SRC emacs-lisp
+;;; https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes
+(use-package groovy-mode
+  :ensure t
+  :mode "\\.groovy\\'\\|\\.gradle\\'"
+)
+#+END_SRC
 * ibuffer
 #+BEGIN_SRC emacs-lisp
 ;;; -- ibuffer - *Nice* buffer switching
@@ -1327,9 +1335,10 @@ Keybindings
      (ispell-extra-args '("--sug-mode=fast"))
 )
 #+END_SRC
-* ivy
+* ivy, counsel, and counsel-projectile
 https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
+https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 
 #+BEGIN_SRC emacs-lisp
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
@@ -1337,6 +1346,7 @@ http://cestlaz.github.io/posts/using-emacs-6-swiper/
 ;;; https://github.com/abo-abo/swiper
 (use-package ivy
   :ensure t
+  :defer 0.1
   :init (ivy-mode 1)
   :commands ivy
   :bind (("C-s"     . swiper) ;; Ivy-based interface to standard commands
@@ -1355,21 +1365,45 @@ http://cestlaz.github.io/posts/using-emacs-6-swiper/
          ("C-x l"   . counsel-locate)
          ("C-S-o"   . counsel-rhythmbox)
          ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
-  :config
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    (setq ivy-virtual-abbreviate 'full)
-    (setq ivy-initial-inputs-alist nil)
-    (setq ivy-display-style 'fancy)
-    (setq ivy-dynamic-exhibit-delay-ms 250)
+  :custom
+    (ivy-count-format "(%d/%d) ")
+    (ivy-display-style 'fancy)
+    (ivy-use-virtual-buffers t)
+    (enable-recursive-minibuffers t)
+    (ivy-virtual-abbreviate 'full)
+    (ivy-initial-inputs-alist nil)
+    (ivy-dynamic-exhibit-delay-ms 250)
 )
 #+END_SRC
 
-ivy counsel
+counsel
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
   :ensure t
-  :commands counsel)
+  :after ivy
+  :config (counsel-mode)
+)
+#+END_SRC
+
+;ivy-rich (can't find package?)
+;https://github.com/Yevgnen/ivy-rich
+;#+BEGIN_SRC emacs-lisp
+;(use-package ivy-rich
+;  :after ivy
+;  :custom
+;  (ivy-virtual-abbreviate 'full
+;                          ivy-rich-switch-buffer-align-virtual-buffer t
+;                          ivy-rich-path-style 'abbrev)
+;  :config
+;  (ivy-set-display-transformer 'ivy-switch-buffer
+;                               'ivy-rich-switch-buffer-transformer))
+;#+END_SRC
+
+swiper
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :ensure t
+  :after ivy)
 #+END_SRC
 
 ivy counsel-projectile
