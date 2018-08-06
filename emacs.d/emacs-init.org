@@ -915,6 +915,15 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
+* async
+asynchronous compilation
+
+#+BEGIN_SRC emacs-lisp
+(use-package async
+  :ensure t
+  :init (async-bytecomp-package-mode 1)
+)
+#+END_SRC
 * color-moccur
 #+BEGIN_SRC emacs-lisp
 (use-package color-moccur
@@ -1846,6 +1855,24 @@ https://github.com/benma/visual-regexp.el
    (define-key global-map (kbd "C-c q") 'vr/query-replace)
    ;; if you use multiple-cursors, this is for you:
    (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+)
+#+END_SRC
+* which-key
+https://github.com/justbur/emacs-which-key
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+   :ensure t
+   :defer 10
+   :config
+   (progn
+     (setq which-key-popup-type 'side-window) ;Default
+      ;; (setq which-key-popup-type 'minibuffer)
+
+      (setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
+
+      (setq which-key-allow-multiple-replacements t) ;Default = nil
+      (which-key-mode))
 )
 #+END_SRC
 * yasnippet
