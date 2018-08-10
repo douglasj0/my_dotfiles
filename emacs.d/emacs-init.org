@@ -1353,12 +1353,13 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
 ;;; swiper - an alternative to isearch uses ivy to show overview of all matches
 ;;; https://github.com/abo-abo/swiper
+;;; changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 (use-package ivy
   :ensure t
   :defer 0.1
   :init (ivy-mode 1)
   :commands ivy
-  :bind (("C-s"     . swiper) ;; Ivy-based interface to standard commands
+  :bind (("C-s"     . counsel-grep-or-swiper) ;; swiper for small files, counsel-grep for larger
          ("C-x C-r" . counsel-recentf)
          ("<f6>"    . ivy-resume)
          ("M-x"     . counsel-M-x)
@@ -1707,6 +1708,24 @@ Captured %<%Y-%m-%d %H:%M>
    (when (eq system-type 'darwin)
      (osx-trash-setup))
    (setq delete-by-moving-to-trash t)
+)
+#+END_SRC
+* pdf-tools
+#+BEGIN_SRC emacs-lisp
+;;; http://pragmaticemacs.com/emacs/view-and-annotate-pdfs-in-emacs-with-pdf-tools/
+;;; brew install poppular automake
+(use-package pdf-tools
+  :pin manual ;; manually update
+  ;:ensure t
+  :config
+  ;; initialise
+  (pdf-tools-install)
+  ;; open pdfs scaled to fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; use normal isearch
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
 )
 #+END_SRC
 * projectile
