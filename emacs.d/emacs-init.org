@@ -1712,10 +1712,16 @@ Captured %<%Y-%m-%d %H:%M>
 #+END_SRC
 * pdf-tools
 #+BEGIN_SRC emacs-lisp
+;;; Linux:
+;;; sudo apt install libpoppler-glib-dev
+;;;
+;;; Mac:
 ;;; http://pragmaticemacs.com/emacs/view-and-annotate-pdfs-in-emacs-with-pdf-tools/
 ;;; brew install poppular automake
+;;;
+;;; NOTE:  Had to disable pin manual for initial install
 (use-package pdf-tools
-  :pin manual ;; manually update
+  :pin manual ;; manually update?
   ;:ensure t
   :config
   ;; initialise
