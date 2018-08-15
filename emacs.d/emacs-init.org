@@ -1183,6 +1183,8 @@ Keybindings
 ;;; https://github.com/syohex/emacs-git-gutter
 (use-package git-gutter
   :ensure t
+  :defer 0.3
+  :diminish
   :config
     (global-git-gutter-mode t)
 )
@@ -1445,6 +1447,7 @@ ivy counsel-projectile
 ;;; -- magit-mode - emacs mode for interacting with the Git vcs
 (use-package magit
   :ensure t
+  :defer 0.3
   :commands magit
   :bind ("C-c g" . magit-status)
   :config

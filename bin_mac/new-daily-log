@@ -61,7 +61,7 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 # | C-x r l    | list bookmarks   | | C-x r m   | set bookmark    |
 # | M-x bookmark-delete           | |           |                 |
 # | C-x C+ / - | change font size | | C-c p C-h | Projectile help |
-#
+# | C-h m      | mode keys        | |           |                 |
 # NOTE: Track ALL interruptions
 
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
