@@ -41,7 +41,7 @@
 | C-x C-b             | ibuffer                   | Nice buffer switching                 |
 | C-s                 | swiper                    | Ivy-mode search (f6 to resume         |
 | C-c g               | magit-status              | Start magit                           |
-| f5                  | neotree                   |                                       |
+| f2                  | neotree                   |                                       |
 |                     |                           |                                       |
 | C-c l               | org-store-link            |                                       |
 | C-c a               | org-agenda                |                                       |
@@ -1369,8 +1369,8 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
          ("<f1> f"  . counsel-describe-function)
          ("<f1> v"  . counsel-describe-variable)
          ("<f1> l"  . counsel-find-library)
-         ("<f2> i"  . counsel-info-lookup-symbol)
-         ("<f2> u"  . counsel-unicode-char)
+         ("<f1> i"  . counsel-info-lookup-symbol)
+         ("<f1> u"  . counsel-unicode-char)
          ("C-c G"   . counsel-git) ;;; Ivy-based interface to shell and system tools
          ("C-c j"   . counsel-git-grep)
          ("C-c k"   . counsel-ag)
@@ -1465,14 +1465,15 @@ ivy counsel-projectile
 (use-package multi-term
   :ensure t)
 #+END_SRC
-* neotreetest
+* neotree
 #+BEGIN_SRC emacs-lisp
 ;; -- neotree
 ;; Emacs version of Vim's nerdtree
 (use-package neotree
   :ensure t
-  :disabled
-  :bind ("<f5>" . neotree-toggle)
+  :bind (("<f2>" . neotree-toggle))
+  ;:disabled
+  :defer
 )
 #+END_SRC
 * org-mode
@@ -1825,7 +1826,6 @@ Captured %<%Y-%m-%d %H:%M>
     (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
 #+END_SRC
-
 * switch-window
 #+BEGIN_SRC emacs-lisp
 (use-package switch-window
