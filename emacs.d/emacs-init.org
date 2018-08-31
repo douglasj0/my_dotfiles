@@ -419,15 +419,6 @@
 (global-set-key [?\C-x ?\C-y] 'pt-pbpaste)
 (global-set-key [?\C-x ?\M-w] 'pt-pbcopy)
 
-; -- exec-path-from-shell
-; https://github.com/purcell/exec-path-from-shell
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-  ;;; Fix for path error from exec-path-from-shell
-  ;;; I've moved PATH and aliases around, but pyenv init triggers it
-  (setq exec-path-from-shell-arguments '("-l"))
-  ;;; or
-  ;(setq exec-path-from-shell-check-startup-files nil)
 ))
 #+END_SRC
 * Functions
@@ -1147,10 +1138,17 @@ asynchronous compilation
 ;)
 ;#+END_SRC
 * exec-path-from-shell
+https://github.com/purcell/exec-path-from-shell
+
 #+BEGIN_SRC emacs-lisp
 (use-package exec-path-from-shell
   :ensure t
-  :commands exec-path-from-shell)
+  :custom
+    (exec-path-from-shell-check-startup-files nil)
+  :config
+    (push "HISTFILE" exec-path-from-shell-variables)
+    (exec-path-from-shell-initialize)
+)
 #+END_SRC
 * eyebrowse
 https://github.com/wasamasa/eyebrowse

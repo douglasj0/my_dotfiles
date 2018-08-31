@@ -42,3 +42,7 @@
 ;; org-babel
 (org-babel-load-file (expand-file-name "emacs-init.org"
                      user-emacs-directory))
+
+;; Disable ad-redefinition-action messages on startup
+;; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
+(setq ad-redefinition-action 'accept)
