@@ -2884,3 +2884,32 @@ NOTE: ivy will use smex if its installed
 ;     (setq smex-save-file "~/.emacs.d/cache/smex-items")
 ;)
 #+END_SRC
+
+* company
+Autocomplete function comp-any
+
+#+BEGIN_SRC emacs-lisp
+;(use-package company
+;  :ensure t
+;  :defer t
+;  :init (global-company-mode)
+;  :config
+;  (progn
+;    ;; Use Company for completion
+;    (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+;
+;    (setq company-tooltip-align-annotations t
+;          ;; Easy navigation to candidates with M-<n>
+;          company-show-numbers t)
+;    (setq company-dabbrev-downcase nil)
+;    (setq company-idle-delay 1)
+;    (setq company-minimum-prefix-length 3))
+;
+;  (with-eval-after-load 'company
+;    (define-key company-active-map (kbd "M-n") nil)
+;    (define-key company-active-map (kbd "M-p") nil)
+;    (define-key company-active-map (kbd "C-n") #'company-select-next)
+;    (define-key company-active-map (kbd "C-p") #'company-select-previous))
+;
+;  :diminish company-mode)
+#+END_SRC
