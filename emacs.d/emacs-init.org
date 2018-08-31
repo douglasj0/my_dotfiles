@@ -1722,6 +1722,7 @@ Captured %<%Y-%m-%d %H:%M>
 ;;; brew install poppular automake
 ;;;
 ;;; NOTE:  Had to disable pin manual for initial install
+;;; or run M-x pdf-tools-install and ignore error about epdfinfo and restart
 (use-package pdf-tools
   :pin manual ;; manually update?
   ;:ensure t
@@ -1734,6 +1735,8 @@ Captured %<%Y-%m-%d %H:%M>
   (setq pdf-annot-activate-created-annotations t)
   ;; use normal isearch
   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  ;; speed up load times on systems with unicode symbols
+  (setq pdf-view-use-unicode-ligther nil)
 )
 #+END_SRC
 * projectile
