@@ -15,7 +15,7 @@
 (setq package-enable-at-startup nil)
 (setq package-archives
       '(
-        ("elpy"  . "https://jorgenschaefer.github.io/packages/")
+        ("elpy"  . "http://jorgenschaefer.github.io/packages/")
         ("gnu"   . "http://elpa.gnu.org/packages/")
         ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "http://melpa.org/packages/")
