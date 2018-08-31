@@ -27,7 +27,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package)
+  (setq use-package-verbose t)
+)
 
 ;; Test out a package without installing it
 ;(use-package try
