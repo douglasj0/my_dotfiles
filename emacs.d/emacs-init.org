@@ -1737,6 +1737,8 @@ Captured %<%Y-%m-%d %H:%M>
   :pin manual ;; manually update?
   ;:ensure t
   :config
+  ;; speed up load times on systems with unicode symbols, set before init
+  (setq pdf-view-use-unicode-ligther nil)
   ;; initialise
   (pdf-tools-install)
   ;; open pdfs scaled to fit page
@@ -1745,8 +1747,6 @@ Captured %<%Y-%m-%d %H:%M>
   (setq pdf-annot-activate-created-annotations t)
   ;; use normal isearch
   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-  ;; speed up load times on systems with unicode symbols
-  (setq pdf-view-use-unicode-ligther nil)
 )
 #+END_SRC
 * projectile
