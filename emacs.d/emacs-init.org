@@ -1386,6 +1386,16 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 )
 #+END_SRC
 
+ivy-avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind
+  (("C-c SPC" . avy-goto-word-1))
+  :config
+  (setq avy-background t))
+#+END_SRC
+
 counsel
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
