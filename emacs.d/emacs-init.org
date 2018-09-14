@@ -1032,7 +1032,7 @@ asynchronous compilation
     (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
 )
 #+END_SRC
-* dumb-jump
+* dumb-jump - removed
 #+BEGIN_SRC emacs-lisp
 ;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
 ;;; alternative Emacs packages for other languages
@@ -1041,17 +1041,17 @@ asynchronous compilation
 ;;; - Tern for JavaScript
 ;;; - elpy for Python
 ;;; - robe for Ruby
-(use-package dumb-jump
-  :ensure t
-  :disabled
-  :commands dumb-jump
-  :bind (("M-g j" . dumb-jump-go)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config
-    (setq dumb-jump-selector 'ivy)
-)
+;(use-package dumb-jump
+;  :ensure t
+;  :disabled
+;  :commands dumb-jump
+;  :bind (("M-g j" . dumb-jump-go)
+;         ("M-g i" . dumb-jump-go-prompt)
+;         ("M-g x" . dumb-jump-go-prefer-external)
+;         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+;  :config
+;    (setq dumb-jump-selector 'ivy)
+;)
 #+END_SRC
 * electric help
 #+BEGIN_SRC emacs-lisp
@@ -1107,36 +1107,6 @@ asynchronous compilation
 )
 #+END_SRC
 
-* esh-autosuggest
-;https://github.com/dieggsy/esh-autosuggest/
-;Keybindings
-;. <right> and C-f are used to select the suggestion.
-;. M-<right> and M-f are used to select the nnext word in the suggsetion.
-;
-;#+BEGIN_SRC emacs-lisp
-;(use-package esh-autosuggest
-;  :ensure t
-;  :hook (eshell-mode . esh-autosuggest-mode)
-;  ;; If you have use-package-hook-name-suffix set to nil, uncomment and use the
-;  ;; line below instead:
-;  ;; :hook (eshell-mode-hook . esh-autosuggest-mode)
-;  ;
-;  ;While the default popup-buffer frontend to pcomplete can be a bit annoying,
-;  ;I’ve found there are alternatives that make pcomplete behave more like normal
-;  ;shell completion. Try one or more of the following for tab completion:
-;  ;
-;  ;:config
-;  ;  (setq ivy-do-completion-in-region t) ; this is the default
-;  ;  (defun setup-eshell-ivy-completion ()
-;  ;    (define-key [remap eshell-pcomplete] 'completion-at-point)
-;  ;    ;; only if you want to use the minibuffer for completions instead of the
-;  ;    ;; in-buffer interface
-;  ;    (setq-local ivy-display-functions-alist
-;  ;                (remq (assoc 'ivy-completion-in-region ivy-display-functions-alist)
-;  ;                      ivy-display-functions-alist)))
-;  ;  (add-hook 'eshell-mode-hook #'setup-eshell-ivy-completion)
-;)
-;#+END_SRC
 * exec-path-from-shell
 https://github.com/purcell/exec-path-from-shell
 
@@ -1150,31 +1120,6 @@ https://github.com/purcell/exec-path-from-shell
     (exec-path-from-shell-initialize)
 )
 #+END_SRC
-* eyebrowse
-https://github.com/wasamasa/eyebrowse
-
-About
-eyebrowse is a global minor mode for Emacs that allows you to manage your window configurations in a simple manner, just like tiling window managers like i3wm with their workspaces do. It displays their current state in the modeline by default. The behaviour is modeled after ranger, a file manager written in Python.
-
-Keybindings
-| Key bind  | Function                         |
-|-----------+----------------------------------|
-| C-c C-w < | Switch to previous window config |
-| C-c C-w > | Switch to next window config     |
-| C-c C-w ' | Switch to last window config     |
-| C-c C-w " | Close current window config      |
-| C-c C-w , | Rename current window config     |
-| C-c C-w 0 | Switch to window config 0        |
-| ...   ... |                                  |
-| C-c C-w 9 | Switch to window config 9        |
-
-#+BEGIN_SRC emacs-lisp
-(use-package eyebrowse
-   :ensure t)
-   :config
-   (eyebrowse-mode t)
-#+END_SRC
-
 * git gutter
 #+BEGIN_SRC emacs-lisp
 ;;; -- git-gutter - show icon in gutter area indicating if ins, mod or del
@@ -1405,9 +1350,9 @@ counsel
 )
 #+END_SRC
 
-;ivy-rich (can't find package?)
-;https://github.com/Yevgnen/ivy-rich
-;#+BEGIN_SRC emacs-lisp
+ivy-rich (can't find package?) - removed
+https://github.com/Yevgnen/ivy-rich
+#+BEGIN_SRC emacs-lisp
 ;(use-package ivy-rich
 ;  :after ivy
 ;  :custom
@@ -1417,7 +1362,7 @@ counsel
 ;  :config
 ;  (ivy-set-display-transformer 'ivy-switch-buffer
 ;                               'ivy-rich-switch-buffer-transformer))
-;#+END_SRC
+#+END_SRC
 
 swiper
 #+BEGIN_SRC emacs-lisp
@@ -1428,7 +1373,7 @@ swiper
 
 ivy counsel-projectile
 #+BEGIN_SRC emacs-lisp
-;;; projectile ivy integration
+;; projectile ivy integration
 (use-package counsel-projectile
   :ensure t
   :commands counsel-projectile)
@@ -1458,8 +1403,8 @@ ivy counsel-projectile
   :defer 0.3
   :commands magit
   :bind ("C-c g" . magit-status)
-  :config
-    (setq magit-completing-read-function 'ivy-completing-read)
+;  :config
+;    (setq magit-completing-read-function 'ivy-completing-read)
 )
 #+END_SRC
 * markdown-mode
@@ -1472,17 +1417,6 @@ ivy counsel-projectile
 #+BEGIN_SRC emacs-lisp
 (use-package multi-term
   :ensure t)
-#+END_SRC
-* neotree
-#+BEGIN_SRC emacs-lisp
-;; -- neotree
-;; Emacs version of Vim's nerdtree
-(use-package neotree
-  :ensure t
-  :bind (("<f2>" . neotree-toggle))
-  ;:disabled
-  :defer
-)
 #+END_SRC
 * org-mode
 #+BEGIN_SRC emacs-lisp
@@ -1722,7 +1656,7 @@ Captured %<%Y-%m-%d %H:%M>
    (setq delete-by-moving-to-trash t)
 )
 #+END_SRC
-* pdf-tools
+* pdf-tools - removed
 #+BEGIN_SRC emacs-lisp
 ;;; Linux:
 ;;; sudo apt install libpoppler-glib-dev
@@ -1733,21 +1667,21 @@ Captured %<%Y-%m-%d %H:%M>
 ;;;
 ;;; NOTE:  Had to disable pin manual for initial install
 ;;; or run M-x pdf-tools-install and ignore error about epdfinfo and restart
-(use-package pdf-tools
-  :pin manual ;; manually update?
-  ;:ensure t
-  :config
-  ;; speed up load times on systems with unicode symbols, set before init
-  (setq pdf-view-use-unicode-ligther nil)
-  ;; initialise
-  (pdf-tools-install)
-  ;; open pdfs scaled to fit page
-  (setq-default pdf-view-display-size 'fit-page)
-  ;; automatically annotate highlights
-  (setq pdf-annot-activate-created-annotations t)
-  ;; use normal isearch
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-)
+;(use-package pdf-tools
+;  :pin manual ;; manually update?
+;  ;:ensure t
+;  :config
+;  ;; speed up load times on systems with unicode symbols, set before init
+;  (setq pdf-view-use-unicode-ligther nil)
+;  ;; initialise
+;  (pdf-tools-install)
+;  ;; open pdfs scaled to fit page
+;  (setq-default pdf-view-display-size 'fit-page)
+;  ;; automatically annotate highlights
+;  (setq pdf-annot-activate-created-annotations t)
+;  ;; use normal isearch
+;  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+;)
 #+END_SRC
 * projectile
 #+BEGIN_SRC emacs-lisp
@@ -1777,7 +1711,7 @@ Captured %<%Y-%m-%d %H:%M>
 
     ;;(setq projectile-switch-project-action 'helm-projectile-find-file)
     ;(setq projectile-switch-project-action 'helm-projectile)
-    (setq projectile-completion-system 'ivy)
+    ;(setq projectile-completion-system 'ivy)
 )
 #+END_SRC
 * py-autopep8
