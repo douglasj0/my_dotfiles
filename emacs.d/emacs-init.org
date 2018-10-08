@@ -183,6 +183,9 @@
 #+END_SRC
 * Global settings
 #+BEGIN_SRC emacs-lisp
+;; automatically follow symlinks to files under version control without prompting
+(setq vc-follow-symlinks t)
+
 ;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
 (add-hook 'focus-out-hook #'garbage-collect)
 
