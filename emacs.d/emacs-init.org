@@ -1802,7 +1802,7 @@ Captured %<%Y-%m-%d %H:%M>
       tramp-default-method "sshx"  ;; inline method w/diff interactive shell
       ;tramp-default-method "scpx" ;; external method w/diff interactive shell
       tramp-persistency-file-name "~/.emacs.d/cache/tramp"
-      tramp-auto-save-directory "~/.emacs.d/cache/autosaves"
+      tramp-auto-save-directory "~/.emacs.d/auto-save-list"
       tramp-terminal-type "dumb")  ;; fix remote shell hanging, change .bashrc to
                                    ;; for TERM=dumb and set PS1='$ '
 
