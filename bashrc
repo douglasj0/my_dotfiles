@@ -119,11 +119,11 @@ yolo() {
 
 # ssh key functions
 ssh-add-all() { LIST=$(ls $HOME/.ssh/id_* | grep -v '.pub'); ssh-add $LIST; } # add all ssh keys
-ssh-del-all() { ssh-add -D; }                                       # delete all ssh keys
-ssh-add-work () { ssh-add ${HOME}/.ssh/id_rsa_work; }               # add work key
-ssh-del-work () { ssh-add -d ${HOME}/.ssh/id_rsa_work; }            # delete work key
-ssh-add-github () { ssh-add ${HOME}/.ssh/github/id_rsa_github; }    # add github key
-ssh-del-github () { ssh-add -d ${HOME}/.ssh/github/id_rsa_github; } # delete github key
+ssh-del-all() { ssh-add -D; }                              # delete all ssh keys
+ssh-add-work () { ssh-add ${HOME}/.ssh/id_rsa_work; }      # add work key
+ssh-del-work () { ssh-add -d ${HOME}/.ssh/id_rsa_work; }   # delete work key
+ssh-add-home () { ssh-add ${HOME}/.ssh/id_rsa_home; }      # add home github key
+ssh-del-home () { ssh-add -d ${HOME}/.ssh/id_rsa_home; }   # delete home github key
 
 #grepp: grep by paragraph, http://www.commandlinefu.com/commands/view/4547/
 grepp() {
@@ -165,7 +165,7 @@ alias digs="dig +short"
 alias killmercer='sudo $(history -p !!)'
 alias just='sudo'
 alias gtfo='exit'
-alias ssh-add-home="ssh-add ~/.ssh/home/id_rsa"
+#alias ssh-add-home="ssh-add ~/.ssh/home/id_rsa"
 #
 alias u='cd ..'
 alias uu='cd ../..'

@@ -1423,6 +1423,9 @@ ivy counsel-projectile
 #+END_SRC
 * org-mode
 #+BEGIN_SRC emacs-lisp
+;; Prevent inadvertently edits an the invisible part of the buffer
+(setq-default org-catch-invisible-edits 'smart)
+
 ;; Load additional exporters, or limit them with:  (setq org-export-backends '(ascii html latex odt))
 ;(eval-after-load 'org
 ;      (lambda()
