@@ -83,6 +83,8 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n3-4 Manatee Grooming (Sofritas 19fl)
 \n* Friday
 \n9:15-9:30 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
+\n9:30-10:30 [Meeting] SRE's Unite! (Spanakopita 19th fl)
+\n10:30-11 Run 'topgrade' to update mac apps
 \n11:30-12:30 Learning Friday/Technology Lunch
 \n1-5 Learning Friday Time
 \n* Notes:\n\n" >${newfile}
