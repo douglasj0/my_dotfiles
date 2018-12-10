@@ -1483,6 +1483,7 @@ ivy counsel-projectile
 
 
 ;;; Capture
+;; NOTE:  Fibonacci format: 0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100
 ;; Setup default target for notes and a global hotkey for new ones
 ;; NOTE:  Need org-mode version 6.3.6 or later for this to work
 ;; http://stackoverflow.com/questions/3622603/org-mode-setup-problem-when-trying-to-use-capture
@@ -1493,33 +1494,61 @@ ivy counsel-projectile
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html
 (defvar dbj/org-basic-task-template "* TODO %^{Task}
 SCHEDULED: %^t
+
 :PROPERTIES:
 :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
 :END:
-Captured %<%Y-%m-%d %H:%M>
-%?
-" "Basic task data")
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?" "Basic task data")
+
+(defvar dbj/org-basic-jira-template "* TODO %^{Task}
+SCHEDULED: %^t
+
+:PROPERTIES:
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
+:URL: %^L
+:END:
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?" "Basic task data")
 
 (defvar dbj/org-basic-someday-template "* %^{Task}
 :PROPERTIES:
 :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
 :END:
-Captured %<%Y-%m-%d %H:%M>
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
 %?
 
-%i
-" "Basic task data")
+%i" "Basic task data")
 
 (setq org-capture-templates
       `(("t" "Tasks" entry
-         (file+headline "~/org/gtd/newgtd.org" "Tasks")
-         ,dbj/org-basic-task-template)
+         (file+headline "~/org/gtd/newgtd.org" "Tasks"), dbj/org-basic-task-template)
+
+        ("j" "Jira" entry
+         (file+headline "~/org/gtd/newgtd.org" "Jira Tickets")
+"* TODO %^{Task}
+SCHEDULED: %^t
+
+:PROPERTIES:
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
+:URL: %^{URL}
+:END:
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?")
+
         ("s" "Someday task" entry
-         (file+headline "~/org/gtd/someday.org" "Someday")
-         ,dbj/org-basic-someday-template)
-        ("j" "Journal entry" plain
-         (file+datetree+prompt "~/org/gtd/journal.org")
-         "%i\n%?\n")
+         (file+headline "~/org/gtd/someday.org" "Someday"), dbj/org-basic-someday-template)
+        ;("j" "Journal entry" plain
+        ; (file+datetree+prompt "~/org/gtd/journal.org")
+        ; "%i\n%?\n")
         ("c" "Contact, email" entry (file "~/org/gtd/contacts.org")
           "* %(org-contacts-template-name)
 :PROPERTIES:
