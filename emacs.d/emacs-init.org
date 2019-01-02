@@ -1423,6 +1423,11 @@ ivy counsel-projectile
 #+END_SRC
 * org-mode
 #+BEGIN_SRC emacs-lisp
+;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
+;; https://orgmode.org/manual/Easy-templates.html
+;; https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L65
+(use-package org-tempo)
+
 ;; Prevent inadvertently edits an the invisible part of the buffer
 (setq-default org-catch-invisible-edits 'smart)
 
@@ -1805,6 +1810,18 @@ SCHEDULED: %^t
     ;; need to do this manually or not picked up by `shell-pop'
     (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
+#+END_SRC
+* smex
+counsel-M-x re-uses smex while offering extra features.
+#+BEGIN_SRC emacs-lisp
+(use-package smex
+  :ensure t
+  :defer t
+  ;:bind (("M-x" . smex)
+  ;       ("M-X" . smex-major-mode-commands))
+  :config
+  (progn
+    (smex-initialize)))
 #+END_SRC
 * switch-window
 #+BEGIN_SRC emacs-lisp
