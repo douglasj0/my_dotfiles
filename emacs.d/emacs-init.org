@@ -1411,9 +1411,9 @@ ivy counsel-projectile
   :commands magit
   :bind
     (("C-x g" . magit-status)
+     ("C-x G" . magit-status-with-prefix)
      ("C-x M-g" . magit-dispatch-popup)
-     ("C-c M-g" . global-magit-file-mode)
-    )
+     ("C-c M-g" . global-magit-file-mode))
   :config
     (setq magit-completing-read-function 'ivy-completing-read)
 )
