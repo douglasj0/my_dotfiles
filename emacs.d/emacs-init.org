@@ -1039,6 +1039,13 @@ asynchronous compilation
     (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
 )
 #+END_SRC
+* dockerfile-mode
+from: https://github.com/cocreature/dotfiles/blob/master/emacs/.emacs.d/emacs.org
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :mode "Dockerfile\\'"
+  :ensure t)
+#+end_src
 * dumb-jump - removed
 #+BEGIN_SRC emacs-lisp
 ;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
@@ -1139,6 +1146,27 @@ https://github.com/purcell/exec-path-from-shell
     (global-git-gutter-mode t)
 )
 #+END_SRC
+* golden-ratio
+https://github.com/roman/golden-ratio.el
+http://pragmaticemacs.com/emacs/resize-your-windows-to-the-golden-ratio/
+If you prefer to use a single large emacs frame with multiple windows inside, you might like the golden ratio package. This automatically resizes your windows so that the window containing the point is the largest (size determined by the mathematical golden ratio). This means that the window you are working in is nice and large but you can still see what is going on in the other windows.
+
+Can also look at zoom for similar functionality
+https://github.com/cyrus-and/zoom
+
+Enable on buffer change?
+https://github.com/roman/golden-ratio.el/issues/57
+
+#+begin_src emacs-lisp
+(use-package golden-ratio
+  :ensure t
+  :diminish golden-ratio-mode
+  :init
+    (golden-ratio-mode 1)
+  :config
+    (add-hook 'buffer-list-update-hook #'golden-ratio)
+)
+#+end_src
 * gnus
 #+BEGIN_SRC emacs-lisp
 ;;; -- gnus - Mail and News reader
@@ -1664,7 +1692,7 @@ SCHEDULED: %^t
           ;(dot . t)       ;Graphviz
           ;(calc . t)      ; Emacs Calc
           ;(fortran . t)   ;Fortran
-          ;(gnuplot . t)   ;gnuplot
+          (gnuplot . t)   ;requires gnuplot installed
           ;(haskell . t)   ;Haskell
           (java . t)      ;Java
           (js . t)        ;Javascript
