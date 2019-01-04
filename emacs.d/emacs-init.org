@@ -1154,7 +1154,6 @@ Show icon in gutter area indicating if ins, mod or del
 (use-package git-gutter
   :ensure t
   :defer 0.3
-  :diminish
   :config
     (global-git-gutter-mode t)
 )
@@ -1173,7 +1172,6 @@ https://github.com/roman/golden-ratio.el/issues/57
 #+begin_src emacs-lisp
 (use-package golden-ratio
   :ensure t
-  :diminish golden-ratio-mode
   :init
     (golden-ratio-mode 1)
   :config
