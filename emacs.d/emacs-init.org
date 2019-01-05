@@ -1089,23 +1089,25 @@ An emacs mode for handling Dockerfiles
   :bind ("\C-h" . ehelp-command)
 )
 #+END_SRC
-* elpy
-#+BEGIN_SRC emacs-lisp
-;;; -- elpy - Emacs Python IDE
-;; Info and setup
-;; https://realpython.com/blog/python/emacs-the-best-python-editor/
-;; https://github.com/jorgenschaefer/elpy
-;; https://emacs.stackexchange.com/questions/10065/how-can-i-defer-loading-elpy-using-use-package
-;; User manual:  http://elpy.readthedocs.io/en/latest/
-;; Setup python env first:
-;;   pip install ipython jedi flake8 autopep8 yapf
-;; To use elpy, just add the following to your .emacs:
+* elpy - disabled
+-- elpy - Emacs Python IDE
+Info and setup
+https://realpython.com/blog/python/emacs-the-best-python-editor/
+https://github.com/jorgenschaefer/elpy
+https://emacs.stackexchange.com/questions/10065/how-can-i-defer-loading-elpy-using-use-package
+User manual:  http://elpy.readthedocs.io/en/latest/
+Setup python env first:
+  pip install ipython jedi flake8 autopep8 yapf
+To use elpy, just add the following to your .emacs:
 ;(when (require 'elpy nil t)
 ;  (elpy-enable))
-;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
+; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
 ;(elpy-clean-modeline)
+
+#+BEGIN_SRC emacs-lisp
 (use-package elpy
-  :ensure t
+  :ensure f
+  :disabled
   :commands elpy-enable
   :init (with-eval-after-load 'python (elpy-enable))
   :config
@@ -1134,16 +1136,17 @@ An emacs mode for handling Dockerfiles
 * exec-path-from-shell
 https://github.com/purcell/exec-path-from-shell
 A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell.
+This sets $MANPATH, $PATH and exec-path from your shell, but only on OS X and Linux.
 
 #+BEGIN_SRC emacs-lisp
 (use-package exec-path-from-shell
   :ensure t
   :custom
     (exec-path-from-shell-check-startup-files nil)
+  :if (memq window-system '(mac ns x))
   :config
-    (push "HISTFILE" exec-path-from-shell-variables)
-    (exec-path-from-shell-initialize)
-)
+    (setq exec-path-from-shell-variables '("HISTFILE" "PATH"))
+    (exec-path-from-shell-initialize))
 #+END_SRC
 * git gutter
 https://github.com/syohex/emacs-git-gutter
@@ -1597,10 +1600,11 @@ SCHEDULED: %^t
 
 (setq org-capture-templates
       `(("t" "Tasks" entry
-         (file+headline "~/org/gtd/newgtd.org" "Tasks"), dbj/org-basic-task-template)
+         (file "~/org/inbox.org"), dbj/org-basic-task-template)
+         ;(file+headline "~/org/inbox.org" "Tasks"), dbj/org-basic-task-template)
 
         ("j" "Jira" entry
-         (file+headline "~/org/gtd/newgtd.org" "Jira Tickets")
+         (file "~/org/inbox.org")
 "* TODO %^{Task}
 SCHEDULED: %^t
 
@@ -1614,16 +1618,16 @@ SCHEDULED: %^t
 %?")
 
         ("s" "Someday task" entry
-         (file+headline "~/org/gtd/someday.org" "Someday"), dbj/org-basic-someday-template)
+         (file "~/org/someday.org"), dbj/org-basic-someday-template)
         ;("j" "Journal entry" plain
         ; (file+datetree+prompt "~/org/gtd/journal.org")
         ; "%i\n%?\n")
-        ("c" "Contact, email" entry (file "~/org/gtd/contacts.org")
+        ("c" "Contact, email" entry (file "~/org/contacts.org")
           "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
 :END:")
-        ("C" "Contact, full" entry (file "~/org/gtd/contacts.org")
+        ("C" "Contact, full" entry (file "~/org/contacts.org")
           "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
@@ -1637,7 +1641,7 @@ SCHEDULED: %^t
 :BIRTHDAY:
 :END:")
         ("n" "Notes" entry
-          (file+datetree "~/org/gtd/notes.org")
+          (file+datetree "~/org/notes.org")
           "* %?\n\n%i\n")
 ))
 
@@ -1648,9 +1652,9 @@ SCHEDULED: %^t
 (setq org-insert-heading-respect-content t)
 
 ;; Set Todo keywords, same as:
-;; #+TODO: TODO(t) STARTED(s) WAITING(w) | DONE(d) CANCELED(c)
+;; #+TODO: TODO(t) INPROGRESS(p) WAITING(w) | DONE(d) CANCELED(c)
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "STARTED(s)" "WAITING(w@/!)")
+      '((sequence "TODO(t)" "INPROGRESS(p)" "WAITING(w@/!)")
         (sequence "|" "DONE(d!)" "CANCELED(c@)")))
 
 ;; Set Tags, same as:
@@ -1684,7 +1688,7 @@ SCHEDULED: %^t
 ;; Set to the name of the file where new notes will be stored
 (setq org-mobile-inbox-for-pull "~/org/flagged.org")
 ;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/Home/MobileOrg")
+;(setq org-mobile-directory "~/Dropbox/Home/MobileOrg")
 
 ;;; Strike-through finished todos
 ;; sachachua.com/blog/2012/12/emacs-strike-through-headlines-for-done-tasks-in-org/
