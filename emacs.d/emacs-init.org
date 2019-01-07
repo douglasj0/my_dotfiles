@@ -1161,7 +1161,7 @@ Show icon in gutter area indicating if ins, mod or del
     (global-git-gutter-mode t)
 )
 #+END_SRC
-* golden-ratio
+* golden-ratio - disabled
 https://github.com/roman/golden-ratio.el
 http://pragmaticemacs.com/emacs/resize-your-windows-to-the-golden-ratio/
 If you prefer to use a single large emacs frame with multiple windows inside, you might like the golden ratio package. This automatically resizes your windows so that the window containing the point is the largest (size determined by the mathematical golden ratio). This means that the window you are working in is nice and large but you can still see what is going on in the other windows.
@@ -1174,7 +1174,8 @@ https://github.com/roman/golden-ratio.el/issues/57
 
 #+begin_src emacs-lisp
 (use-package golden-ratio
-  :ensure t
+  :ensure f
+  :disabled
   :init
     (golden-ratio-mode 1)
   :config
