@@ -278,21 +278,21 @@ function parse_git_dirty {
 # if CHIC02RR812G8WP change to thorn
 if [[ ${HOSTNAME} == "C02RR812G8WP.grubhub.local" ]]; then
   PROMPT_COMMAND='if [ $? = 0 ]; then
-    PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${WHITE}\$${RESET} "
+    PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
   else
-    PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${RED}\$${RESET} "
+    PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${RED}\$${RESET} "
   fi'
 elif [[ ${HOSTNAME} == "flowers" ]] || [[ ${HOSTNAME} == "lothlorien" ]]; then
   PROMPT_COMMAND='if [ $? = 0 ]; then
-    PS1="${GREEN}\A \u${RESET}${GREEN}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${WHITE}\$${RESET} "
+    PS1="${GREEN}\A \u${RESET}${GREEN}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
   else
-    PS1="${GREEN}\A \u${RESET}${GREEN}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${RED}\$${RESET} "
+    PS1="${GREEN}\A \u${RESET}${GREEN}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${RED}\$${RESET} "
   fi'
 else
   PROMPT_COMMAND='if [ $? = 0 ]; then
-    PS1="${WHITE}\A \u${RESET}${WHITE}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${WHITE}\$${RESET} "
+    PS1="${WHITE}\A \u${RESET}${WHITE}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
   else
-    PS1="${WHITE}\A \u${RESET}${WHITE}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE}\`parse_git_branch\`\n${RED}\$${RESET} "
+    PS1="${WHITE}\A \u${RESET}${WHITE}@\h[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${RED}\$${RESET} "
   fi'
 fi
 export PS1
