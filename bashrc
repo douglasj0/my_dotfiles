@@ -140,6 +140,17 @@ pushkey() {
   fi
 }
 
+# magit, function to open magit buffer from current git repo
+magit() {
+  if git status > /dev/null 2>&1; then
+      #emacsclient -nw --eval "(call-interactively #'magit-status)"
+      emacsclient -s ${HOME}/.emacs.d/tmp/server -n -a emacs --eval "(call-interactively #'magit-status)"
+  else
+      echo "Not in a git repo"
+      return 1
+  fi
+}
+
 
 #############
 #  Aliases  #
