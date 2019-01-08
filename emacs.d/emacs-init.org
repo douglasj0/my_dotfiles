@@ -1133,6 +1133,14 @@ To use elpy, just add the following to your .emacs:
 )
 #+END_SRC
 
+* esup - disabled
+Emacs startup profiler
+
+#+begin_src emacs-lisp
+(use-package esup
+  :ensure f
+  :disabled)
+#+end_src
 * exec-path-from-shell
 https://github.com/purcell/exec-path-from-shell
 A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell.
@@ -1334,7 +1342,7 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
 #+BEGIN_SRC emacs-lisp
 (use-package ispell
   :ensure nil
-  :defer t
+  :defer 0.5
   :custom
      (ispell-program-name "aspell")
      (ispell-list-command "list")
@@ -1354,7 +1362,7 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 ;;; changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 (use-package ivy
   :ensure t
-  :defer 0.1
+  :defer 0.5
   :init (ivy-mode 1)
   :commands ivy
   :bind (("C-s"     . counsel-grep-or-swiper) ;; swiper for small files, counsel-grep for larger
@@ -1446,7 +1454,7 @@ https://www.emacswiki.org/emacs/LineNumbers
 #+BEGIN_SRC emacs-lisp
 (use-package linum-mode
   :ensure nil
-  :defer t
+  :defer 0.6
   :bind ("C-<f6>" . linum-mode)
 ;  :config
 ;    (setq linum-format "%d ") ;put space between linenumber and text
@@ -1459,7 +1467,7 @@ It's Magit! A Git porcelain inside Emacs. https://magit.vc
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :ensure t
-  :defer 0.3
+  :defer 5
   :commands magit
   :bind
     (("C-x g" . magit-status)
@@ -1815,6 +1823,7 @@ Keybindings: https://projectile.readthedocs.io/en/latest/usage/
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :ensure t
+  :defer 5
   :config
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -1920,7 +1929,7 @@ counsel-M-x re-uses smex while offering extra features.
 #+BEGIN_SRC emacs-lisp
 (use-package smex
   :ensure t
-  :defer t
+  :defer 2
   ;:bind (("M-x" . smex)
   ;       ("M-X" . smex-major-mode-commands))
   :config
