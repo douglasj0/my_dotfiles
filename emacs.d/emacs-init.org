@@ -1057,10 +1057,10 @@ An emacs mode for handling Dockerfiles
   :ensure t)
 #+end_src
 * dumb-jump - disabled
-#+BEGIN_SRC emacs-lisp
 https://github.com/jacktasia/dumb-jump
 an Emacs "jump to definition" package
 
+#+BEGIN_SRC emacs-lisp
 (use-package dumb-jump
   :ensure f
   :disabled
