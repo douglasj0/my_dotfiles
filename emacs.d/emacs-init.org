@@ -1058,13 +1058,9 @@ An emacs mode for handling Dockerfiles
 #+end_src
 * dumb-jump - disabled
 #+BEGIN_SRC emacs-lisp
-;;; --dumb-jump -- https://github.com/jacktasia/dumb-jump
-;;; alternative Emacs packages for other languages
-;;; - Tags supports multiple languages
-;;; - GNU Global supports multiple languages
-;;; - Tern for JavaScript
-;;; - elpy for Python
-;;; - robe for Ruby
+https://github.com/jacktasia/dumb-jump
+an Emacs "jump to definition" package
+
 (use-package dumb-jump
   :ensure f
   :disabled
@@ -1077,19 +1073,19 @@ An emacs mode for handling Dockerfiles
     (setq dumb-jump-selector 'ivy)
 )
 #+END_SRC
-* electric help - disabled
+* electric help
+https://www.emacswiki.org/emacs/ElectricHelp
+Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
+Provides: SPC to scroll, DEL to scroll back, q to exit, r to retain
+Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
+
 #+BEGIN_SRC emacs-lisp
-;;; -- ehelp (Electric help)
-;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
-;; Provides: SPC to scroll, DEL to scroll back, q to exit, r to retain
-;; Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
 (use-package ehelp
-  :ensure f
-  :disabled
+  :ensure t
   :bind ("\C-h" . ehelp-command)
 )
 #+END_SRC
-* elpy - disabled
+* elpy
 -- elpy - Emacs Python IDE
 Info and setup
 https://realpython.com/blog/python/emacs-the-best-python-editor/
@@ -1106,8 +1102,7 @@ To use elpy, just add the following to your .emacs:
 
 #+BEGIN_SRC emacs-lisp
 (use-package elpy
-  :ensure f
-  :disabled
+  :ensure t
   :commands elpy-enable
   :init (with-eval-after-load 'python (elpy-enable))
   :config
@@ -1825,9 +1820,10 @@ Keybindings: https://projectile.readthedocs.io/en/latest/usage/
   :ensure t
   :defer 5
   :config
-    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (projectile-mode +1)
+    ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ; super-p
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
     (setq projectile-completion-system 'ivy) ; use ivy for completion
     (setq projectile-enable-caching t) ; enable caching
     (setq projectile-indexing-method 'alien) ; external cmd for indexing
@@ -2019,14 +2015,13 @@ Emacs package that displays available keybindings in popup
       (which-key-mode))
 )
 #+END_SRC
-* yasnippet - disabled
+* yasnippet
 https://github.com/joaotavora/yasnippet
 A template system for Emacs http://joaotavora.github.com/yasnippet/
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-  :ensure f
-  :disabled
+  :ensure t
 )
 #+END_SRC
 * zenburn-theme
