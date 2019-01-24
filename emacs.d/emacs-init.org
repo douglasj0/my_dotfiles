@@ -51,6 +51,9 @@
 | C-c t               | shell-pop                 | pop up shell                          |
 | C-c o               | switch-window             |                                       |
 |---------------------+---------------------------+---------------------------------------|
+| C-x * q             | quick-calc                |                                       |
+| C-x * *             | calc                      |                                       |
+|---------------------+---------------------------+---------------------------------------|
 
 * Themes and housekeeping
 #+BEGIN_SRC emacs-lisp
@@ -1572,7 +1575,7 @@ MultiTerm is a mode based on term.el, for managing multiple terminal buffers in 
 SCHEDULED: %^t
 
 :PROPERTIES:
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
 :END:
 :LOGBOOK:
 - State \"TODO\"       from \"\"           %U
@@ -1584,7 +1587,7 @@ SCHEDULED: %^t
 
 :PROPERTIES:
 :Story: %^{story|2|0|0.5|1|2|3|5|8|13}
-:URL: %^L
+:URL: %^{URL}
 :END:
 :LOGBOOK:
 - State \"TODO\"       from \"\"           %U
@@ -1593,60 +1596,33 @@ SCHEDULED: %^t
 
 (defvar dbj/org-basic-someday-template "* %^{Task}
 :PROPERTIES:
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
 :END:
 :LOGBOOK:
 - State \"TODO\"       from \"\"           %U
 :END:
-%?
-
-%i" "Basic task data")
+%?" "Basic task data")
 
 (setq org-capture-templates
       `(("t" "Tasks" entry
-         (file "~/org/inbox.org"), dbj/org-basic-task-template)
-         ;(file+headline "~/org/inbox.org" "Tasks"), dbj/org-basic-task-template)
+          (file "~/org/inbox.org"), dbj/org-basic-task-template)
+          ;(file+headline "~/org/inbox.org" "Tasks"), dbj/org-basic-task-template)
 
         ("j" "Jira" entry
-         (file "~/org/inbox.org")
-"* TODO %^{Task}
-SCHEDULED: %^t
-
-:PROPERTIES:
-:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
-:URL: %^{URL}
-:END:
-:LOGBOOK:
-- State \"TODO\"       from \"\"           %U
-:END:
-%?")
+          (file "~/org/inbox.org"), dbj/org-basic-jira-template)
 
         ("s" "Someday task" entry
-         (file "~/org/someday.org"), dbj/org-basic-someday-template)
-        ;("j" "Journal entry" plain
-        ; (file+datetree+prompt "~/org/gtd/journal.org")
-        ; "%i\n%?\n")
-        ("c" "Contact, email" entry (file "~/org/contacts.org")
-          "* %(org-contacts-template-name)
-:PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:END:")
-        ("C" "Contact, full" entry (file "~/org/contacts.org")
-          "* %(org-contacts-template-name)
-:PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:PHONE:
-:ALIAS:
-:NICKNAME:
-:IGNORE:
-:ICON:
-:NOTE:
-:ADDRESS:
-:BIRTHDAY:
-:END:")
+          (file "~/org/someday.org"), dbj/org-basic-someday-template)
+
+        ("r" "Reference information" entry
+          (file+headline "~/org/reference.org" "Inbox"))
+
         ("n" "Notes" entry
-          (file+datetree "~/org/notes.org")
-          "* %?\n\n%i\n")
+          (file+headline "~/org/notes.org"))
+
+        ("o" "Journal" entry
+          (file+olp+datetree "~/org/journal.org")
+          "* %?\nEntered on %U\n  %i\n  %a")
 ))
 
 
