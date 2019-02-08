@@ -1893,6 +1893,16 @@ shell-pop.el helps you to use shell easily on Emacs. Only one key action to work
 ;    (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 ;)
 #+END_SRC
+* smart-mode-line
+https://github.com/Malabarba/smart-mode-line
+
+#+BEGIN_SRC emacs-lisp
+(use-package smart-mode-line
+  :ensure t
+  :after zenburn-theme
+  :init (add-hook 'after-init-hook 'sml/setup)
+)
+#+END_SRC
 * smex
 https://github.com/nonsequitur/smex
 A smart M-x enhancement for Emacs.
