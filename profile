@@ -10,7 +10,14 @@ case $(uname) in
 Darwin)  # Darwin Environment
 echo ".darwin profile loaded"
 
-PATH=$HOME/bin:/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/usr/local/opt/qt/bin
+#For compilers to find ruby you may need to set:
+#  export LDFLAGS="-L/usr/local/opt/ruby/lib"
+#  export CPPFLAGS="-I/usr/local/opt/ruby/include"
+
+#For pkg-config to find ruby you may need to set:
+#  export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
+
+PATH=$HOME/bin:/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Xcode.app/Contents/Developer/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/opt/openssl/bin:/usr/local/opt/ruby/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/usr/local/opt/qt/bin
 MANPATH=/usr/local/share/man:/usr/local/man:/usr/share/man:/usr/X11/man
 TMPDIR=/tmp
 export PATH MANPATH TMPDIR
