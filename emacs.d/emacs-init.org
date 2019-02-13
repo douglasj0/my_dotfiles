@@ -1354,6 +1354,13 @@ http://cestlaz.github.io/posts/using-emacs-6-swiper/
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 
 #+BEGIN_SRC emacs-lisp
+;https://github.com/lewang/flx
+;Fuzzy matching for Emacs ... a la Sublime Text.
+;can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
+(use-package flx
+  :ensure t
+)
+
 ;;; -- ivy-mode - a generic completion mechanism for Emacs
 ;;; swiper - an alternative to isearch uses ivy to show overview of all matches
 ;;; https://github.com/abo-abo/swiper
@@ -1385,8 +1392,9 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
     (ivy-use-virtual-buffers t)
     (enable-recursive-minibuffers t)
     (ivy-virtual-abbreviate 'full)
-    (ivy-initial-inputs-alist nil)
     (ivy-dynamic-exhibit-delay-ms 250)
+    (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+    (ivy-initial-inputs-alist nil)
 )
 #+END_SRC
 
@@ -1999,6 +2007,22 @@ Emacs package that displays available keybindings in popup
 
       (setq which-key-allow-multiple-replacements t) ;Default = nil
       (which-key-mode))
+)
+#+END_SRC
+* yaml-mode
+https://github.com/yoshiki/yaml-mode
+The emacs major mode for editing files in the YAML data serialization format.
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  :mode
+    ("\\.yml$" . yaml-mode)
+    ("\\.yaml$" . yaml-mode)
+  :config
+    (add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 )
 #+END_SRC
 * yasnippet
