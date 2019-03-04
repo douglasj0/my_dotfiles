@@ -1393,7 +1393,9 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
     (enable-recursive-minibuffers t)
     (ivy-virtual-abbreviate 'full)
     (ivy-dynamic-exhibit-delay-ms 250)
-    (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+    (ivy-re-builders-alist
+      '((swiper . ivy--regex-plus)    ;disable fuzzy matching for swiper
+        (t      . ivy--regex-fuzzy))) ;but enable for ivy
     (ivy-initial-inputs-alist nil)
 )
 #+END_SRC
