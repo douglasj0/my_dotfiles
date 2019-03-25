@@ -66,23 +66,17 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 * Monday
-\n9:30-10:30 [Meeting] Dugong Sprint Planning (Sofritas 19fl)
 \n.
 \n2:30-3:30 [Meeting] Team Otter Sprint Planning (Tenderloin 20th)
 \n* Tuesday
-\n9:15-9:30 [Meeting] Dugong Standup
 \n1-5 SRE Heads Down Time
 \n* Wednesday
-\n9:15-9:30 [Meeting] Dugong Standup
 \n11:20-12:30 Spicey Chicken
 \n2-2:30 [Meeting] Doug:Charlie 1:1
 \n* Thursday
-\n9:15-9:30 [Meeting] Dugong Standup
 \n10-11 [Meeting] Dugong Grooming (19fl - Sofritas)
 \n1-5 SRE Heads Down Time
-\n3-4 Manatee Grooming (Sofritas 19fl)
 \n* Friday
-\n9:15-9:30 [Meeting] Dugong Standup (The Couch of 1,000 Truths)
 \n9:30-10:30 [Meeting] SRE's Unite (Spanakopita 19th fl)
 \n10:30-11 Run 'topgrade' to update mac apps
 \n11:30-12:30 Learning Friday/Technology Lunch
