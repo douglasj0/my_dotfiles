@@ -137,6 +137,9 @@
 #+END_SRC
 * Global key bindings
 #+BEGIN_SRC emacs-lisp
+;;; test out electric buffer mode
+(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+
 ;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
 ; Re-enable swap frames with M-`
 (global-set-key "\M-`" 'other-frame)
@@ -929,38 +932,6 @@ async.el is a module for doing asynchronous processing in Emacs. Some async appl
   :init (async-bytecomp-package-mode 1)
 )
 #+END_SRC
-* color-moccur
-#+BEGIN_SRC emacs-lisp
-(use-package color-moccur
-  :ensure t
-  :commands (isearch-moccur isearch-all)
-  :bind (("M-s O" . moccur)
-         :map isearch-mode-map
-         ("M-o" . isearch-moccur)
-         ("M-O" . isearch-moccur-all))
-  :init
-  (setq isearch-lazy-highlight t)
-  :config
-  (use-package moccur-edit))
-#+END_SRC
-* deadgrep - disabled
-# https://github.com/Wilfred/deadgrep
-# https://github.com/Malabarba/spinner.el
-fast, friendly searching with ripgrep and Emacs
-
-#+BEGIN_SRC emacs-lisp
-(use-package spinner
-  :ensure f
-  :disabled)
-
-(use-package deadgrep
-  :ensure f
-  :disabled
-  :requires spinner
-  :config
-  (global-set-key (kbd "<f5>") #'deadgrep)
-)
-#+END_SRC
 * deft
 #+BEGIN_SRC emacs-lisp
 ;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
@@ -1059,23 +1030,6 @@ An emacs mode for handling Dockerfiles
   :mode "Dockerfile\\'"
   :ensure t)
 #+end_src
-* dumb-jump - disabled
-https://github.com/jacktasia/dumb-jump
-an Emacs "jump to definition" package
-
-#+BEGIN_SRC emacs-lisp
-(use-package dumb-jump
-  :ensure f
-  :disabled
-  :commands dumb-jump
-  :bind (("M-g j" . dumb-jump-go)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config
-    (setq dumb-jump-selector 'ivy)
-)
-#+END_SRC
 * electric help
 https://www.emacswiki.org/emacs/ElectricHelp
 Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
@@ -1135,9 +1089,9 @@ To use elpy, just add the following to your .emacs:
 Emacs startup profiler
 
 #+begin_src emacs-lisp
-(use-package esup
-  :ensure f
-  :disabled)
+;(use-package esup
+;  :ensure t
+;  :disabled)
 #+end_src
 * exec-path-from-shell
 https://github.com/purcell/exec-path-from-shell
@@ -1167,27 +1121,6 @@ Show icon in gutter area indicating if ins, mod or del
     (global-git-gutter-mode t)
 )
 #+END_SRC
-* golden-ratio - disabled
-https://github.com/roman/golden-ratio.el
-http://pragmaticemacs.com/emacs/resize-your-windows-to-the-golden-ratio/
-If you prefer to use a single large emacs frame with multiple windows inside, you might like the golden ratio package. This automatically resizes your windows so that the window containing the point is the largest (size determined by the mathematical golden ratio). This means that the window you are working in is nice and large but you can still see what is going on in the other windows.
-
-Can also look at zoom for similar functionality
-https://github.com/cyrus-and/zoom
-
-Enable on buffer change?
-https://github.com/roman/golden-ratio.el/issues/57
-
-#+begin_src emacs-lisp
-(use-package golden-ratio
-  :ensure f
-  :disabled
-  :init
-    (golden-ratio-mode 1)
-  :config
-    (add-hook 'buffer-list-update-hook #'golden-ratio)
-)
-#+end_src
 * gnus
 #+BEGIN_SRC emacs-lisp
 ;;; -- gnus - Mail and News reader
@@ -1211,8 +1144,7 @@ https://github.com/roman/golden-ratio.el/issues/57
     (gnus-sum-thread-tree-single-leaf "`-> ")
 
     ;; show even if there are no articles
-    (gnus-permanently-visible-groups ".*")
-)
+    (gnus-permanently-visible-groups ".*"))
 #+END_SRC
 * groovy-mode
 https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes
@@ -1222,114 +1154,6 @@ A groovy major mode, grails minor mode, and a groovy inferior mode.
 (use-package groovy-mode
   :ensure t
   :mode "\\.groovy\\'\\|\\.gradle\\'"
-)
-#+END_SRC
-* ibuffer
-#+BEGIN_SRC emacs-lisp
-;;; -- ibuffer - *Nice* buffer switching
-;;
-;; ibuffer filtering
-;;
-;; Search all marked buffers
-;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
-;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
-;;   ‘U’ - Replace by regexp in each of the marked buffers.
-;;   ‘Q’ - Query replace in each of the marked buffers.
-;;   ‘I’ - As above, with a regular expression.
-(use-package ibuffer
-  :ensure nil
-  :bind ( "C-x C-b" . ibuffer)
-  :config
-    ;; Don't show empty buffer groups
-    (setq ibuffer-show-empty-filter-groups nil)
-
-    ;; work groups for ibuffer
-    (setq ibuffer-saved-filter-groups
-          '(("default"
-             ("version control" (or (mode . svn-status-mode)
-                       (mode . svn-log-edit-mode)
-                       (name . "^\\*svn-")
-                       (name . "^\\*vc\\*$")
-                       (name . "^\\*Annotate")
-                       (name . "^\\*vc-")
-                       (name . "^\\*git-")
-                       (name . "^\\*magit")))
-             ("emacs" (or (name . "^\\*scratch\\*$")
-                          (name . "^\\*Messages\\*$")
-                          (name . "^TAGS\\(<[0-9]+>\\)?$")
-                          (name . "^\\*info\\*$")
-                          (name . "^\\*Occur\\*$")
-                          (name . "^\\*grep\\*$")
-                          (name . "^\\*Compile-Log\\*$")
-                          (name . "^\\*Backtrace\\*$")
-                          (name . "^\\*Process List\\*$")
-                          (name . "^\\*gud\\*$")
-                          (name . "^\\*Man")
-                          (name . "^\\*WoMan")
-                          (name . "^\\*Kill Ring\\*$")
-                          (name . "^\\*Completions\\*$")
-                          (name . "^\\*tramp")
-                          (name . "^\\*shell\\*$")
-                          (name . "^\\*compilation\\*$")))
-             ("Helm" (or (name . "\*helm\*")))
-             ("Help" (or (name . "\*Help\*")
-                         (name . "\*Apropos\*")
-                         (name . "\*info\*")))
-             ("emacs-source" (or (mode . emacs-lisp-mode)
-                                 (filename . "/Applications/Emacs.app")
-                                 (filename . "/bin/emacs")))
-             ("emacs-config" (or (filename . ".emacs.d")
-                                 (filename . "emacs-config")))
-            ("org" (or (name . "^\\*org-")
-                        (name . "^\\*Org")
-                        (mode . org-mode)
-                        (mode . muse-mode)
-                        (name . "^\\*Calendar\\*$")
-                        (name . "^+current$")
-                        (name . "^diary$")
-                        (name . "^\\*Agenda")))
-             ("latex" (or (mode . latex-mode)
-                          (mode . LaTeX-mode)
-                          (mode . bibtex-mode)
-                          (mode . reftex-mode)))
-             ("dired" (or (mode . dired-mode)))
-             ("perl" (mode . cperl-mode))
-             ("erc" (mode . erc-mode))
-             ("shell" (or (mode . shell-mode)
-                            (name . "^\\*terminal\\*$")
-                            (name . "^\\*ansi-term\\*$")
-                            (name . "^\\*shell\\*$")
-                            (name . "^\\*eshell\\*$")))
-             ("gnus" (or (name . "^\\*gnus trace\\*$")
-                            (mode . message-mode)
-                            (mode . bbdb-mode)
-                            (mode . mail-mode)
-                            (mode . gnus-group-mode)
-                            (mode . gnus-summary-mode)
-                            (mode . gnus-article-mode)
-                            (name . "^\\.bbdb$")
-                            (name . "^\\.newsrc-dribble"))))))
-
-    ;; Order the groups so the order is : [Default], [agenda], [emacs]
-    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-                                                     activate)
-      (setq ad-return-value (nreverse ad-return-value)))
-
-    ;; Hide the following buffers
-    ;;(setq ibuffer-never-show-predicates
-    ;;      (list "\\*Completions\\*"
-    ;;            "\\*vc\\*"))
-
-    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
-    (setq ibuffer-expert t)
-
-    ;; Load the 'work' group, can set to load groups by location
-    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
-    ;; list up to date. I turn it on in my ibuffer-mode-hook:
-    (add-hook 'ibuffer-mode-hook
-              '(lambda ()
-                 (ibuffer-auto-mode 1)
-                 (ibuffer-switch-to-saved-filter-groups "default")))
 )
 #+END_SRC
 * ispell
@@ -1345,8 +1169,7 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
      (ispell-program-name "aspell")
      (ispell-list-command "list")
      ;; sug-mode=fast is more accurate, slower then ultra
-     (ispell-extra-args '("--sug-mode=fast"))
-)
+     (ispell-extra-args '("--sug-mode=fast")))
 #+END_SRC
 * ivy, counsel, and counsel-projectile
 https://github.com/abo-abo/swiper
@@ -1464,8 +1287,8 @@ https://www.emacswiki.org/emacs/LineNumbers
   :ensure nil
   :defer 0.6
   :bind ("C-<f6>" . linum-mode)
-;  :config
-;    (setq linum-format "%d ") ;put space between linenumber and text
+  ;:config
+  ;  (setq linum-format "%d ") ;put space between linenumber and text
 )
 #+END_SRC
 * magit
@@ -1494,16 +1317,6 @@ markdown-mode is a major mode for editing Markdown-formatted text.
 (use-package markdown-mode
   :ensure t
   :commands markdown-mode)
-#+END_SRC
-* multi-term - disabled
-https://www.emacswiki.org/emacs/MultiTerm
-MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.
-
-#+BEGIN_SRC emacs-lisp
-(use-package multi-term
-  :ensure f
-  :disabled
-)
 #+END_SRC
 * org-mode
 #+BEGIN_SRC emacs-lisp
@@ -1767,33 +1580,6 @@ Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
    (setq delete-by-moving-to-trash t)
 )
 #+END_SRC
-* pdf-tools - disabled
-#+BEGIN_SRC emacs-lisp
-;;; Linux:
-;;; sudo apt install libpoppler-glib-dev
-;;;
-;;; Mac:
-;;; http://pragmaticemacs.com/emacs/view-and-annotate-pdfs-in-emacs-with-pdf-tools/
-;;; brew install poppular automake
-;;;
-;;; NOTE:  Had to disable pin manual for initial install
-;;; or run M-x pdf-tools-install and ignore error about epdfinfo and restart
-;(use-package pdf-tools
-;  :pin manual ;; manually update?
-;  ;:ensure t
-;  :config
-;  ;; speed up load times on systems with unicode symbols, set before init
-;  (setq pdf-view-use-unicode-ligther nil)
-;  ;; initialise
-;  (pdf-tools-install)
-;  ;; open pdfs scaled to fit page
-;  (setq-default pdf-view-display-size 'fit-page)
-;  ;; automatically annotate highlights
-;  (setq pdf-annot-activate-created-annotations t)
-;  ;; use normal isearch
-;  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-;)
-#+END_SRC
 * projectile
 https://github.com/bbatsov/projectile
 http://batsov.com/projectile/
@@ -1831,14 +1617,6 @@ automaticly apply pep8 fixes on file save
      (setq py-autopep8-options '("--max-line-length=100"))
 )
 #+end_src
-* pydoc-info
-https://github.com/emacsmirror/pydoc-info
-Search and browse the Python documentation in Info https://bitbucket.org/nil/pydoc-info
-
-#+BEGIN_SRC emacs-lisp
-(use-package pydoc-info
-  :ensure t)
-#+END_SRC
 * recentf
 https://www.emacswiki.org/emacs/RecentFiles
 a minor mode that builds a list of recently opened files
@@ -1858,14 +1636,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
     ;(global-set-key (kbd "C-x C-r") 'helm-recentf)
 )
 #+END_SRC
-* restclient
-https://github.com/pashky/restclient.el
-HTTP REST client tool for emacs
-
-#+BEGIN_SRC emacs-lisp
-(use-package restclient
-  :ensure t)
-#+END_SRC
 * s
 https://github.com/magnars/s.el
 The long lost Emacs string manipulation library
@@ -1873,45 +1643,6 @@ The long lost Emacs string manipulation library
 #+BEGIN_SRC emacs-lisp
 (use-package s
   :ensure t)
-#+END_SRC
-* sane-term
-https://github.com/adamrt/sane-term
-Cycle through terms in emacs
-
-#+begin_src emacs-lisp
-(use-package sane-term
-  :ensure t
-  :bind (
-    ("C-x t" . sane-term)
-    ("C-x T" . sane-term-create))
-)
-#+end_src
-* shell-pop - disabled
-https://github.com/kyagi/shell-pop-el
-shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
-
-#+BEGIN_SRC emacs-lisp
-;(require 'shell-pop)
-;(use-package shell-pop
-;  :ensure t
-;  :bind ("C-c t" . shell-pop)
-;  :config
-;    (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-;    (setq shell-pop-term-shell "/bin/bash")
-;    ;(setq shell-pop-universal-key "C-t")
-;    ;; need to do this manually or not picked up by `shell-pop'
-;    (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-;)
-#+END_SRC
-* smart-mode-line
-https://github.com/Malabarba/smart-mode-line
-
-#+BEGIN_SRC emacs-lisp
-(use-package smart-mode-line
-  :ensure t
-  :after zenburn-theme
-  :init (add-hook 'after-init-hook 'sml/setup)
-)
 #+END_SRC
 * smex
 https://github.com/nonsequitur/smex
@@ -2036,7 +1767,8 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
   :ensure t
 )
 #+END_SRC
-* zenburn-theme
+* themes
+zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
 The Zenburn colour theme ported to Emacs
 
@@ -2044,5 +1776,18 @@ The Zenburn colour theme ported to Emacs
 (use-package zenburn-theme
   :ensure t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'zenburn t)
+)
+#+END_SRC
+
+gruvbox-theme
+https://github.com/greduan/emacs-theme-gruvbox
+Gruvbox is a retro groove color scheme for Emacs. Port of the Vim version. https://github.com/morhetz/gruvbox
+
+#+BEGIN_SRC emacs-lisp
+;(use-package gruvbox-theme
+;  :ensure t
+;  :config
+;  (load-theme 'gruvbox t)
+;)
 #+END_SRC

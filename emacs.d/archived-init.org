@@ -1,0 +1,3186 @@
+* w3m
+#+BEGIN_SRC emacs-lisp
+;;; NOTE, eww should be used instead now - dbj
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- w3m-mode - Emacs interface to the w3m text browser
+
+;(message "*** Loaded w3m.el")
+
+(setq w3m-use-cookies t)
+
+;; lnum mode - press 'f' then the # next to the link, similar to ace-jump-mode - slow load
+;(w3m-lnum-mode 1)
+
+;; enable tab mode
+;; C-c C-t - create, C-c C-w - close, C-c C-[np] - navigate, C-c C-s - navigate
+(setq w3m-use-tab t)
+
+;; for better navigation (use arrow keys to navigate)
+;(setq w3m-key-binding 'info)
+
+;; enable images (T to toggle)
+;(setq w3m-default-display-inline-images t)
+;(setq w3m-display-inline-images t)
+
+;; From wiki, fix encoding issues
+(setq w3m-coding-system 'utf-8
+          w3m-file-coding-system 'utf-8
+          w3m-file-name-coding-system 'utf-8
+          w3m-input-coding-system 'utf-8
+          w3m-output-coding-system 'utf-8
+          w3m-terminal-coding-system 'utf-8)
+
+;;; --- config from beatofthegeek.com ---
+;; http://beatofthegeek.com/2014/02/my-setup-for-using-emacs-as-web-browser.html
+
+;;change default browser for 'browse-url' to w3m
+;(setq browse-url-browser-function 'w3m-goto-url-new-session)
+
+;;change w3m user-agent to android to get mobile versions of sites
+(setq w3m-user-agent "Mozilla/5.0 (Linux; U; Android 2.3.3; zh-tw; HTC_Pyramid Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.")
+
+;;quick access hacker news (M-x hn)
+(defun hn ()
+  (interactive)
+  (browse-url "http://news.ycombinator.com"))
+
+;;quick access reddit (M-x reddit)
+(defun reddit (reddit)
+  "Opens the REDDIT in w3m-new-session"
+  (interactive (list
+               (read-string "Enter the reddit (default: psycology): " nil nil "psychology" nil)))
+  (browse-url (format "http://m.reddit.com/r/%s" reddit))
+)
+
+;;quick access to wikipedia search (search for word under cursor) (M-x wikipedia)
+(defun wikipedia-search (search-term)
+  "Search for SEARCH-TERM on wikipedia"
+  (interactive
+   (let ((term (if mark-active
+                   (buffer-substring (region-beginning) (region-end))
+               (word-at-point))))
+     (list
+      (read-string
+       (format "Wikipedia (%s):" term) nil nil term)))
+  )
+ (browse-url
+  (concat
+   "http://en.m.wikipedia.org/w/index.php?search="
+   search-term
+  ))
+)
+
+;;when I want to enter the web address all by hand, (M-x open-site)  NOTE: load w3m first
+(defun w3m-open-site (site)
+  "Opens site in new w3m session with 'http://' appended"
+  (interactive
+   (list (read-string "Enter website address(default: w3m-home):" nil nil w3m-home-page nil )))
+  (w3m-goto-url-new-session
+   (concat "http://" site)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-done ((t (:foreground "PaleGreen" :weight normal :strike-through t))) t)
+ '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon" :strike-through t))) t))
+
+#+END_SRC
+
+* org checkbox
+#+BEGIN_SRC emacs-lisp
+;;; org-mode function to check checkbox and move to next in list
+;;; http://superuser.com/questions/568482/org-mode-function-to-check-checkbox-and-move-to-next-in-list
+(defun zin/org-checkbox-next ()
+  (interactive)
+  (when (org-at-item-checkbox-p)
+    (org-toggle-checkbox))
+  (org-next-item))
+#+END_SRC
+* org capture templates v1
+#+BEGIN_SRC emacs-lisp
+;; Capture templates - C-c c t
+(setq org-capture-templates
+ '(("t" "Todo" entry (file+headline (concat org-directory "/gtd.org") "Tasks")
+        "* TODO %?\n %i\n %a")
+   ("n" "Note" entry (file+datetree (concat org-directory "/notes.org") "Notes")
+        "* %?\nEntered on %U\n  %i\n  %a")
+   ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org") "Journel")
+        "* %?\nEntered on %U\n  %i\n  %a")
+   ("l" "Link" plain (file (concat org-directory "/links.org"))
+         "- %?\n %x\n"))) ; save contents of clipboard to links.org (URLs)
+#+END_SRC
+
+* direx
+#+BEGIN_SRC emacs-lisp
+;(require 'direx)
+;(global-set-key (kbd "C-x C-j") 'direx:jump-to-directory)
+
+;(defun notes ()
+;  "Switch to my work dir."
+;   (interactive)
+;   (find-file "~/org/deft")
+;   )
+
+;;; Smartscan minor mode (M-x smartscan-mode)
+;; https://github.com/mickeynp/smart-scan
+;; M-n and M-p move between symbols and type M-' to replace all symbols
+;;  in the buffer matching the one under point, and C-u M-' to replace
+;;  symbols in your current defun only (as used by narrow-to-defun.)
+;(smartscan-mode 1)
+
+;;; Guru Mode
+;;; Guru mode disables some common keybindings and suggests the use of the
+;;; established Emacs alternatives instead.
+;;; https://github.com/bbatsov/guru-mode
+;;;(add-to-list 'load-path "~/emacs.d/vendor")
+;(require 'guru-mode)
+;(guru-global-mode +1)
+#+END_SRC
+* cobol mode
+#+BEGIN_SRC emacs-lisp
+;;; Cobol Mode
+;;(require 'cobol-mode)      ; Unconditional load
+;; commented out, interfering with magit!
+;(autoload 'cobol-mode "cobol-mode" "Major mode for Tandem COBOL files." t nil)
+;(setq auto-mode-alist
+;   (append
+;     '(("\\.cob\\'" . cobol-mode)         ;extension of .cob means cobol-mode
+;       ("\\([\\/]\\|^\\)[^.]+$" . cobol-mode)) ;so does no extension at all.
+;    auto-mode-alist))
+#+END_SRC
+
+* occur-dwim
+#+BEGIN_SRC emacs-lisp
+;;; occur-dwim (instead of plain M-s o)
+;;; http://oremacs.com/2015/01/26/occur-dwim/
+;;; It will offer as the default candidate:
+;;;    the current region, if it's active
+;;;    the current symbol, otherwise
+;(defun occur-dwim ()
+;  "Call `occur' with a sane default."
+;  (interactive)
+;  (push (if (region-active-p)
+;            (buffer-substring-no-properties
+;             (region-beginning)
+;             (region-end))
+;          (thing-at-point 'symbol))
+;        regexp-history)
+;  (call-interactively 'occur))
+#+END_SRC
+* don't iconify fram
+#+BEGIN_SRC emacs-lisp
+;; Don't iconify frame when running under a window system
+;(if (display-graphic-p) (progn (global-set-key "\C-Z" nil)))
+;; Instead ruUse double C-z for suspend frame
+;(global-unset-key (kbd "C-z"))
+;(global-set-key (kbd "C-z C-z") 'my-suspend-frame)
+;(defun my-suspend-frame ()
+;  "In a GUI environment, do nothing, otherwise 'suspend-frame'."
+;  (interactive)
+;  (if (display-graphic-p)
+;      (message "suspend-frame disabled for graphical displays.")
+;    (suspend-frame)))
+#+END_SRC
+
+* ido
+#+BEGIN_SRC emacs=lisp
+; packages:  flx-ido, flx, ido-ubiquitous, ido-vertical-mode
+
+;;; -- ido - Interactive do
+;;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+;;; http://www.masteringemacs.org/articles/2010/10/10/introduction-to-ido-mode
+
+;|--------+------------------------------------------------------------------|
+;| C-b    | Reverts to the old switch-buffer completion engine               |
+;| C-f    | Reverts to the old find-file completion engine                   |
+;| C-d    | Opens a dired buffer in the current directory                    |
+;| C-a    | Toggles showing ignored files (see ido-ignore-files)             |
+;| C-c    | Toggles if searching of buffer and file names should ignore case |
+;| TAB    | Attempt to complete the input                                    |
+;| C-p    | Toggles prefix matching                                          |
+;| C-s/C-r| Moves to the next and previous match, respectively               |
+;| C-t    | Toggles matching by Emacs regular expression.                    |
+;| BKSP   | Deletes characters as usual or goes up one directory             |
+;| C-SPC  | Restricts completion list to anything that matches your input    |
+;| //     | ignore the preceding path, and go back to the top-most directory |
+;| ~/     | Jumps to the home directory.                                     |
+;| M-d    | Searches for the input in all sub-directories of current         |
+;| C-k    | Kills the currently focused buffer or deletes the file           |
+;| M-m    | Creates a new sub-directory to the directory you're in           |
+;|--------+------------------------------------------------------------------|
+
+;;; Enable ido mode to work with C-x C-f (find files)
+;;; C-x C-f C-f will revert to old style completion engine
+;;; or try C-x C-f C-e to enter path EDIT mode.  Useful for tramp.
+
+;;; Enable flx mode (flx.el and flx-ido.el) - https://github.com/lewang/flx
+(require 'flx-ido)
+(ido-mode 1)
+(ido-everywhere 1) ; ido-ubiquitous, disable to use lusty-explorer
+(flx-ido-mode 1)
+;; disable ido faces to see flx highlights.
+(setq ido-use-faces nil)
+(setq gc-cons-threshold 20000000)
+
+(add-to-list 'ido-ignore-files "\\.DS_Store")
+
+;; If Recentf is enabled, you can use [C-x b] (or M-x ido-switch-buffer) to
+;; visit recently closed files by enabling virtual buffers
+(setq ido-use-virtual-buffers t)
+
+;; Create new buffer if nothing found (always, prompt, never)
+(setq ido-create-new-buffer 'always)
+(setq confirm-nonexistent-file-or-buffer nil)
+
+;;; Disable the merging (the "looking in other directories" in ido vulgo)
+;;; But can also undo the merge with C-z in ido
+(setq ido-auto-merge-work-directories-length -1)  ;; breaks searching in dirs
+
+;;; when using ido, the confirmation is rather annoying...
+;;; but, when this is active ido does a double confirmation
+;;; ignoring the first y and requiring a second y, disabling!
+;;;
+;;; testing it again 3/2/14
+(setq confirm-nonexistent-file-or-buffer nil)
+
+(setq ido-file-extensions-order '(".org" ".txt" ".py" ".pp" ".md"
+                                  ".xml" ".el" ".ini" ".cfg" ".cnf"))
+
+;; Disable ido's directory cache, acts up over flaky network links
+(setq ido-save-directory-list-file nil)
+
+(setq
+  ;ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
+  ido-save-directory-list-file nil
+  ido-ignore-buffers ;; ignore these guys
+  '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
+    "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+  ;ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
+  ido-case-fold  t                 ; be case-insensitive
+  ido-enable-last-directory-history t ; remember last used dirs
+  ;ido-enable-last-directory-history nil ;forget latest selected dir name
+  ido-max-work-directory-list 30   ; should be enough
+  ido-max-work-file-list      50   ; remember many
+  ido-use-filename-at-point nil    ; don't use filename at point (annoying)
+  ido-use-url-at-point nil         ; don't use url at point (annoying)
+  ;ido-enable-flex-matching nil     ; don't try to be too smart (fuzzy matching)
+  ido-enable-flex-matching t       ; enable fuzzy matching
+  ido-max-prospects 8              ; don't spam my minibuffer
+  ido-confirm-unique-completion t  ; wait for RET, even with unique completion
+)
+#+END_SRC
+
+* recentf-ido
+#+BEGIN_SRC emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- recentf - a minor mode that builds a list of recently opened files
+;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
+(autoload 'recentf "recentf" "List recent files" t)
+(setq
+  recentf-save-file "~/.emacs.d/cache/recentf"
+  recentf-max-saved-items 200      ;; max save file cache
+  recentf-max-menu-items 15)      ;; max 15 in menu
+(recentf-mode t)                  ;; turn it on
+;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;(global-set-key "\C-x\ \C-r" 'helm-recentf)
+
+;;; If using Lusty, remove this to limit ido-mode usage
+;;; strips path, only shows filename
+(defun recentf-ido-find-file ()
+  "Find a recent file using Ido,"
+ (interactive)
+  (let* ((file-assoc-list
+     (mapcar (lambda (x)
+       (cons (file-name-nondirectory x)
+             x))
+         recentf-list))
+    (filename-list
+     (remove-duplicates (mapcar #'car file-assoc-list)
+                :test #'string=))
+    (filename (ido-completing-read "Choose recent file: "
+           filename-list
+           nil
+           t)))
+    (when filename
+      (find-file (cdr (assoc filename
+                file-assoc-list))))))
+;;; get rid of `find-file-read-only' and replace it with something more useful.
+(global-set-key "\C-x\ \C-r" 'recentf-ido-find-file)
+
+;;; http://emacs.stackexchange.com/questions/3063/recently-opened-files-in-ido-mode
+;;; shows full path
+;(defun ido-recentf-open ()
+;  "Use `ido-completing-read' to find a recent file."
+;  (interactive)
+;  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+;      (message "Opening file...")
+;    (message "Aborting")))
+;; bind to C-x C-r
+;(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+
+(defun ido-choose-from-recentf ()
+  "Use ido to select a recently visited file from the `recentf-list'"
+  (interactive)
+  (find-file (ido-completing-read "Open file: " recentf-list nil t)))
+
+;; bind it to "C-c f"
+(global-set-key (kbd "C-c f") 'ido-choose-from-recentf)
+#+END_SRC
+
+* smex
+#+BEGIN_SRC emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- smex - a M-x enhancement for Emacs based on ido.
+;;; https://github.com/nonsequitur/smex/
+
+(require 'smex nil 'noerror)
+;; (smex-initialize)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command
+#+END_SRC
+
+* zippy the pinhead
+#+BEGIN_SRC emacs-lisp
+;;; Zippy the pinhead yow
+;;; http://ergoemacs.org/emacs/emacs_zippy.html
+;;; Now, in emacs, call yow, and a zippism will show. To insert (C-u M-x yow)
+(defvar yow-file)
+(setq yow-file "~/.emacs.d/elisp/yow_file_zippy_pinhead_quotes.txt.gz" )
+#+END_SRC
+
+* system specific
+#+BEGIN_SRC emacs-lisp
+;;; http://stackoverflow.com/questions/9248996/how-to-toggle-fullscreen-with-emacs-as-default
+;(defun switch-fullscreen nil
+;  (interactive)
+;  (let* ((modes '(nil fullboth fullwidth fullheight))
+;         (cm (cdr (assoc 'fullscreen (frame-parameters) ) ) )
+;         (next (cadr (member cm modes) ) ) )
+;    (modify-frame-parameters
+;     (selected-frame)
+;     (list (cons 'fullscreen next)))))
+;(global-set-key (kbd "C-M-<return>") 'switch-fullscreen)
+
+;;; Non-native fullscreen for OSX on emacs 24.4
+;;; http://crypt.codemancers.com/posts/2013-07-05-non-native-fullscreen-for-osx-on-emacs-24-dot-3/
+;(setq ns-use-native-fullscreen nil)
+;(global-set-key (kbd "C-M-<return>") 'toggle-frame-fullscreen)
+
+;;; Mac specific from https://github.com/rawsyntax/emacs.d/blob/master/Blondie.local.el
+;(setq browse-url-browser-function 'browse-url-default-macosx-browser)
+;;(setq browse-url-browser-function 'browse-url-default-windows-browser)
+;(setq locate-make-command-line (lambda (s) `("mdfind" "-name" ,s)))
+#+END_SRC
+
+* removed from init.el but may want again some day - 2017
+#+BEGIN_SRC emacs-lisp
+;; Comments are too dark:
+;; Molokai is: #465457 , Candidates:
+;; #586568 #6B7679 #7E8789 #90989A
+;(set-face-foreground 'font-lock-comment-face "#6B7679")
+;(set-face-foreground 'font-lock-comment-delimiter-face "#6B7679")
+
+;; don't let the cursor go into minibuffer prompt
+;(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
+
+;;; http://makble.com/how-to-switching-buffer-effectively-in-emacs
+;(defalias 'go 'switch-to-buffer)
+;(defalias 'go 'helm-mini)
+
+;; Increase / Decrease emacs font size with Meta-Scroll wheel
+;; Can do via keyboard with C-x C-+ / C-x C--. Then successive C-+ / C--
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- cisco router mode
+(autoload 'cisco-router-mode "cisco-router-mode" "edit cisco .cfg files" t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ediff
+;;; 1. ignore space, 2. split side by side, 3. prevent popup):
+; ??? - had custom-set-variables in it - ???
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- helm - an incremental completion and selection narrowing framework
+;;; https://github.com/emacs-helm/helm
+;;; http://tuhdo.github.io/helm-intro.html
+
+(require 'helm)
+(require 'helm-config)
+
+;;; Allow TAB to run command instead of selecting action
+;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;;(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;;(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+;;(when (executable-find "curl")
+;;  (setq helm-google-suggest-use-curl-p t))
+
+(setq helm-split-window-in-side-p           t  ;open helm buffer inside current window
+      helm-ff-file-name-history-use-recentf t)
+
+;; SMEX replacement
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+
+;; activate helm mini (replaces switch-to-buffer)
+(global-set-key (kbd "C-x b") 'helm-mini)
+
+;; To enable fuzzy matching, add the following settings:
+(setq helm-buffers-fuzzy-matching t
+      helm-recentf-fuzzy-match    t)
+
+;; Override helm-command-find-files
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+;; jump to any man entry using Helm interface (C-x c m)
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+;; Bind helm-occur
+(global-set-key (kbd "C-c h o") 'helm-occur)
+
+(helm-mode 1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ldap-mode - colorization for editing ldifs, etc.
+;(autoload 'ldap-mode "ldap-mode" nil t)
+(require 'ldap-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- moccur - lists all matching lines of multiple buffers -- slow load
+;;; color and edit moccur
+;;; http://emacswiki.org/emacs/OccurMode
+(require 'color-moccur)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- CPerl mode
+;;;
+
+;; Use cperl-mode instead of the default perl-mode
+(defalias 'perl-mode 'cperl-mode)
+
+(setq cperl-electric-keywords t) ;; expands for keywords such as foreach, etc
+(setq cperl-hairy t) ;; Turns on most of the CPerlMode options
+
+;;; use C-h f for perldoc in cperl mode
+(add-hook 'cperl-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-h f") 'cperl-perldoc)))
+
+;; http://stackoverflow.com/questions/12408031/emacs-perl-mode-send-script-buffer-to-perl-interpreter
+(defun perl-on-buffer ()
+  (interactive)
+  (shell-command-on-region (point-min) (point-max) "perl" "*Perl Output*")
+  (display-buffer "*Perl Output*"))
+
+(eval-after-load 'cperl-mode
+  '(define-key cperl-mode-map (kbd "<f5>") 'perl-on-buffer))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- powerline
+;;; Emacs version of the Vim powerline status-bar
+;;; https://github.com/milkypostman/powerline
+;(require 'powerline)
+;; Built-in Themes
+;(powerline-default-theme)
+;;(powerline-center-theme)
+;;(powerline-vim-theme)
+;;(powerline-nano-theme)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- sos - Search StackOverflow - https://github.com/omouse/emacs-sos
+(autoload 'sos "sos" "Search Stack Overflow" t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- sql
+;;; sql-mysql configuration
+;;; Problem is mysql isn't on Mac's path
+
+;(add-to-list 'exec-path "/Applications/XAMPP/xamppfiles/bin")
+;(defalias 'sql-get-login 'ignore) ; don't prompt for login info
+;;; -or-
+;;(setq sql-mysql-program "/Applications/XAMPP/xamppfiles/bin/mysql")
+;(setq sql-user "admin")
+;;(setq sql-password "")
+;(setq sql-server "localhost")
+;;(setq sql-database "test")
+;;(setq sql-mysql-options "optional command line options")
+
+;;; hilight mysql keywords
+;(add-hook 'sql-mode-hook 'sql-highlight-mysql-keywords)
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (sql-highlight-mysql-keywords)))
+
+
+;;; hilight postgres keywords
+;(add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
+
+;; Make mysql not buffer sending stuff to the emacs-subprocess-pipes
+;; -n unbuffered -B batch(tab separated) -f force(go on after error)
+;; -i ignore spaces -q no caching -t table format
+(setq-default sql-mysql-options (quote ("-n" "-B" "-f" "-i" "-q" "-t")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; --sublime2 - Emacs additions to mimic sublime text 2 functionality
+;(load "~/.emacs.d/sublime2")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- subversion  (call with M-x svn-status) -- slow load
+;;; psvn
+;(require 'psvn)
+;(autoload 'svn-status "psvn.el" "SVN interface" t) ;; doesn't show indicator
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Testing area
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Prefer eww for browing links
+;(setq browse-url-browser-function 'eww-browse-url)
+
+;;; Dockerfile mode
+;; https://github.com/spotify/dockerfile-mode
+;;You can specify the image name in the file itself by adding a line like this at the top of your Dockerfile.
+;;  ## -*- docker-image-name: "your-image-name-here" -*-
+;;If you don't, you'll be prompted for an image name each time you build.
+
+;;(add-to-list 'load-path "/your/path/to/dockerfile-mode/")
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+
+
+;;; tramp dired sudo mode
+;;; http://oremacs.com/2015/02/15/sudo-stuffs/
+(defun sudired ()
+  (interactive)
+  (require 'tramp)
+  (let ((dir (expand-file-name default-directory)))
+    (if (string-match "^/sudo:" dir)
+        (user-error "Already in sudo")
+      (dired (concat "/sudo::" dir)))))
+(define-key dired-mode-map "!" 'sudired)
+
+
+;;; Do Ediff as I Mean
+;;; http://kaushalmodi.github.io/2015/03/09/do-ediff-as-i-mean/
+(defun modi/ediff-dwim ()
+        "Do ediff as I mean.
+
+If a region is active when this command is called, call `ediff-regions-wordwise'.
+
+Else if the current frame has 2 windows,
+- Do `ediff-files' if the buffers are associated to files and the buffers
+  have not been modified.
+- Do `ediff-buffers' otherwise.
+
+Otherwise call `ediff-buffers' interactively."
+        (interactive)
+        (if (region-active-p)
+            (call-interactively 'ediff-regions-wordwise)
+          (if (= 2 (safe-length (window-list)))
+              (let (bufa bufb filea fileb)
+                (setq bufa  (get-buffer (buffer-name)))
+                (setq filea (buffer-file-name bufa))
+                (save-excursion
+                  (other-window 1)
+                  (setq bufb (get-buffer (buffer-name))))
+                (setq fileb (buffer-file-name bufb))
+                (if (or
+                     ;; if either of the buffers is not associated to a file
+                     (null filea) (null fileb)
+                     ;; if either of the buffers is modified
+                     (buffer-modified-p bufa) (buffer-modified-p bufb))
+                    (progn
+                      (message "Running (ediff-buffers \"%s\" \"%s\") .." bufa bufb)
+                      (ediff-buffers bufa bufb))
+                  (progn
+                    (message "Running (ediff-files \"%s\" \"%s\") .." filea fileb)
+                    (ediff-files filea fileb))))
+            (call-interactively 'ediff-buffers))))
+
+
+;;; -------------------
+;;; --- twittering mode
+;;; http://www.emacswiki.org/emacs/TwitteringMode
+(require 'twittering-mode)
+
+;; (Optional) To avoid having to authorize twittering-mode everytime you run it, add this to your `.emacs`:
+;; This requires GnuPG. And also, either EasyPG (included as part of emacs v. 23) or alpaca.el (0.13) is necessary.
+(setq twittering-use-master-password t)
+
+;; (Optional) You may need to point twittering-mode to your system’s CA certificate bundle. On CentOS 6 I added this to my `.emacs`:
+;(setq twittering-cert-file "/etc/ssl/certs/ca-bundle.crt")
+
+;;; http://stackoverflow.com/questions/5710334/how-can-i-get-mouse-selection-to-work-in-emacs-and-iterm2-on-mac
+;; Enable mouse support
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (global-set-key [mouse-4] '(lambda ()
+                              (interactive)
+                              (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                              (interactive)
+                              (scroll-up 1)))
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t)
+)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ido - Interactive do
+;;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+;;; http://www.masteringemacs.org/articles/2010/10/10/introduction-to-ido-mode
+
+;|--------+------------------------------------------------------------------|
+;| C-b    | Reverts to the old switch-buffer completion engine               |
+;| C-f    | Reverts to the old find-file completion engine                   |
+;| C-d    | Opens a dired buffer in the current directory                    |
+;| C-a    | Toggles showing ignored files (see ido-ignore-files)             |
+;| C-c    | Toggles if searching of buffer and file names should ignore case |
+;| TAB    | Attempt to complete the input                                    |
+;| C-p    | Toggles prefix matching                                          |
+;| C-s/C-r| Moves to the next and previous match, respectively               |
+;| C-t    | Toggles matching by Emacs regular expression.                    |
+;| BKSP   | Deletes characters as usual or goes up one directory             |
+;| C-SPC  | Restricts completion list to anything that matches your input    |
+;| //     | ignore the preceding path, and go back to the top-most directory |
+;| ~/     | Jumps to the home directory.                                     |
+;| M-d    | Searches for the input in all sub-directories of current         |
+;| C-k    | Kills the currently focused buffer or deletes the file           |
+;| M-m    | Creates a new sub-directory to the directory you're in           |
+;|--------+------------------------------------------------------------------|
+; require packages: flx-ido, ido-ubiquitous, ido-vertical-mode
+
+;;; Enable ido mode to work with C-x C-f (find files)
+;;; C-x C-f C-f will revert to old style completion engine
+;;; or try C-x C-f C-e to enter path EDIT mode.  Useful for tramp.
+
+;;; Enable flx mode (flx.el and flx-ido.el) - https://github.com/lewang/flx
+(require 'flx-ido)
+(ido-mode 1)
+(ido-everywhere 1) ; ido-ubiquitous, disable to use lusty-explorer
+(flx-ido-mode 1)
+;; disable ido faces to see flx highlights.
+(setq ido-use-faces nil)
+(setq gc-cons-threshold 20000000)
+
+(add-to-list 'ido-ignore-files "\\.DS_Store")
+
+;; If Recentf is enabled, you can use [C-x b] (or M-x ido-switch-buffer) to
+;; visit recently closed files by enabling virtual buffers
+(setq ido-use-virtual-buffers t)
+
+;; Create new buffer if nothing found (always, prompt, never)
+(setq ido-create-new-buffer 'always)
+(setq confirm-nonexistent-file-or-buffer nil)
+
+;;; Disable the merging (the "looking in other directories" in ido vulgo)
+;;; But can also undo the merge with C-z in ido
+(setq ido-auto-merge-work-directories-length -1)  ;; breaks searching in dirs
+
+;;; when using ido, the confirmation is rather annoying...
+;;; but, when this is active ido does a double confirmation
+;;; ignoring the first y and requiring a second y, disabling!
+;;;
+;;; testing it again 3/2/14
+(setq confirm-nonexistent-file-or-buffer nil)
+
+(setq ido-file-extensions-order '(".org" ".txt" ".py" ".pp" ".md"
+                                  ".xml" ".el" ".ini" ".cfg" ".cnf"))
+
+;; Disable ido's directory cache, acts up over flaky network links
+(setq ido-save-directory-list-file nil)
+
+(setq
+  ;ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
+  ido-save-directory-list-file nil
+  ido-ignore-buffers ;; ignore these guys
+  '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
+    "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+  ;ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
+  ido-case-fold  t                 ; be case-insensitive
+  ido-enable-last-directory-history t ; remember last used dirs
+  ;ido-enable-last-directory-history nil ;forget latest selected dir name
+  ido-max-work-directory-list 30   ; should be enough
+  ido-max-work-file-list      50   ; remember many
+  ido-use-filename-at-point nil    ; don't use filename at point (annoying)
+  ido-use-url-at-point nil         ; don't use url at point (annoying)
+  ;ido-enable-flex-matching nil     ; don't try to be too smart (fuzzy matching)
+  ido-enable-flex-matching t       ; enable fuzzy matching
+  ido-max-prospects 8              ; don't spam my minibuffer
+  ido-confirm-unique-completion t  ; wait for RET, even with unique completion
+)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ispell - interactive spell
+;;; Set ispell checks to use aspell
+;;; on mac:  `brew install aspell --lang=en` (instead of ispell)
+(eval-after-load "ispell"
+  '(progn
+     (setq ispell-program-name "aspell")
+     (setq ispell-list-command "list")
+     ;; sug-mode=fast is more accurate, slower then ultra
+     (setq ispell-extra-args '("--sug-mode=fast"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- recentf - a minor mode that builds a list of recently opened files
+;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
+(autoload 'recentf "recentf" "List recent files" t)
+(setq
+  recentf-save-file "~/.emacs.d/cache/recentf"
+  recentf-max-saved-items 200      ;; max save file cache
+  recentf-max-menu-items 15)      ;; max 15 in menu
+(recentf-mode t)                  ;; turn it on
+;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;(global-set-key "\C-x\ \C-r" 'helm-recentf)
+
+;;; If using Lusty, remove this to limit ido-mode usage
+;;; strips path, only shows filename
+(defun recentf-ido-find-file ()
+  "Find a recent file using Ido,"
+ (interactive)
+  (let* ((file-assoc-list
+     (mapcar (lambda (x)
+       (cons (file-name-nondirectory x)
+             x))
+         recentf-list))
+    (filename-list
+     (remove-duplicates (mapcar #'car file-assoc-list)
+                :test #'string=))
+    (filename (ido-completing-read "Choose recent file: "
+           filename-list
+           nil
+           t)))
+    (when filename
+      (find-file (cdr (assoc filename
+                file-assoc-list))))))
+;;; get rid of `find-file-read-only' and replace it with something more useful.
+(global-set-key "\C-x\ \C-r" 'recentf-ido-find-file)
+
+;;; http://emacs.stackexchange.com/questions/3063/recently-opened-files-in-ido-mode
+;;; shows full path
+;(defun ido-recentf-open ()
+;  "Use `ido-completing-read' to find a recent file."
+;  (interactive)
+;  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+;      (message "Opening file...")
+;    (message "Aborting")))
+;; bind to C-x C-r
+;(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+
+(defun ido-choose-from-recentf ()
+  "Use ido to select a recently visited file from the `recentf-list'"
+  (interactive)
+  (find-file (ido-completing-read "Open file: " recentf-list nil t)))
+
+;; bind it to "C-c f"
+(global-set-key (kbd "C-c f") 'ido-choose-from-recentf)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- Uniquify
+;;; If you use ido-mode, you may also want to check out uniquify, which allows
+;;; for buffer names that are easier to distinguish in the ido-mode echo area
+;;; Fixed buffer unique names, stop adding <1>, <2> to buffers
+;;; http://stackoverflow.com/questions/5607794/emacs-switching-between-buffers-with-the-same-name-but-in-different-directories
+;(require 'uniquify)
+(autoload 'uniquify "uniquify" "unique buffers" t)
+(setq uniquify-buffer-name-style 'post-forward)
+;(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-strip-common-suffix t)
+
+
+;;; for org-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Agenda
+
+;; Agenda window setup
+;; Possible values for this option are:
+;;  current-window  -Show agenda in the current window, keeping other windows.
+;;  other-frame     -Use `switch-to-buffer-other-frame' to display agenda.
+;;  other-window    -Use `switch-to-buffer-other-window' to display agenda.
+;;  reorganize-frame-Show only 2 windows, the current window and the agenda.
+;; See also the variable `org-agenda-restore-windows-after-quit'."
+;(setq org-agenda-window-setup 'other-frame) ;; open agenda in new frame
+(setq org-agenda-window-setup 'current-window) ;; don't kill my window setup
+
+(setq calendar-week-start-day 1)
+(setq case-fold-search t)
+(setq current-language-environment "Latin-1")
+(setq default-input-method "latin-1-prefix")
+(setq make-backup-files nil)
+(setq normal-erase-is-backspace t)
+(setq org-agenda-ndays 7)
+(setq org-agenda-repeating-timestamp-show-all nil)
+(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-show-all-dates t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-sorting-strategy (quote ((agenda time-up priority-down tag-up) (todo tag-up))))
+(setq org-agenda-start-on-weekday nil)
+(setq org-agenda-todo-ignore-deadlines t)
+(setq org-agenda-todo-ignore-scheduled t)
+(setq org-agenda-todo-ignore-with-date t)
+(setq org-agenda-window-setup (quote other-window))
+(setq org-deadline-warning-days 7)
+(setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"mystyles.css\">")
+(setq org-fast-tag-selection-single-key nil)
+(setq org-log-done (quote (done)))
+(setq org-refile-targets (quote (("gtd.org" :maxlevel . 1) ("someday.org" :level . 2))))
+(setq org-reverse-note-order nil)
+(setq org-tags-column -78)
+(setq org-tags-match-list-sublevels nil)
+(setq org-time-stamp-rounding-minutes (quote (1 15)))
+(setq org-use-fast-todo-selection t)
+(setq org-use-tag-inheritance nil)
+(setq org-log-done nil)
+(setq org-agenda-include-diary nil)
+(setq org-timeline-show-empty-dates t)
+(setq org-insert-mode-line-in-empty-file t)
+
+;; 2006-05-26  - added following line
+;(require 'org-install)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Other
+(setq org-agenda-exporter-settings
+      '((ps-number-of-columns 1)
+        (ps-landscape-mode t)
+        (htmlize-output-type 'css)))
+
+(defun gtd ()
+    (interactive)
+    (find-file "~/org/gtd/gtd.org")
+)
+(global-set-key (kbd "C-c g") 'gtd)
+
+
+(add-hook 'org-agenda-mode-hook 'hl-line-mode)
+
+; org mode start - added 20 Feb 2006
+;; The following lines are always needed. Choose your own keys.
+
+;(global-font-lock-mode t)
+
+;(global-set-key "\C-x\C-r" 'prefix-region)
+(global-set-key "\C-x\C-l" 'goto-line)
+(global-set-key "\C-x\C-y" 'copy-region-as-kill)
+#+END_SRC
+* org.conf.el - 20180414
+#+BEGIN_SRC emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
+;;; planning, and authoring with a fast and effective plain-text system
+;;; Moved to init-org-mode.el for ease of customization
+;;; NOTES:
+;;; To include org files in other org files:
+;;; #+setupfile: /path/to/config.org
+;;; Info:
+;;;   Call up the info with C-h i.
+;;;   Then call g (Info-goto-node).
+;;;   Enter (org) at the prompt.
+
+;(message "*** Loaded org-mode-init.el")
+(require 'org)
+(require 'org-contacts) ;takes 0.59s To load
+(require 'ox-confluence)
+
+;; Add markdown and odt export
+;;http://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown
+;; odt errors in messages, no styles?
+(eval-after-load "org"
+  '(require 'ox-md nil t))
+;(eval-after-load "org"
+;  '(require 'ox-odt nil t))
+
+;; Bind C-h o to org-info
+;(with-eval-after-load "org"
+ (define-key global-map (kbd "C-h o") 'org-info)
+;)
+
+; The following lines are always needed.  Choose your own keys.
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cc" 'org-capture)
+
+; add opml export - didn't work, test it
+; https://github.com/edavis/org-opml
+;(load-library "ox-opml")
+
+;; Set to the location of your Org files on your local system
+(setq org-directory "~/org")
+
+;; Open all txt files in org-mode
+(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
+
+;; Use ido for prompt completions
+;(setq org-completion-use-ido t)
+
+;; Including all org files from a directory into the agenda.
+;;   Or manage by hand, visit file and type:  C-c [ to add, C-c ] to remove.
+;(setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Agenda
+
+;; Agenda window setup
+;; Possible values for this option are:
+;;  current-window  -Show agenda in the current window, keeping other windows.
+;;  other-frame     -Use `switch-to-buffer-other-frame' to display agenda.
+;;  other-window    -Use `switch-to-buffer-other-window' to display agenda.
+;;  reorganize-frame-Show only 2 windows, the current window and the agenda.
+;; See also the variable `org-agenda-restore-windows-after-quit'."
+;(setq org-agenda-window-setup 'other-frame) ;; open agenda in new frame
+(setq org-agenda-window-setup 'current-window) ;; don't kill my window setup
+
+;; Include emacs diary, not needed if using org-anniversary
+;(setq org-agenda-include-diary t)
+
+;; Custom agenda commands
+;; http://members.optusnet.com.au/~charles57/GTD/mydotemacs.txt
+(setq org-agenda-custom-commands
+'(
+("P" "Projects"
+              ((tags "PROJECT")))
+
+("H" "Office and Home Lists"
+     ((agenda)
+          (tags-todo "OFFICE")
+          (tags-todo "HOME")
+          (tags-todo "COMPUTER")
+          (tags-todo "DVD")
+          (tags-todo "READING")))
+
+("D" "Daily Action List"
+     ((agenda "" ((org-agenda-ndays 1)
+                     (org-agenda-sorting-strategy
+                        (quote ((agenda time-up priority-down tag-up))))
+                     (org-deadline-warning-days 0)
+                     ))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Capture
+
+;; Setup default target for notes and a global hotkey for new ones
+;; NOTE:  Need org-mode version 6.3.6 or later for this to work
+;; http://stackoverflow.com/questions/3622603/org-mode-setup-problem-when-trying-to-use-capture
+(setq org-default-notes-file (expand-file-name "~/org/notes.org"))
+
+;; Capture templates - C-c c t
+;(setq org-capture-templates
+; '(("t" "Todo" entry (file+headline (concat org-directory "/gtd.org") "Tasks")
+;        "* TODO %?\n %i\n %a")
+;   ("n" "Note" entry (file+datetree (concat org-directory "/notes.org") "Notes")
+;        "* %?\nEntered on %U\n  %i\n  %a")
+;   ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org") "Journel")
+;        "* %?\nEntered on %U\n  %i\n  %a")
+;   ("l" "Link" plain (file (concat org-directory "/links.org"))
+;         "- %?\n %x\n"))) ; save contents of clipboard to links.org (URLs)
+
+;; Based on Sacha Chua's org-capture-tempaltes
+;; http://pages.sachachua.com/.emacs.d/Sacha.html
+(defvar dbj/org-basic-task-template "* TODO %^{Task}
+SCHEDULED: %^t
+:PROPERTIES:
+:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:END:
+Captured %<%Y-%m-%d %H:%M>
+%?
+" "Basic task data")
+
+(defvar dbj/org-basic-someday-template "* %^{Task}
+:PROPERTIES:
+:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:END:
+Captured %<%Y-%m-%d %H:%M>
+%?
+
+%i
+" "Basic task data")
+
+(setq org-capture-templates
+      `(("t" "Tasks" entry
+         (file+headline "~/org/gtd/newgtd.org" "Tasks")
+         ,dbj/org-basic-task-template)
+        ("s" "Someday task" entry
+         (file+headline "~/org/gtd/someday.org" "Someday")
+         ,dbj/org-basic-someday-template)
+        ("j" "Journal entry" plain
+         (file+datetree+prompt "~/org/gtd/journal.org")
+         "%i\n%?\n")
+        ("c" "Contact, email" entry (file "~/org/gtd/contacts.org")
+          "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:END:")
+        ("C" "Contact, full" entry (file "~/org/gtd/contacts.org")
+          "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:PHONE:
+:ALIAS:
+:NICKNAME:
+:IGNORE:
+:ICON:
+:NOTE:
+:ADDRESS:
+:BIRTHDAY:
+:END:")
+        ("n" "Notes" entry
+          (file+datetree "~/org/gtd/notes.org")
+          "* %?\n\n%i\n")
+))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Other
+
+;; When adding new heading below the current heading, the new heading is
+;; placed after the body instead of before it.  C-<RET>
+(setq org-insert-heading-respect-content t)
+
+;; Set Todo keywords, same as:
+;; #+TODO: TODO(t) STARTED(s) WAITING(w) | DONE(d) CANCELED(c)
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "STARTED(s)" "WAITING(w@/!)")
+        (sequence "|" "DONE(d!)" "CANCELED(c@)")))
+
+;; Set Tags, same as:
+;; #+TAGS: home(h) work(w) @computer(c) @phone(p) errants(e)
+(setq org-tag-alist '(("@office" . ?o) ("@home" . ?h) ("computer" . ?c)
+                      ("phone" . ?p) ("reading" . ?r)))
+
+;; Prevent C-k from killing whole subtrees and losing work
+(setq org-special-ctrl-k t)
+
+;; Fontify code buffers in org, instead of grey text
+;; This is especially nice when you open an editing buffer with [Ctrl+c ']
+;; to insert code into the #+begin_src ... #+end_src area.
+(setq org-src-fontify-natively t)
+
+;; org-refile (C-c C-w) settings from:
+;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg34415.html
+;(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-outline-path-complete-in-steps t)
+;(setq org-completion-use-ido nil)
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-targets '((org-agenda-files :maxlevel . 2)
+                           (nil :maxlevel . 3)))
+
+;; MobileOrg config
+;; M-x org-mobile-push - copy org files to ~/Dropbox/MobileOrg
+;; M-x org-mobile-pull - integrate remove changes into local org files
+;;
+;; Set to the location of your Org files on your local system
+(setq org-directory "~/org")
+;; Set to the name of the file where new notes will be stored
+(setq org-mobile-inbox-for-pull "~/org/flagged.org")
+;; Set to <your Dropbox root directory>/MobileOrg.
+(setq org-mobile-directory "~/Dropbox/Home/MobileOrg")
+
+;;; Display a list of closed todo's from this month and last month
+;;; http://jcardente.blogspot.com/2010/06/org-mode-hack-tasks-done-last-month.html
+;(defun jtc-org-tasks-closed-in-month (&optional month year match-string)
+;  "Produces an org agenda tags view list of the tasks completed
+;in the specified month and year. Month parameter expects a number
+;from 1 to 12. Year parameter expects a four digit number. Defaults
+;to the current month when arguments are not provided. Additional search
+;criteria can be provided via the optional match-string argument "
+;  (interactive)
+;  (let* ((today (calendar-current-date))
+;         (for-month (or month (calendar-extract-month today)))
+;         (for-year  (or year  (calendar-extract-year today))))
+;    (org-tags-view nil
+;          (concat
+;           match-string
+;           (format "-CATEGORY={Home}")
+;           (format "+CLOSED>=\"[%d-%02d-01]\""
+;                   for-year for-month)
+;           (format "+CLOSED<=\"[%d-%02d-%02d]\""
+;                   for-year for-month
+;                   (calendar-last-day-of-month for-month for-year))))))
+;
+;(defun jtc-org-tasks-last-month ()
+;  "Produces an org agenda tags view list of all the tasks completed
+;last month with the Category Foo."
+;  (interactive)
+;  (let* ((today (calendar-current-date))
+;         (for-month (calendar-extract-month today))
+;         (for-year  (calendar-extract-year today)))
+;       (calendar-increment-month for-month for-year -1)
+;       (jtc-org-tasks-closed-in-month
+;        ;for-month for-year "CATEGORY=\"Foo\"+TODO=\"DONE\"")))
+;        for-month for-year "-CATEGORY={Home}+TODO=\"DONE\"")))
+
+;;; Bullet point report
+;;; http://www.ooblick.com/weblog/2010/06/03/monthly-reports-with-org-mode/
+;;; TODO - Home/home is showing up in the bullet list
+; Make it easier to generate bullets for $BOSS
+;(defvar bullet-entry-types
+;  '(:closed)
+;  "Org-mode agenda types that we want to see in the monthly bullet report
+;See `org-agenda-entry-types'."
+;  )
+;
+;(defun bullets ()
+;  "Show a list of achievements for the past month, for monthly reports.
+;Uses `org-agenda'.
+;"
+;  (interactive)
+;  (require 'org-agenda)
+;  ; All we're doing here, really, is calling `org-agenda' with
+;  ; arguments giving a start date and a number of days. But to do
+;  ; that, we need to figure out
+;  ; - the date of the first of last month
+;  ; - the number of days in last month
+;  (let* ((now (current-time))
+;	 ; Figure out when last month was. Assuming that I run this
+;	 ; close to the beginning of a month, then `now' minus two
+;	 ; weeks was some time in the previous month. We can use that
+;	 ; to extract the year and month that we're interested in.
+;	 (2weeks-ago
+;	  (time-subtract now
+;			 (days-to-time 14)))
+;	 ; We'll also need to know when the first of this month was,
+;	 ; to find out how long last month was. If today is the 12th
+;	 ; of the month, then the first of the month was `now' minus
+;	 ; 11 days.
+;	 (1st-of-this-month
+;	  (time-subtract now
+;			 (days-to-time
+;			  (- (nth 3 (decode-time now))
+;			     1))))
+;	 ; Ditto to find the first of last month.
+;	 (1st-of-last-month
+;	  (time-subtract 2weeks-ago
+;			 (days-to-time
+;			  (- (nth 3 (decode-time 2weeks-ago))
+;			     1))))
+;	 ; The length of last month is the difference (in days)
+;	 ; between the first of last month, and the first of this
+;	 ; month.
+;	 (len-last-month
+;	  (time-to-number-of-days
+;	   (time-subtract 1st-of-this-month
+;			  1st-of-last-month)))
+;	 (start-date (decode-time 1st-of-last-month))
+;	 (start-year (nth 5 start-date))	; Year number
+;	 (start-mon (nth 4 start-date))		; Month number
+;	 ; Restrict the agenda to only those types of entries we're
+;	 ; interested in. I think this takes advantage of dynamic
+;	 ; scoping, which is normally an abomination unto the lord,
+;	 ; but is useful here.
+;	 (org-agenda-entry-types bullet-entry-types)
+;	 )
+;    ; Create an agenda with the stuff we've prepared above
+;    (org-agenda-list nil
+;		     (format "%04d-%02d-01"
+;			     start-year
+;			     start-mon)
+;		     len-last-month)
+;    ))
+
+
+;--- New ---
+;;; http://whattheemacsd.com//setup-org.el-01.html
+;;; I mainly use org-mode for a collection of TODO-lists.
+;;; So I get a little annoyed when the [17/23] cookies at the parent level
+;;; aren't updated when I remove an item.  This code fixes that.
+;(defun myorg-update-parent-cookie ()
+;  (when (equal major-mode 'org-mode)
+;    (save-excursion
+;      (ignore-errors
+;        (org-back-to-heading)
+;        (org-update-parent-todo-statistics)))))
+;
+;(defadvice org-kill-line (after fix-cookies activate)
+;  (myorg-update-parent-cookie))
+;
+;(defadvice kill-whole-line (after fix-cookies activate)
+;  (myorg-update-parent-cookie))
+
+;;; Strike-through finished todos
+;;; sachachua.com/blog/2012/12/emacs-strike-through-headlines-for-done-tasks-in-org/
+(setq org-fontify-done-headline t)
+(custom-set-faces
+ '(org-done ((t (:foreground "PaleGreen"
+                 :weight normal
+                 :strike-through t))))
+ '(org-headline-done
+            ((((class color) (min-colors 16) (background dark))
+               (:foreground "LightSalmon" :strike-through t)))))
+
+;;; Make sure to hightlight mysql sql keywords:
+;;; ex. #+BEGIN_SRC sql
+;;;        SELECT foo FROM bar
+;;;     #+END_SRC
+;(add-hook 'sql-mode-hook
+;          (lambda ()
+;            (sql-highlight-mysql-keywords)))
+
+;;; Enable other org-babel langauges
+(org-babel-do-load-languages
+  (quote org-babel-load-languages)
+  (quote ((emacs-lisp . t)
+          (asymptote . t) ;Asymptote
+          (awk . t)       ;Awk
+          (C . t)         ;C
+          ;(C++ . t)       ;C++
+          (clojure . t)   ;Clojure
+          (css . t)       ;CSS
+          ;(d . f)        ;D
+          (ditaa . f)     ;ditaa
+          (dot . t)       ;Graphviz
+          (calc . t)      ; Emacs Calc
+          ;(fortran . t)   ;Fortran
+          (gnuplot . t)   ;gnuplot
+          ;(haskell . t)   ;Haskell
+          (java . t)      ;Java
+          (js . t)        ;Javascript
+          (latex . t)     ;LaTeX
+          (ledger . f)    ;Ledger
+          (lisp . t)      ;Lisp
+          ;(lilypond . t)  ;Lilypond
+          ;(lua . t)       ;Lua
+          ;(matlab . t)    ;MATLAB
+          ;(mscgen . t)    ;Mscgen
+          ;(ocaml . t)     ;Objective Caml
+          ;(octave . t)    ;octave
+          (org . t)       ;Org mode
+          ;(oz . f)        ;Oz
+          (perl . t)      ;Perl
+          ;(plantuml . t)  ;Plantuml
+          ;(processing . t) ;Processing.js
+          (python . t)    ;Python
+          (R . t)         ;R
+          (ruby . t)      ;Ruby
+          ;(sass . t)      ;Sass
+          ;(scheme . t)    ;Scheme
+          (screen . t)    ;GNU Screen
+          (sed . t)       ;Sed
+          (shell . t)     ;shell
+          (sql . t)       ; SQL
+          (sqlite .t)     ;SQLite
+)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Load org-journal
+;(autoload 'org-journal "org-journal" "Autoload journal" t) ; handled by elpa
+;(setq org-journal-dir "~/org/journal/")
+#+END_SRC
+* package list - 20180414
+#+BEGIN_SRC emacs-lisp
+(defvar my-packages)
+(setq my-packages '(
+  color-moccur  ;; search a regexp in all buffers
+  ;auctex        ;; package for writing and formatting TeX files, keeps failing install
+  ;company       ;; text completion framework for Emacs
+  ;confluence    ;; mode for editing pages in a Confluence wiki
+  deft          ;; quickly browse, filter, & edit dirs of plain text notes
+  ;dired+        ;; extends  'dired.el', 'dired-aux.el', and 'dired-x.el'
+  ;diredx        ;; provides extra functionality for DiredMode
+  ;dirtree       ;; Directory tree views for Emacs
+  ;dsvn          ;; interface for managing Subversion working copies
+  ;escreen       ;; window multiplexer for Emacs
+  elpy          ;; python IDE for Emacs
+  ivy           ;; generic completion mechanism like ido and helm
+  counsel       ;; ivy's counsel
+  exec-path-from-shell
+  flycheck
+  git-gutter    ;; show icon in gutter area indicating if ins, mod or del
+  gnuplot-mode  ;; offers syntax hilighting, basic indent, and cmd to plot file
+  graphviz-dot-mode ;; emacs mode for the language used by graphviz
+  ;helm           ;; incremental completion and selection narrowing framework
+  ;helm-projectile ;;
+  iedit         ;; Edit multiple regions in the same way simultaneously
+  json-mode     ;; https://github.com/joshwnj/json-mode
+  ;key-chord     ;; map pairs of simultaneously pressed keys to commands
+  magit         ;; An emacs mode for git
+  ;mark-multiple ;; sorta lets you mark several regions at once
+  markdown-mode ;; Included with Emacs for OS X Modified
+  ;maxframe      ;; maximize the emacs frame and stay within the display res
+  ;monokai-theme ;; replacement theme for zenburn, didn't like fonts
+  multi-term    ;;
+  ;multiple-cursors ;; Multiple cursors for emacs.
+  neotree       ;; tree plugin like NerdTree for Vim
+  nov           ;; Major mode for reading epubs
+  org-plus-contrib ;; all org files plus all contribs files
+  ;org-journal   ;; set of functions to maintain a simple personal diary/journal
+  ;perspective   ;; provides multiple workspaces for each Emacs frame
+  ;powerline     ;; Emacs version of the Vim powerline.
+  projectile    ;; project interaction library for Emacs
+  ;psvn          ;; interface for the revision control tool subversion
+  puppet-mode   ;;
+  py-autopep8   ;; automaticly apply pep8 fixes on file save
+  pydoc-info    ;;
+  restclient    ;; REST client for emacs
+  s             ;; The long lost Emacs string manipulation library
+  shell-pop     ;; Pop up a quick shell
+  ;smartscan     ;; Quickly jumps between other symbols found at point
+  ;smex          ;; M-x enhancement for Emacs. Built on top of IDO
+  ;sr-speedbar   ;; mode make SpeedBar show in Current Frame
+  ;tabbar        ;; Web browser like tabs
+  ;treemacs      ;; Directory pane
+  sublimity     ;; smooth-scrolling, minimap and distraction-free mode
+  switch-window ;; Window switching, the visual way
+  ;twittering-mode ;; Twitter client for Emacs
+  undo-tree     ;; undo system to recover any past state of a buffer
+  ;w3m           ;; an Emacs interface to the w3m text browser
+  ;workgroups    ;; Store an unlimited number of window configs
+  yasnippet     ;; a template system for Emacs
+  zenburn-theme ;;
+))
+#+END_SRC
+* removed from init.el - 20180414
+#+BEGIN_SRC emacs-lisp
+
+;;; Only use Themes in GUI. Set color theme (load-theme) for >= Emacs 24
+(if (fboundp 'load-theme)
+    (if (display-graphic-p)
+        (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
+      (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+))
+
+;;; Reload .emacs file by typing: M-x reload-config
+(defun reload-config () "Reloads .emacs interactively."
+  (interactive)
+  (load "~/.emacs.d/init.el"))
+
+;;; Only start server if it is not currently running
+;(require 'server) ;; Note: (start-server) is now mostly deprecated
+(load "server")
+(setq server-socket-dir "~/.emacs.d/tmp")
+(unless (server-running-p) (server-start))
+
+;;; Define booleans based on system type
+(defconst *is-a-mac*
+  (eq system-type 'darwin)
+  "Is this running on OS X?")
+(defconst *is-linux*
+  (eq system-type 'gnu/linux)
+  "Is this running on Linux?")
+
+;;; Run multiple async commands at once without the output buffers colliding:
+;; Allow running multiple async commands simultaneously
+(defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
+  (when (get-buffer "*Async Shell Command*")
+    (with-current-buffer "*Async Shell Command*"
+      (rename-uniquely))))
+(ad-activate 'shell-command)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- enable functions that are disabled by default
+
+;; Upcase and downcase regions
+(put 'upcase-region 'disabled nil)  ;C-x C-u
+(put 'downcase-region 'disabled nil)  ;C-x C-l
+
+;; Sets the current horizontal position for C-n and C-p
+(put 'set-goal-column 'disabled nil)
+
+;; Restrict buffer editing to a region
+;; Text Narrowing commands:
+;;   Region: C-x n n, Page: C-x n p
+;;   Funct: C-x n p, Widen: C-x n w
+;;   Subtree in Org-Mode:   C-x n s
+(put 'narrow-to-region 'disabled nil)
+
+;; Dired functions (find-alternate 'a' reuses dired buffer)
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; Goal Column, enter C-x C-n, at point to set column that C-n should go to
+;; to clear enter C-u C-x C-n
+(put 'set-goal-column 'disabled nil)
+
+;; Enable mini-buffer history save feature
+(setq savehist-additional-variables    ;; also save...
+  '(search-ring regexp-search-ring)    ;; ... my search entries
+  savehist-file "~/.emacs.d/cache/history") ;; keep my .emacs.d clean
+(savehist-mode t)                      ;; do customization before activate
+
+;; Enable linnum mode for major programming modes in Emacs 24 (C, puppet, etc)
+;(add-hook 'prog-mode-hook 'linum-mode)
+
+;; And disable electric-indent if active
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- global key bindings
+
+;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
+; Re-enable swap frames with M-`
+(global-set-key "\M-`" 'other-frame)
+
+;; Open an Emacs eshell, shell, or term
+(global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c s") 'shell)
+;(global-set-key (kbd "C-c t") 'term)
+;(global-set-key (kbd "C-c t") 'ansi-term) ; re-assigned to shell-pop
+
+;; Bind rgrep to C-c r / C-c C-r
+(global-set-key (kbd "C-c r") 'rgrep)
+(global-set-key (kbd "C-c C-r") 'rgrep)
+
+;; remap these
+(global-set-key [C-f12]      'list-matching-lines)
+(global-set-key [C-f10]      'query-replace)
+(global-set-key [S-f10]      'ispell-buffer)
+(global-set-key [C-S-f10]    'flyspell-buffer)
+
+;; Show a summery of all registers with content
+(global-set-key (kbd "C-x r v") 'list-registers)
+
+;; Zap-back-to-char C-M-z (deletes back to the and including character)
+;; a counterpoint to zap-to-char M-z
+(global-set-key "\C-\M-z" #'(lambda (arg char)
+  (interactive "p\ncZap to char: ")
+  (zap-to-char (- arg) char)))
+
+;;; Disable line wrap
+;;(setq default-truncate-lines t) ; deprecated in 23.2, use truncate-lines
+(setq truncate-lines t)
+;;; Make side by side buffers function the same as the main window
+(setq truncate-partial-width-windows nil)
+;;; Add F12 to toggle line wrap
+(global-set-key [f12] 'toggle-truncate-lines)
+
+;;; Remove trailing whitespace on save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Move through windows in reverse order of (other-window), C-x o
+(global-set-key (kbd "C-x O") 'previous-multiframe-window)
+
+;; Invoke M-x without the Alt key (from Steve Yegge's blog)
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-c\C-m" 'execute-extended-command)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; global settings - Generic Emacs settings I cannot live without
+
+;;; Turn on automatic bracket insertion by pairs. New in emacs 24
+;;; http://ergoemacs.org/emacs/emacs_insert_brackets_by_pair.html
+;;; Works great with new text, editing existing text is very annoying
+;(electric-pair-mode 1)
+
+;;; Set the mode based on the buffer name.  Thanks to `__jim__'.
+;;; http://www.reddit.com/r/emacs/comments/d2t4q/scratch_buffers_for_emacs/c0x7a68
+(setq-default major-mode
+              (lambda ()
+                (let ((buffer-file-name (or buffer-file-name (buffer-name))))
+                  (set-auto-mode))))
+
+;;; Kill line backwards
+;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)
+                                        (indent-according-to-mode)))
+
+;;; Ping settings (from net-util.el)
+;;; http://www.masteringemacs.org/articles/2011/03/02/network-utilities-emacs/
+(defvar ping-program-options)
+(setq ping-program-options '("-c" "4"))
+
+;;; Enable whitespace-mode for diff buffers
+;;; http://stackoverflow.com/questions/11805584/automatically-enable-whitespace-mode-in-diff-mode
+(add-hook 'diff-mode-hook
+          '(lambda ()
+            (whitespace-mode 1)))
+
+;;; Mouse wheel and keyboard scroll settings
+;;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
+(setq mouse-wheel-progressive-speed t) ;'nil disables accelerated scrolling
+(setq scroll-step 1                    ;keyboard scroll one line at a time
+      scroll-preserve-screen-position t
+      scroll-conservatively 10000)     ;smooth scrolling
+
+;;; Enable holidays in Calendar
+(setq mark-holidays-in-calendar t)
+
+;;; Address the issue of Emacs's lack of a vi-like "O" command
+;;; http://stackoverflow.com/questions/2173324/emacs-equivalents-of-vims-dd-o-o
+;;; Open line above: C-o  Open line below: C-n C-o  Kill whole line: C-S-Bcksp
+(defadvice open-line (around vi-style-open-line activate)
+  "Make open-line behave more like vi."
+  (beginning-of-line)
+  ad-do-it
+  (indent-according-to-mode))
+
+;; w/o-man mode (elisp man page formater for systems without 'man')
+(defvar woman-show-log)
+(defvar woman-cache-filename)
+(setq woman-show-log nil)
+(autoload 'woman "woman"
+  "Decode and browse a Unix man page." t)
+(setq woman-cache-filename "~/.emacs.d/cache/wmcache.el")
+
+;;; Make tooltips appear in the echo area (checks if function exists)
+(if (fboundp 'tooltip-mode)
+ (tooltip-mode -1)
+ (setq tooltip-use-echo-area t))
+
+;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
+;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
+(setq cua-enable-cua-keys nil)  ;; only for rectangles, keeps (C-c, C-v, C-x).
+(cua-mode t)
+;; Emacs 24.4 introduces rectangle-mark-mode, C-x SPC, but not quite as useful
+;(cua-mode t)
+;(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+;(transient-mark-mode 1) ;; No region when it is not highlighted
+;(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+
+;;; Don't show the startup screen
+(setq inhibit-startup-message t)
+
+;;; Disable startup message in scratch buffer
+(setq-default initial-scratch-message nil)
+;;; And set scratch buffer initial mode to text instead of lisp eval
+;(setq-default initial-major-mode 'text-mode)
+;;; Don't create new lines when pressing 'arrow-down key' at end of the buffer
+(setq next-line-add-newlines nil)
+
+;;; Fix delete key working as backspace and not forward deleting
+;;; (This only worked in window mode, not terminal. C-d works in both)
+(when window-system (normal-erase-is-backspace-mode 1))
+
+;;; Alias to change apropos to ap
+(defalias 'ap 'apropos)
+
+;;; hl-line: highlight the current line
+(when (fboundp 'global-hl-line-mode)
+  (global-hl-line-mode t)) ;; turn it on for all modes by default
+
+;;; Make text mode default major mode with auto-fill enabled
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode) ;replaces longlines in 23
+
+;;; Auto-scroll in *Compilation* buffer
+(setq compilation-scroll-output t)
+
+;;; make Emacs always indent using SPC characters and never TABs
+;;; i.e. use spaces instead of tabs
+;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
+(setq-default indent-tabs-mode nil)
+
+;;; "y or n" instead of "yes or no"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;;; Highlight regions and add special behaviors to regions.
+;;; "C-h d transient" for more info.  transient-mark-mode is a toggle.
+;;; also in Emacs 22 and greater, C-SPC twice to temp enable transient mark
+;(setq transient-mark-mode nil)
+(setq transient-mark-mode t)
+
+;;; Display line and column numbers in the mode line
+(setq line-number-mode    t
+      column-number-mode  t)
+
+;;; Stop blinking cursor
+(blink-cursor-mode 0)
+
+;;; Explicitly show the end of a buffer (indicated on left fringe of window)
+(set-default 'indicate-empty-lines t)
+
+;;; Line-wrapping
+(set-default 'fill-column 78)
+
+;;; backups - commented out for better-defaults
+;(setq make-backup-files t ;; do make backups
+;  backup-by-copying t     ;; and copy them here
+;  backup-directory-alist '(("." . "~/.emacs.d/cache/backups"))
+;  version-control t
+;  kept-new-versions 2
+;  kept-old-versions 5
+;  delete-old-versions t)
+
+;; Create the autosave dir if necessary, since emacs won't.
+;(make-directory "~/.emacs.d/cache/autosaves/" t)
+;; Put all auto-save files in a single directory
+;(defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosaves/"))
+;(setq auto-save-list-file-prefix
+;  "~/.emacs.d/cache/autosaves/saves-")
+
+;; Don't truncate lines
+(setq truncate-lines t
+      truncate-partial-width-windows nil)
+
+;; Create new scratch buffer if needed
+(run-with-idle-timer 1 t
+    '(lambda () (get-buffer-create "*scratch*")))
+
+;; allow scroll-down/up-command to move point to buffer end/beginning
+(setq scroll-error-top-bottom 'true)
+
+;; New json-mode
+(setq auto-mode-alist (cons '("\\.json\\'" . js-mode) auto-mode-alist))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; bookmarks
+;;    ‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
+;;    ‘C-x r b’ – jump to a bookmark
+;;    ‘C-x r l’ – list your bookmarks
+;;    ‘M-x bookmark-delete’ – delete a bookmark by name
+(setq
+  bookmark-default-file "~/org/bookmarks" ;; .emacs.d/bookmarks by default
+  bookmark-save-flag 1)                   ;; autosave each change)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- system specific settings
+
+;;; -=Linux specific settings
+(if *is-linux*
+   (progn
+
+;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
+;(setq pop-up-frames 'graphic-only)
+(setq pop-up-frames nil)
+
+;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
+;;; Open up URLs in browser using gnome-open
+(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+
+;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
+;;; List fonts with M-x descript-font
+;(set-default-font "Monospace-10")
+)) ;end Linux specific settings=-
+
+;;; -=Apple OSX specific settings
+(if *is-a-mac*
+   (progn
+
+;; Don't open up new frames for files dropped on icon, use active frame
+(setq ns-pop-up-frames nil)
+
+;;; Drag and drop on the emacs window opens the file in a new buffer instead of appending it to the current buffer
+;;; http://stackoverflow.com/questions/3805658/how-to-configure-emacs-drag-and-drop-to-open-instead-of-append-on-osx
+(if (fboundp 'ns-find-file)
+    (global-set-key [ns-drag-file] 'ns-find-file))
+
+;;; Move deleted files to the System's trash can
+;;; set trash-directory otherwise uses freedesktop.org-style
+(setq trash-directory "~/.Trash")
+(setq delete-by-moving-to-trash t)
+
+;;; Change default font (was Monaco)
+;;(set-default-font "Menlo-12")
+
+;; For Macbook Pro, which has no insert key.
+;; http://lists.gnu.org/archive/html/help-gnu-emacs/2006-07/msg00220.html
+(global-set-key (kbd "C-c I") (function overwrite-mode))
+
+;;; Bring emacs.app to the foreground when running emacsclient
+;;; http://stackoverflow.com/questions/945709/emacs-23-os-x-multi-tty-and-emacsclient
+;; (add-hook 'server-visit-hook 'call-raise-frame)
+;; (defun call-raise-frame ()
+;;   (raise-frame))
+
+;;; Set default font face and size in GUI
+;(when (display-graphic-p) (set-face-attribute 'default nil :font "Monaco-12"))
+
+;;; For w3m on MacOS (installed with brew), add /usr/local/bin to exec-path
+;(add-to-list 'exec-path "/usr/local/bin")
+
+;;; Open up URLs in mac browser
+(setq browse-url-browser-function 'browse-url-default-macosx-browser)
+; (setq browse-url-browser-function 'browse-url-default-windows-browser)
+
+;;; Hard set option/alt key to meta, command to nil (allow os to set, was hyper)
+;;; http://www.emacswiki.org/emacs/EmacsForMacOS
+;(when (eq system-type 'darwin) ;; mac specific settings
+  ;(setq mac-option-modifier 'meta)
+  ;(setq mac-command-modifier 'nil)
+  ;(global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to right-delete
+;)
+
+;;; Copy and paste into Emacs Terminal
+;;; stack overflow, pasting text into emacs on Macintosh
+;;; Copy - C-x M-w
+;;; Paste - C-x C-y
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+    (point)
+    (if mark-active (mark) (point))
+    "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+      (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
+
+(global-set-key [?\C-x ?\C-y] 'pt-pbpaste)
+(global-set-key [?\C-x ?\M-w] 'pt-pbcopy)
+
+
+)) ;end Apple OSX specific settings=-
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- function definitions
+
+;;; ---------------------------------------------------------------------------
+;;; Toggles term between line mode and char mode
+;;; http://emacs.stackexchange.com/questions/5585/how-to-copy-command-output-in-ansi-term-mode
+;;; https://joelmccracken.github.io/entries/switching-between-term-mode-and-line-mode-in-emacs-term/
+(require 'term)
+(defun jnm/term-toggle-mode ()
+  "Toggles term between line mode and char mode"
+  (interactive)
+  (if (term-in-line-mode)
+      (term-char-mode)
+    (term-line-mode)))
+;; active when the buffer is in line mode
+(define-key term-mode-map (kbd "C-c C-j") 'jnm/term-toggle-mode)
+(define-key term-mode-map (kbd "C-c C-k") 'jnm/term-toggle-mode)
+;; active when the buffer is in character mode
+(define-key term-raw-map (kbd "C-c C-j") 'jnm/term-toggle-mode)
+(define-key term-raw-map (kbd "C-c C-k") 'jnm/term-toggle-mode)
+
+;;; ---------------------------------------------------------------------------
+;;; Create parent directory when visiting file in non-existent directory
+;;; http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+(defun my-create-non-existent-directory ()
+      (let ((parent-directory (file-name-directory buffer-file-name)))
+        (when (and (not (file-exists-p parent-directory))
+                   (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+          (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions #'my-create-non-existent-directory)
+
+;;; ---------------------------------------------------------------------------
+;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
+;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun narrow-or-widen-dwim ()
+  "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+  (interactive)
+  (cond ((buffer-narrowed-p) (widen))
+	((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+	((equal major-mode 'org-mode) (org-narrow-to-subtree))
+	(t (error "Please select a region to narrow to"))))
+(global-set-key (kbd "C-c n") 'narrow-or-widen-dwim)
+
+;; I bind this key to C-c n, using the bind-key function that comes with use-package.
+;(bind-key "C-c n" 'narrow-or-widen-dwim)
+
+;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
+;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
+
+;;; ---------------------------------------------------------------------------
+;;; http://www.reddit.com/r/emacs/comments/1zkj2d/advanced_usage_of_eshell
+(defun ha-eshell-here ()
+  "Opens up a new shell in the directory associated with the current buffer's file."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (name (car (last (split-string parent "/" t)))))
+    (split-window-vertically)
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+(defun af-eshell-here ()
+  "Go to eshell and set current directory to the buffer's directory"
+  (interactive)
+  (let ((dir (file-name-directory (or (buffer-file-name)
+                                      default-directory))))
+    (eshell)
+    (eshell/pushd ".")
+    (cd dir)
+    (goto-char (point-max))
+    (eshell-kill-input)
+    (eshell-send-input)))
+
+;;; ---------------------------------------------------------------------------
+;;; Locked mode - lock a window in place
+(define-minor-mode locked-buffer-mode
+  "Make the current window always display this buffer."
+  nil " locked" nil
+  (set-window-dedicated-p (selected-window) locked-buffer-mode))
+(global-set-key (kbd "C-c C-l") 'locked-buffer-mode)
+
+;;; --------------------------------------------------------------------------
+;;; Narrow-to-region-indirect (Allow narrowing of different regions in windows)
+;;; http://demonastery.org/2013/04/emacs-narrow-to-region-indirect/
+(defun narrow-to-region-indirect (start end)
+  "Restrict editing in this buffer to the current region, indirectly."
+  (interactive "r")
+  (when (boundp 'evil-mode) ; There's probably a nicer way to do this
+    (evil-exit-visual-state))
+  (let ((buf (clone-indirect-buffer nil nil)))
+    (with-current-buffer buf
+      (narrow-to-region start end))
+      (switch-to-buffer buf)))
+
+;;; ---------------------------------------------------------------------------
+;;; Kill all other open files, other then the current one.  NO Notification!
+;;; http://emacsredux.com/blog/2013/03/30/kill-other-buffers/
+(defun kill-other-buffers ()
+  "Kill all buffers but the current one.
+   Don't mess with special buffers."
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
+      (kill-buffer buffer))))
+;(global-set-key (kbd "C-c k") 'kill-other-buffers)
+
+;;; ---------------------------------------------------------------------------
+;;; change a marked region of text to all low-cased words concatenated by underscores
+;;; A fox caught a bird => a_fox_caught_a_bird
+(defun lower-and-concat (b e)
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region b e)
+    (goto-char (point-min))
+    (downcase-region b e)
+    (while (re-search-forward "[ \t]+" nil t)
+      (replace-match "_"))))
+
+;;; ---------------------------------------------------------------------------
+;;; Move lines up or down (can't easily use C-S on MacOS)
+;;; http://whattheemacsd.com//editing-defuns.el-02.html
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines 1))
+    (forward-line)
+    (move-to-column col)))
+
+(defun move-line-up ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines -1))
+    (move-to-column col)))
+
+;(global-set-key (kbd "<C-S-down>") 'move-line-down)
+;(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "<M-S-down>") 'move-line-down)
+(global-set-key (kbd "<M-S-up>") 'move-line-up)
+
+;;; ---------------------------------------------------------------------------
+;;; Open a full screen eshell, save current layout
+;;; http://irreal.org/blog/?p=1742
+(global-set-key (kbd "C-c E")
+                (lambda ()
+                  "Bring up a full-screen eshell or restore previous config."
+                  (interactive)
+                  (if (string= "eshell-mode" major-mode)
+                      (jump-to-register :eshell-fullscreen)
+                    (progn
+                      (window-configuration-to-register :eshell-fullscreen)
+                      (eshell)
+                      (delete-other-windows)))))
+
+;;; ---------------------------------------------------------------------------
+;;; Re-open a file with sudo access
+;;; http://www.reddit.com/r/emacs/comments/192n52/how_do_i_save_ediffmerged_changes_for/
+(defun sudo-file()
+  (interactive)
+  (let ((p (point)))
+    (find-alternate-file
+     (concat "/sudo::" (buffer-file-name)))
+    (goto-char p)))
+
+;;; ---------------------------------------------------------------------------
+;;; Jump to next character - Similar to Vim's semicolon command
+;;; http://www.reddit.com/r/emacs/comments/nfj0e/emacs_wizards_how_do_you_move_about_in_source_code/
+;(defun jump-to-next-char (c &optional count)
+;  "Jump forward or backward to a specific character.  With a
+;count, move that many copies of the character."
+;  (interactive "cchar: \np")
+;  (when (string= (string c) (buffer-substring (point) (+ 1 (point))))
+;    (setq count (+ 1 count)))
+;  (and
+;   (search-forward (string c) nil t count)
+;   (> count 0)
+;   (backward-char)))
+;(global-set-key (kbd "C-;") 'jump-to-next-char)
+
+;;; ---------------------------------------------------------------------------
+;;; Remove duplicate lines in a region
+;;; http://stackoverflow.com/questions/13046791/how-to-delete-the-repeat-lines-in-emacs
+(defun uniq-lines (beg end)
+  "Unique lines in region.
+Called from a program, there are two arguments:
+BEG and END (region to sort)."
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (kill-line 1)
+        (yank)
+        (let ((next-line (point)))
+          (while
+              (re-search-forward
+               (format "^%s" (regexp-quote (car kill-ring))) nil t)
+            (replace-match "" nil nil))
+          (goto-char next-line))))))
+
+;;; ---------------------------------------------------------------------------
+;;; Match Paren / based on the vim command using %
+;;; http://grok2.tripod.com/
+(defun match-paren (arg)
+      "Go to the matching paren if on a paren; otherwise insert %."
+      (interactive "p")
+      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+            ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+            (t (self-insert-command (or arg 1)))))
+(global-set-key "%" 'match-paren)
+
+;;; ---------------------------------------------------------------------------
+;;; Unfill paragraph / Unfill region
+;;; http://stackoverflow.com/questions/6707758/inverse-of-m-q-an-unfill-paragraph-function
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the reverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column 90002000))
+    (fill-paragraph nil)))
+
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the reverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
+;;; ---------------------------------------------------------------------------
+;;; Remove all space indentation
+;;; http://stackoverflow.com/questions/10854776/emacs-function-which-eliminates-all-indentation
+(defun my-delete-indentation (start end)
+  "Delete all leading whitespace within the current region."
+  (interactive "*r")
+  (replace-regexp "^[[:space:]]+" "" nil start end))
+
+;;; ---------------------------------------------------------------------------
+;;; Remote ssh connection from within Emacs
+;;; http://stackoverflow.com/questions/10495432/remote-ssh-connection-from-within-emacs
+(defun my-ssh (args)
+  "Connect to a remote host by SSH."
+  (interactive "sssh ")
+  (let ((switches (split-string-and-unquote args)))
+    (set-buffer (apply 'make-term "ssh" "ssh" nil switches))
+    (term-mode)
+    (term-char-mode)
+    (switch-to-buffer "*ssh*")))
+
+;;; ---------------------------------------------------------------------------
+;;; Save list of open files to kill-ring (by Trey Jackson)
+;;; http://stackoverflow.com/questions/10537265/emacs-save-current-buffer-list-to-a-text-file
+(defun copy-open-files ()
+  "Add paths to all open files to kill ring"
+  (interactive)
+  (kill-new (mapconcat 'identity
+                       (delq nil (mapcar 'buffer-file-name (buffer-list)))
+                       "\n"))
+  (message "List of files copied to kill ring"))
+
+;;; ---------------------------------------------------------------------------
+;;; Use a bar cursor when mark is active and a region exists.
+;;; http://www.reddit.com/r/emacs/comments/stkb1/im_really_liking_the_bar_cursor/
+(defun th-activate-mark-init ()
+  (setq cursor-type 'bar))
+(add-hook 'activate-mark-hook 'th-activate-mark-init)
+
+(defun th-deactivate-mark-init ()
+  (setq cursor-type 'box))
+(add-hook 'deactivate-mark-hook 'th-deactivate-mark-init)
+
+;; Use a red cursor in overwrite-mode
+(defvar th--default-cursor-color "black")
+(defadvice overwrite-mode (after th-overwrite-mode-change-cursor activate)
+  "Change cursor color in override-mode."
+  (if overwrite-mode
+      (progn
+        (setq th--default-cursor-color
+              (let ((f (face-attribute 'cursor :background)))
+                (if (stringp f)
+                    f
+                  th--default-cursor-color)))
+        (set-cursor-color "red"))
+    (set-cursor-color th--default-cursor-color)))
+
+;;; ---------------------------------------------------------------------------
+;;; I want a key to open the current buffer all over the screen.
+;;; http://stackoverflow.com/questions/970292/emacs-multiple-columns-one-buffer
+(defun all-over-the-screen ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (split-window-horizontally)
+  (balance-windows)
+  (follow-mode t))
+
+;;; ---------------------------------------------------------------------------
+;;; Clear shell (m-x shell) screen like bash's clear command
+(defun clear-shell ()
+   (interactive)
+  (let ((old-max comint-buffer-maximum-size))
+    (setq comint-buffer-maximum-size 0)
+    (comint-truncate-buffer)
+    (setq comint-buffer-maximum-size old-max)))
+(global-set-key "\C-xc" 'clear-shell)
+
+;;; ---------------------------------------------------------------------------
+;;; Save rectangle instead of killing it
+;;; http://emacsblog.org/2007/03/17/quick-tip-set-goal-column
+(defun kill-save-rectangle (start end &optional fill)
+  "Save the rectangle as if killed, but don't kill it.  See
+`kill-rectangle' for more information."
+  (interactive "r\nP")
+  (kill-rectangle start end fill)
+  (goto-char start)
+  (yank-rectangle))
+(global-set-key (kbd "C-x r M-k") 'kill-save-rectangle)
+
+;;; ---------------------------------------------------------------------------
+;;; Steve Yegge's function rename a file that you're editing along
+;;; with its corresponding buffer
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+ (filename (buffer-file-name)))
+    (if (not filename)
+ (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+   (message "A buffer named '%s' already exists!" new-name)
+ (progn
+   (rename-file name new-name 1)
+   (rename-buffer new-name)
+   (set-visited-file-name new-name)
+   (set-buffer-modified-p nil))))))
+
+;;; ---------------------------------------------------------------------------
+;;; http://www.reddit.com/r/emacs/comments/gjqki/is_there_any_way_to_tell_emacs_to_not/c1o26uk
+(defun toggle-sticky-buffer-window ()
+ "Toggle whether this window is dedicated to this buffer."
+ (interactive)
+ (set-window-dedicated-p
+  (selected-window)
+  (not (window-dedicated-p (selected-window))))
+ (if (window-dedicated-p (selected-window))
+     (message "Window is now dedicated.")
+   (message "Window is no longer dedicated.")))
+
+(global-set-key [(super d)] 'toggle-sticky-buffer-window) ;; cmd-d
+
+;;; ---------------------------------------------------------------------------
+(defun intelligent-close ()
+  "quit a frame the same way no matter what kind of frame you are on.
+
+This method, when bound to C-x C-c, allows you to close an emacs frame the
+same way, whether it's the sole window you have open, or whether it's
+a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
+a windowing environment, you probably have lots of frames open at any given
+time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
+frame, and to remember to do C-x C-x to close the main frame (and if you're
+not careful, doing so will take all the child frames away with it).  This
+is my solution to that: an intelligent close-frame operation that works in
+all cases (even in an emacs -nw session).
+
+Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
+  (interactive)
+  (if (eq (car (visible-frame-list)) (selected-frame))
+      ;;for parent/master frame...
+      (if (> (length (visible-frame-list)) 1)
+          ;;close a parent with children present
+          (delete-frame (selected-frame))
+        ;;close a parent with no children present
+        (save-buffers-kill-emacs))
+    ;;close a child frame
+    (delete-frame (selected-frame))))
+(global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ansi-term    (C-c C-j - activate term-line-mode, C-c C-k - deactivate it)
+;;; ansi-term tricks from:
+;;; http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
+
+;; (require 'term nil 'noerror)
+;; (defun visit-ansi-term ()
+;;   "If the current buffer is:
+;;      1) a running ansi-term named *ansi-term*, rename it.
+;;      2) a stopped ansi-term, kill it and create a new one.
+;;      3) a non ansi-term, go to an already running ansi-term
+;;         or start a new one while killing a defunt one"
+;;   (interactive)
+;;   (let ((is-term (string= "term-mode" major-mode))
+;;         (is-running (term-check-proc (buffer-name)))
+;;         (term-cmd "/bin/bash")
+;;         (anon-term (get-buffer "*ansi-term*")))
+;;     (if is-term
+;;         (if is-running
+;;             (if (string= "*ansi-term*" (buffer-name))
+;;                 (call-nteractively 'rename-buffer)
+;;               (if anon-term
+;;                   (switch-to-buffer "*ansi-term*")
+;;                 (ansi-term term-cmd)))
+;;           (kill-buffer (buffer-name))
+;;           (ansi-term term-cmd))
+;;       (if anon-term
+;;           (if (term-check-proc "*ansi-term*")
+;;               (switch-to-buffer "*ansi-term*")
+;;             (kill-buffer "*ansi-term*")
+;;             (ansi-term term-cmd))
+;;        (ansi-term term-cmd)))))
+;(global-set-key (kbd "<f5>") 'visit-ansi-term)
+;(global-set-key (kbd "C-c t") 'visit-ansi-term)
+
+;;; http://stackoverflow.com/questions/3295091/emacs-ansi-term-background-color
+;;; Terminal Colors - Remove term's default white background color
+;(setq term-default-bg-color "#211E1E")
+;(setq term-default-fg-color "#AAAAAA")
+(setq term-default-bg-color nil) ;; remove background color
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- better-defaults  (moved into init.el to avoid confusion)
+;;; https://github.com/technomancy/better-defaults
+;(require 'better-defaults)
+
+(menu-bar-mode -1)
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
+
+(require 'uniquify)
+ (setq uniquify-buffer-name-style 'forward)
+
+(require 'saveplace)
+  (setq-default save-place t)
+
+ (global-set-key (kbd "M-/") 'hippie-expand)
+;(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
+(show-paren-mode 1)
+(setq save-interprogram-paste-before-kill t
+      apropos-do-all t
+      mouse-yank-at-point t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      save-place-file (concat user-emacs-directory "places")
+      backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "backups"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- cisco router mode
+;(autoload 'cisco-router-mode "cisco-router-mode" "edit cisco .cfg files" t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- company mode - a text completion framework
+;;; https://company-mode.github.io/
+;(add-hook 'after-init-hook 'global-company-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- daily log -
+
+(defun daily-log ()
+  "Automatically opens my daily log file and positions cursor at end of
+last sentence."
+  (interactive)
+  ;(diary)
+  (find-file "~/org/DailyLogs/+current") ;symlink to current log
+  (goto-char (point-max))  ;go to the maximum accessible value of point
+  (search-backward "* Notes") ;search to Notes section first to bypass notes
+  (if (re-search-backward "[.!?]") ;search for punctuation from end of file
+      (forward-char 1))
+  )
+(global-set-key [f9] 'daily-log)
+
+;;; ---------------------------------------------------------------------------
+;(diary)
+
+;; Email 1
+;; I have been using a simple system for writing notes day by day.  Kind of
+;; like a diary.  It's really very unsophisticated but helpful.  It will allow
+;; you to make notes into a template file.  Weeks, Months (etc...) later, you
+;; can refer to them.
+;;
+;; For those who have never seen it
+;; http://aonws01/unix-admin/Daily_Logs/Jerry_Sievers/
+;;
+;; Many of you new guys' questions to me have been answered from these notes
+;; (eg, license keys info, who's who and so forth).
+;;
+;; John Sconiers asked about this and I set him up with it.  Whole procedure
+;; takes only a few minutes to install and probably about fifteen minutes per
+;; day to keep up to date.  An investment in time that pays off later.  Other
+;; admins who have left Aon used this and liked it too.
+;;
+;; It also comes with a CGI program which, if your home directory is
+;; accessible to aonws01, can allow others to browse your diary (I hear
+;; cheering and booing...)
+;;
+;; Please let me know.  It would be nice to have everyone using this thing at
+;; least minimally.
+
+;; Email 2
+;; Chris, I have installed the package in your home directory.  Files are in
+;; Aon/DailyLogs.  The current log has a symbolic link named +Current.  You
+;; also have an alias 'diary' which you can type at the shell.  Doing so will
+;; invoke vi on the +Current file and position the cursor on the very last '.'
+;; character in the file.  I have added the $HOME/bin directory to your path
+;; and created one cron job to stamp the 'monday' file weekly.
+;;
+;; You should run the command 'new-daily-log' once per week to start a new
+;; file.  Optionally, the previous file can be emailed to the destination of
+;; your choice.  See the Aon/DailyLogs/.config file for details.
+;;
+;; Please call if you have any questions.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
+;;; directories of plain text notes.  http://jblevins.org/projects/deft/
+;;; http://jblevins.org/git/deft.git
+(autoload 'deft "deft" "mode for working with text notes" t)
+
+(setq
+  deft-extension "txt"
+  deft-directory "~/org/notes"
+  deft-text-mode 'org-mode
+  deft-use-filename-as-title t
+  deft-recursive t
+  deft-ignore-file-regexp "archive\.*")
+;(global-set-key (kbd "<f8>") 'deft))
+(global-set-key (kbd "C-c C-g") 'deft-find-file)
+
+;; Notational Velocity provides a show-hide function key, letting you pop
+;; in-and-out of the interface quickly. I recreated a crude version of this
+;; in Deft, bound to f6.
+(define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
+(setq deft-text-mode 'deft-note-mode)
+(defun kill-all-deft-notes ()
+  (interactive)
+  (save-excursion
+    (let((count 0))
+      (dolist(buffer (buffer-list))
+        (set-buffer buffer)
+        (when (not (eq nil deft-note-mode))
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      )))
+(defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
+                                          (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
+                                        (deft)
+                                        ))
+(global-set-key [f8] 'deft-or-close)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- dired - directory listing buffer
+;;; http://www.emacswiki.org/emacs/DiredPlus
+
+;;; Toggle Unix hidden file display (M-o)
+;(require 'dired+ nil 'noerror) ;; uber enhanced dired, very large?
+(require 'dired-x nil 'noerror) ;included with emacs
+(define-key ctl-x-map   "d" 'diredp-dired-files)
+(define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+
+;; hide hidden files by default, use (M-o) to show
+(setq dired-omit-files "^\\...+$")
+(add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
+
+;;; New dired+ option is to hide file details, can be togged with '('
+;(setq diredp-hide-details-initially-flag -1) ;doesn't seem to work
+;(setq global-dired-hide-details-mode -1)
+;(setq dired-recursive-deletes 'top)
+;; disable line wrapping in dired mode
+(add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
+
+;;; http://stackoverflow.com/questions/1824696/function-to-call-same-shell-command-in-dired
+;;; http://blog.nguyenvq.com/2009/12/01/file-management-emacs-dired-to-replace-finder-in-mac-os-x-and-other-os/
+;; (defun dired-open ()
+;;   (interactive)
+;;   (save-window-excursion
+;;     (dired-do-async-shell-command
+;;      "open" current-prefix-arg
+;;      (dired-get-marked-files t current-prefix-arg))))
+;;   (define-key dired-mode-map (kbd "C-o") 'dired-open)
+
+;;; Open the current directory in desktop
+;;; http://xahlee.blogspot.com/2012/01/emacs-dired-opening-files-in-external.html
+;; (defun open-in-desktop ()
+;;   "Open the current file in desktop.
+;; Works in Microsoft Windows, Mac OS X, Linux."
+;;   (interactive)
+;;   (cond
+;;    ((string-equal system-type "windows-nt")
+;;     (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+;;    ((string-equal system-type "darwin") (shell-command "open ."))
+;;    ((string-equal system-type "gnu/linux") (shell-command "xdg-open ."))
+;;    ) )
+;; (define-key dired-mode-map (kbd "C-;") 'open-in-desktop)
+
+;; Make sizes human-readable by default, sort version numbers
+;; correctly, and put dotfiles and capital-letters first.
+;(setq-default dired-listing-switches "-alhvi")
+
+;;; Auto-refresh dired on file change
+(add-hook 'dired-mode-hook 'auto-revert-mode)
+
+;; Handle zip compression
+(defvar dired-compress-file-suffixes)
+(eval-after-load "dired-aux"
+  '(add-to-list 'dired-compress-file-suffixes
+                '("\\.zip\\'" ".zip" "unzip")))
+
+;; Configure direx jump
+(autoload 'dired-jump "dired-x"
+  "Jump to Dired buffer corresponding to current buffer." t)
+
+(autoload 'dired-jump-other-window "dired-x"
+  "Like \\[dired-jump] (dired-jump) but in other window." t)
+
+(define-key global-map "\C-x\C-j" 'dired-jump)
+(define-key global-map "\C-x4\C-j" 'dired-jump-other-window)
+
+;; enable side-by-side dired buffer targets
+;; Split your window, split-window-vertically & go to another dired directory.
+;; When you will press C to copy, the other dir in the split pane will be
+;; default destination.
+(setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ehelp (Electric help)
+;; Provides a pre-packaged 'Electric Help Mode' for on-line help screens.
+;; Provides: SPC to scroll, DEL to scroll back, q to exit, r to retain
+;; Instead of: Type C-x 1 to delete the help window, C-M-v to scroll help
+(require 'ehelp)
+(define-key global-map "\C-h" 'ehelp-command)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- elpy - Emacs Python IDE
+;; https://realpython.com/blog/python/emacs-the-best-python-editor/
+;; To use elpy, just add the following to your .emacs:
+(elpy-enable)
+;; If you find the (Python Elpy yas AC ElDoc Fill) mode line annoying, also add:
+;(elpy-clean-modeline)
+
+;; replace flymake with flycheck for on-the-fly checking
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; Emable pep8 auto correct erros on save
+;(require 'py-autopep8)
+;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- eshell - shell written in Emacs Lisp
+;;;
+;;; define eshell aliases
+(setq eshell-directory-name "~/.emacs.d/eshell")
+(defalias 'ff 'find-file)
+(defalias 'ffo 'find-file-other-window)
+
+;;; protect the prompt from being overwritten
+(setq comint-prompt-read-only t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- exec-path-from-shell
+;;; https://github.com/purcell/exec-path-from-shell
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- flycheck
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+;;; Disable flycheck running checkdoc against init.el
+;;; http://stackoverflow.com/questions/15552349/flycheck-how-to-disable-warnning-while-edit-emacs-lisp-scripts
+;(eval-after-load 'flycheck (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))  ;; ver 0.16+
+(eval-after-load 'flycheck '(setq flycheck-checkers (delq 'emacs-lisp-checkdoc flycheck-checkers)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- git-gutter
+;;; https://github.com/syohex/emacs-git-gutter
+(global-git-gutter-mode t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- gnus - Mail and News reader
+
+;;; Define how Gnus is to fetch news
+;(setq gnus-select-method '(nntp "nntp.aioe.org"))
+(setq gnus-select-method '(nntp "news.eternal-september.org"))
+;(setq nntp-authinfo-file "~/.authinfo.gpg") ;use gpg encrypted authfile
+(setq nntp-authinfo-function 'nntp-send-authinfo)
+
+;; setup summary buffer
+(setq gnus-summary-line-format "%U%R%z%(%[%4L: %-20,20f%]%)%B %s\n"
+      gnus-summary-same-subject "")
+
+(setq gnus-sum-thread-tree-root " >"
+      gnus-sum-thread-tree-single-indent "  "
+      gnus-sum-thread-tree-vertical "|"
+      gnus-sum-thread-tree-indent " "
+      gnus-sum-thread-tree-leaf-with-other "+-> "
+      gnus-sum-thread-tree-single-leaf "`-> ")
+
+;; show even if there are no articles
+(setq gnus-permanently-visible-groups ".*")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ibuffer - *Nice* buffer switching
+;;
+;; ibuffer filtering
+;;
+;; Search all marked buffers
+;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
+;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+;;   ‘U’ - Replace by regexp in each of the marked buffers.
+;;   ‘Q’ - Query replace in each of the marked buffers.
+;;   ‘I’ - As above, with a regular expression.
+
+(autoload 'ibuffer "ibuffer" "List buffers." t)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Don't show empty buffer groups
+(setq ibuffer-show-empty-filter-groups nil)
+
+;; work groups for ibuffer
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("version control" (or (mode . svn-status-mode)
+                   (mode . svn-log-edit-mode)
+                   (name . "^\\*svn-")
+                   (name . "^\\*vc\\*$")
+                   (name . "^\\*Annotate")
+                   (name . "^\\*vc-")
+                   (name . "^\\*git-")
+                   (name . "^\\*magit")))
+         ("emacs" (or (name . "^\\*scratch\\*$")
+                      (name . "^\\*Messages\\*$")
+                      (name . "^TAGS\\(<[0-9]+>\\)?$")
+                      (name . "^\\*info\\*$")
+                      (name . "^\\*Occur\\*$")
+                      (name . "^\\*grep\\*$")
+                      (name . "^\\*Compile-Log\\*$")
+                      (name . "^\\*Backtrace\\*$")
+                      (name . "^\\*Process List\\*$")
+                      (name . "^\\*gud\\*$")
+                      (name . "^\\*Man")
+                      (name . "^\\*WoMan")
+                      (name . "^\\*Kill Ring\\*$")
+                      (name . "^\\*Completions\\*$")
+                      (name . "^\\*tramp")
+                      (name . "^\\*shell\\*$")
+                      (name . "^\\*compilation\\*$")))
+         ("Helm" (or (name . "\*helm\*")))
+         ("Help" (or (name . "\*Help\*")
+                     (name . "\*Apropos\*")
+                     (name . "\*info\*")))
+         ("emacs-source" (or (mode . emacs-lisp-mode)
+                             (filename . "/Applications/Emacs.app")
+                             (filename . "/bin/emacs")))
+         ("emacs-config" (or (filename . ".emacs.d")
+                             (filename . "emacs-config")))
+         ("org" (or (name . "^\\*org-")
+                    (name . "^\\*Org")
+                    (mode . org-mode)
+                    (mode . muse-mode)
+                    (name . "^\\*Calendar\\*$")
+                    (name . "^+current$")
+                    (name . "^diary$")
+                    (name . "^\\*Agenda")))
+         ("latex" (or (mode . latex-mode)
+                      (mode . LaTeX-mode)
+                      (mode . bibtex-mode)
+                      (mode . reftex-mode)))
+         ("dired" (or (mode . dired-mode)))
+         ("perl" (mode . cperl-mode))
+         ("erc" (mode . erc-mode))
+         ("shell" (or (mode . shell-mode)
+                        (name . "^\\*terminal\\*$")
+                        (name . "^\\*ansi-term\\*$")
+                        (name . "^\\*shell\\*$")
+                        (name . "^\\*eshell\\*$")))
+         ("gnus" (or (name . "^\\*gnus trace\\*$")
+                        (mode . message-mode)
+                        (mode . bbdb-mode)
+                        (mode . mail-mode)
+                        (mode . gnus-group-mode)
+                        (mode . gnus-summary-mode)
+                        (mode . gnus-article-mode)
+                        (name . "^\\.bbdb$")
+                        (name . "^\\.newsrc-dribble"))))))
+
+;; Order the groups so the order is : [Default], [agenda], [emacs]
+(defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                 activate)
+  (setq ad-return-value (nreverse ad-return-value)))
+
+;; Hide the following buffers
+;;(setq ibuffer-never-show-predicates
+;;      (list "\\*Completions\\*"
+;;            "\\*vc\\*"))
+
+;; Enable ibuffer expert mode, don't prompt on buffer deletes
+(setq ibuffer-expert t)
+
+;; Load the 'work' group, can set to load groups by location
+;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+;; list up to date. I turn it on in my ibuffer-mode-hook:
+(add-hook 'ibuffer-mode-hook
+          '(lambda ()
+             (ibuffer-auto-mode 1)
+             (ibuffer-switch-to-saved-filter-groups "default")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ispell - interactive spell
+;;; Set ispell checks to use aspell
+;;; on mac:  `brew install aspell --lang=en` (instead of ispell)
+(eval-after-load "ispell"
+  '(progn
+     (setq ispell-program-name "aspell")
+     (setq ispell-list-command "list")
+     ;; sug-mode=fast is more accurate, slower then ultra
+     (setq ispell-extra-args '("--sug-mode=fast"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- ivy-mode - a generic completion mechanism for Emacs
+;;; swiper - an alternative to isearch uses ivy to show overview of all matches
+;;; https://github.com/abo-abo/swiper
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-virtual-abbreviate 'full)
+(setq enable-recursive-minibuffers t)
+
+;; Ivy-based interface to standard commands
+(global-set-key (kbd "C-s") 'swiper)
+;(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "C-x C-r") 'counsel-recentf)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;(global-set-key (kbd "<f1> l") 'counsel-find-library)
+;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+;; Ivy-based interface to shell and system tools
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+;; disable M-x filter "^"
+(setq ivy-initial-inputs-alist nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- magit-mode - emacs mode for interacting with the Git vcs
+(global-set-key (kbd "C-c g") 'magit-status)  ;;
+(setq magit-completing-read-function 'ivy-completing-read)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- sql
+;;; sql-mysql configuration
+
+;;; highlight mysql keywords
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (sql-highlight-mysql-keywords)))
+
+;;; hilight postgres keywords
+(add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
+
+;; Make mysql not buffer sending stuff to the emacs-subprocess-pipes
+;; -n unbuffered -B batch(tab separated) -f force(go on after error)
+;; -i ignore spaces -q no caching -t table format
+(setq-default sql-mysql-options (quote ("-n" "-B" "-f" "-i" "-q" "-t")))
+
+;; set prompt back to default
+(setq sql-mysql-options '("--prompt=mysql> "))
+;(sql-set-product-feature 'mysql :prompt-regexp "^[mM]y[sS][qQ][lL][^>]*> ")
+
+;; save history between sessions
+  (defun my-sql-save-history-hook ()
+    (let ((lval 'sql-input-ring-file-name)
+          (rval 'sql-product))
+      (if (symbol-value rval)
+          (let ((filename
+                 (concat "~/.emacs.d/cache/"
+                         (symbol-name (symbol-value rval))
+                         "-history.sql")))
+            (set (make-local-variable lval) filename))
+        (error
+         (format "SQL history will not be saved because %s is nil"
+                 (symbol-name rval))))))
+
+  (add-hook 'sql-interactive-mode-hook 'my-sql-save-history-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- neo-tree
+;;; Emacs version of Vim's nerdtree
+(global-set-key [f5] 'neotree-toggle)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- nov.el - Major mode for reading epubs
+;;; https://github.com/wasamasa/nov.el
+;;; Open the EPUB file with C-x C-f ~/novels/novel.epub, scroll with SPC and
+;;; switch chapters with n and p. More keybinds can be looked up with F1 m.
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- org-mode - for keeping notes, maintaining TODO lists, doing project
+;;; planning, and authoring with a fast and effective plain-text system
+;;; Moved to init-org-mode.el for ease of customization
+(load "~/.emacs.d/org.conf")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- projectile - project managent (works with helm)
+;;; Project navigation and management library for Emacs
+;;; https://github.com/bbatsov/projectile
+;;; http://tuhdo.github.io/helm-projectile.html
+
+;; put bookmark in cache directory
+(setq projectile-known-projects-file "~/.emacs.d/cache/projectile-bookmarks.eld")
+
+;; use helm projectile C-c p h
+(projectile-global-mode)
+;(setq projectile-completion-system 'helm)
+;;(helm-projectile-on)
+
+;; force use external commands for indexing
+(setq projectile-indexing-method 'alien)
+
+;; enable caching unconditionally use this snippet of code:
+(setq projectile-enable-caching t)
+
+;;(setq projectile-switch-project-action 'helm-projectile-find-file)
+;(setq projectile-switch-project-action 'helm-projectile)
+(setq projectile-completion-system 'ivy)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- puppet-mode
+;;; Setup puppet-mode for autoloading
+;;; http://www.emacswiki.org/emacs/PuppetProgramming
+(autoload 'puppet-mode "puppet-mode" "Major mode for editing puppet manifests")
+(add-hook 'puppet-mode-hook 'linum-mode)
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- recentf - a minor mode that builds a list of recently opened files
+;;; http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
+(autoload 'recentf "recentf" "List recent files" t)
+(setq
+  recentf-save-file "~/.emacs.d/cache/recentf"
+  recentf-max-saved-items 200      ;; max save file cache
+  recentf-max-menu-items 15)      ;; max 15 in menu
+(recentf-mode t)                  ;; turn it on
+;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;(global-set-key (kbd "C-x C-r") 'helm-recentf)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- shell-pop
+;;; https://github.com/kyagi/shell-pop-el
+(require 'shell-pop)
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/bash")
+  ;(setq shell-pop-universal-key "C-t")
+  (global-set-key (kbd "C-c t") 'shell-pop)
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- switch-window - a C-x o replacment for multiple window movement
+(require 'switch-window)
+(global-set-key (kbd "C-x o") 'switch-window)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- tramp- edit files on remote servers
+(autoload 'tramp "tramp" "Tramp mode" t)
+
+;(custom-set-variables '(tramp-verbose 10)) ;; debugging info
+;(setq tramp-debug-buffer t)
+
+;; we need a bit more funky pattern, as tramp will start $SHELL
+;; (sudo -s), ie., zsh for root user
+(setq shell-prompt-pattern "^[^a-zA-Z].*[#$%>] *")
+;(setq tramp-shell-prompt-pattern "^[^$>\n]*[#$%>] *\\(\[[0-9;]*[a-zA-Z] *\\)*")
+(setq
+  tramp-default-method "sshx"  ;; inline method w/diff interactive shell
+  ;tramp-default-method "scpx" ;; external method w/diff interactive shell
+  tramp-persistency-file-name "~/.emacs.d/cache/tramp"
+  tramp-auto-save-directory "~/.emacs.d/cache/autosaves"
+  tramp-terminal-type "dumb")  ;; fix remote shell hanging, change .bashrc to
+                               ;; for TERM=dumb and set PS1='$ '
+
+;; fix "ls does not support --dired; see `dired-use-ls-dired' for more details."
+;; it seems that only GNU ls supports --dired
+(setq ls-lisp-use-insert-directory-program nil)
+(require 'ls-lisp)
+
+;; Speed up tramp by disabling version control on remote files
+;; http://www.gnu.org/software/emacs/manual/html_node/tramp/Frequently-Asked-Questions.html
+(setq vc-ignore-dir-regexp
+      (format "\\(%s\\)\\|\\(%s\\)"
+              vc-ignore-dir-regexp
+              tramp-file-name-regexp))
+
+;; Set remote shell to be /bin/bash
+;; http://superuser.com/questions/454288/how-to-specify-for-emacs-tramp-which-remote-shell-to-open
+(setq explicit-shell-file-name "/bin/bash")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- treemacs -
+;(setq treemacs-show-hidden-files nil)
+;(global-set-key [f5] 'treemacs-toggle)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -- undo-tree
+(require 'undo-tree)
+;; If you want to replace the standard Emacs' undo system with the
+;; 'undo-tree-mode' system in all buffers, you can enable it globally by
+(global-undo-tree-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Testing area
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+
+;;; M-g M-g - goto-line
+#+END_SRC
+
+* more
+** dired
+;;; http://stackoverflow.com/questions/1824696/function-to-call-same-shell-command-in-dired
+;;; http://blog.nguyenvq.com/2009/12/01/file-management-emacs-dired-to-replace-finder-in-mac-os-x-and-other-os/
+;; (defun dired-open ()
+;;   (interactive)
+;;   (save-window-excursion
+;;     (dired-do-async-shell-command
+;;      "open" current-prefix-arg
+;;      (dired-get-marked-files t current-prefix-arg))))
+;;   (define-key dired-mode-map (kbd "C-o") 'dired-open)
+
+;;; Open the current directory in desktop
+;;; http://xahlee.blogspot.com/2012/01/emacs-dired-opening-files-in-external.html
+;; (defun open-in-desktop ()
+;;   "Open the current file in desktop.
+;; Works in Microsoft Windows, Mac OS X, Linux."
+;;   (interactive)
+;;   (cond
+;;    ((string-equal system-type "windows-nt")
+;;     (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+;;    ((string-equal system-type "darwin") (shell-command "open ."))
+;;    ((string-equal system-type "gnu/linux") (shell-command "xdg-open ."))
+;;    ) )
+;; (define-key dired-mode-map (kbd "C-;") 'open-in-desktop)
+
+;; Make sizes human-readable by default, sort version numbers
+;; correctly, and put dotfiles and capital-letters first.
+;(setq-default dired-listing-switches "-alhvi")
+
+** Removed as it was causing max-lisp-eval-depth errors
+;;; Set the mode based on the buffer name.  Thanks to `__jim__'.
+;;; http://www.reddit.com/r/emacs/comments/d2t4q/scratch_buffers_for_emacs/c0x7a68
+(setq-default major-mode
+              (lambda ()
+                (let ((buffer-file-name (or buffer-file-name (buffer-name))))
+                  (set-auto-mode))))
+
+* smex
+https://www.emacswiki.org/emacs/Smex
+https://github.com/nonsequitur/smex
+
+NOTE: ivy will use smex if its installed
+#+BEGIN_SRC emacs-lisp
+;(use-package smex
+;   :ensure f
+;   :init (smex-initialize)
+;   :config
+;     (setq smex-save-file "~/.emacs.d/cache/smex-items")
+;)
+#+END_SRC
+
+* company
+Autocomplete function comp-any
+
+#+BEGIN_SRC emacs-lisp
+;(use-package company
+;  :ensure t
+;  :defer t
+;  :init (global-company-mode)
+;  :config
+;  (progn
+;    ;; Use Company for completion
+;    (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+;
+;    (setq company-tooltip-align-annotations t
+;          ;; Easy navigation to candidates with M-<n>
+;          company-show-numbers t)
+;    (setq company-dabbrev-downcase nil)
+;    (setq company-idle-delay 1)
+;    (setq company-minimum-prefix-length 3))
+;
+;  (with-eval-after-load 'company
+;    (define-key company-active-map (kbd "M-n") nil)
+;    (define-key company-active-map (kbd "M-p") nil)
+;    (define-key company-active-map (kbd "C-n") #'company-select-next)
+;    (define-key company-active-map (kbd "C-p") #'company-select-previous))
+;
+;  :diminish company-mode)
+#+END_SRC
+* --removed 20190612--
+* color-moccur - unavailable after switching to stable.melpa.org
+#+BEGIN_SRC emacs-lisp
+(use-package color-moccur
+  :ensure t
+  :commands (isearch-moccur isearch-all)
+  :bind (("M-s O" . moccur)
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
+  :init
+  (setq isearch-lazy-highlight t)
+  :config
+  (use-package moccur-edit)
+)
+#+END_SRC
+* deadgrep
+# https://github.com/Wilfred/deadgrep
+# https://github.com/Malabarba/spinner.el
+fast, friendly searching with ripgrep and Emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package spinner
+  :ensure t
+  :disabled)
+
+(use-package deadgrep
+  :ensure t
+  :disabled
+  :requires spinner
+  :config
+  (global-set-key (kbd "<f5>") #'deadgrep)
+)
+#+END_SRC
+* dumb-jump
+https://github.com/jacktasia/dumb-jump
+an Emacs "jump to definition" package
+
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :ensure t
+  :disabled
+  :commands dumb-jump
+  :bind (("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config
+    (setq dumb-jump-selector 'ivy)
+)
+#+END_SRC
+* golden-ratio
+https://github.com/roman/golden-ratio.el
+http://pragmaticemacs.com/emacs/resize-your-windows-to-the-golden-ratio/
+If you prefer to use a single large emacs frame with multiple windows inside, you might like the golden ratio package. This automatically resizes your windows so that the window containing the point is the largest (size determined by the mathematical golden ratio). This means that the window you are working in is nice and large but you can still see what is going on in the other windows.
+
+Can also look at zoom for similar functionality
+https://github.com/cyrus-and/zoom
+
+Enable on buffer change?
+https://github.com/roman/golden-ratio.el/issues/57
+
+#+begin_src emacs-lisp
+(use-package golden-ratio
+  :ensure t
+  :disabled
+  :init
+    (golden-ratio-mode 1)
+  :config
+    (add-hook 'buffer-list-update-hook #'golden-ratio)
+)
+#+end_src
+* ibuffer
+#+BEGIN_SRC emacs-lisp
+;;; -- ibuffer - *Nice* buffer switching
+;;
+;; ibuffer filtering
+;;
+;; Search all marked buffers
+;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
+;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+;;   ‘U’ - Replace by regexp in each of the marked buffers.
+;;   ‘Q’ - Query replace in each of the marked buffers.
+;;   ‘I’ - As above, with a regular expression.
+(use-package ibuffer
+  :ensure nil
+  :bind ( "C-x C-b" . ibuffer)
+  :config
+    ;; Don't show empty buffer groups
+    (setq ibuffer-show-empty-filter-groups nil)
+
+    ;; work groups for ibuffer
+    (setq ibuffer-saved-filter-groups
+          '(("default"
+             ("version control" (or (mode . svn-status-mode)
+                       (mode . svn-log-edit-mode)
+                       (name . "^\\*svn-")
+                       (name . "^\\*vc\\*$")
+                       (name . "^\\*Annotate")
+                       (name . "^\\*vc-")
+                       (name . "^\\*git-")
+                       (name . "^\\*magit")))
+             ("emacs" (or (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")
+                          (name . "^TAGS\\(<[0-9]+>\\)?$")
+                          (name . "^\\*info\\*$")
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*grep\\*$")
+                          (name . "^\\*Compile-Log\\*$")
+                          (name . "^\\*Backtrace\\*$")
+                          (name . "^\\*Process List\\*$")
+                          (name . "^\\*gud\\*$")
+                          (name . "^\\*Man")
+                          (name . "^\\*WoMan")
+                          (name . "^\\*Kill Ring\\*$")
+                          (name . "^\\*Completions\\*$")
+                          (name . "^\\*tramp")
+                          (name . "^\\*shell\\*$")
+                          (name . "^\\*compilation\\*$")))
+             ("Helm" (or (name . "\*helm\*")))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))
+             ("emacs-source" (or (mode . emacs-lisp-mode)
+                                 (filename . "/Applications/Emacs.app")
+                                 (filename . "/bin/emacs")))
+             ("emacs-config" (or (filename . ".emacs.d")
+                                 (filename . "emacs-config")))
+            ("org" (or (name . "^\\*org-")
+                        (name . "^\\*Org")
+                        (mode . org-mode)
+                        (mode . muse-mode)
+                        (name . "^\\*Calendar\\*$")
+                        (name . "^+current$")
+                        (name . "^diary$")
+                        (name . "^\\*Agenda")))
+             ("latex" (or (mode . latex-mode)
+                          (mode . LaTeX-mode)
+                          (mode . bibtex-mode)
+                          (mode . reftex-mode)))
+             ("dired" (or (mode . dired-mode)))
+             ("perl" (mode . cperl-mode))
+             ("erc" (mode . erc-mode))
+             ("shell" (or (mode . shell-mode)
+                            (name . "^\\*terminal\\*$")
+                            (name . "^\\*ansi-term\\*$")
+                            (name . "^\\*shell\\*$")
+                            (name . "^\\*eshell\\*$")))
+             ("gnus" (or (name . "^\\*gnus trace\\*$")
+                            (mode . message-mode)
+                            (mode . bbdb-mode)
+                            (mode . mail-mode)
+                            (mode . gnus-group-mode)
+                            (mode . gnus-summary-mode)
+                            (mode . gnus-article-mode)
+                            (name . "^\\.bbdb$")
+                            (name . "^\\.newsrc-dribble"))))))
+
+    ;; Order the groups so the order is : [Default], [agenda], [emacs]
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+    ;; Hide the following buffers
+    ;;(setq ibuffer-never-show-predicates
+    ;;      (list "\\*Completions\\*"
+    ;;            "\\*vc\\*"))
+
+    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
+    (setq ibuffer-expert t)
+
+    ;; Load the 'work' group, can set to load groups by location
+    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+    ;; list up to date. I turn it on in my ibuffer-mode-hook:
+    (add-hook 'ibuffer-mode-hook
+              '(lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
+)
+#+END_SRC
+* multi-term
+https://www.emacswiki.org/emacs/MultiTerm
+MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.
+
+#+BEGIN_SRC emacs-lisp
+(use-package multi-term
+  :ensure t
+  :disabled
+)
+#+END_SRC
+* pdf-tools - very processor intensive
+#+BEGIN_SRC emacs-lisp
+;;; Linux:
+;;; sudo apt install libpoppler-glib-dev
+;;;
+;;; Mac:
+;;; http://pragmaticemacs.com/emacs/view-and-annotate-pdfs-in-emacs-with-pdf-tools/
+;;; brew install poppular automake
+;;;
+;;; NOTE:  Had to disable pin manual for initial install
+;;; or run M-x pdf-tools-install and ignore error about epdfinfo and restart
+(use-package pdf-tools
+  :pin manual ;; manually update?
+  ;:ensure t
+  :config
+  ;; speed up load times on systems with unicode symbols, set before init
+  (setq pdf-view-use-unicode-ligther nil)
+  ;; initialise
+  (pdf-tools-install)
+  ;; open pdfs scaled to fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; use normal isearch
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+)
+#+END_SRC
+
+* smart-mode-line
+https://github.com/Malabarba/smart-mode-line
+
+#+BEGIN_SRC emacs-lisp
+(use-package smart-mode-line
+  :ensure f
+  :after zenburn-theme
+  :init (add-hook 'after-init-hook 'sml/setup)
+)
+#+END_SRC
+* pydoc-info - unavailable after switching to stable.melpa.org
+https://github.com/emacsmirror/pydoc-info
+Search and browse the Python documentation in Info https://bitbucket.org/nil/pydoc-info
+
+#+BEGIN_SRC emacs-lisp
+(use-package pydoc-info
+  :ensure t)
+#+END_SRC
+* sane-term - unavailable after switching to stable.melpa.org
+https://github.com/adamrt/sane-term
+Cycle through terms in emacs
+
+#+begin_src emacs-lisp
+(use-package sane-term
+  :ensure t
+  :bind (
+    ("C-x t" . sane-term)
+    ("C-x T" . sane-term-create))
+)
+#+end_src
+* restclient - unavailable after switching to stable.melpa.org
+https://github.com/pashky/restclient.el
+HTTP REST client tool for emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package restclient
+  :ensure t)
+#+END_SRC
+* shell-pop - unavailable after switching to stable.melpa.org
+https://github.com/kyagi/shell-pop-el
+shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
+
+#+BEGIN_SRC emacs-lisp
+(require 'shell-pop)
+(use-package shell-pop
+  :ensure t
+  :bind ("C-c t" . shell-pop)
+  :config
+    (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+    (setq shell-pop-term-shell "/bin/bash")
+    ;(setq shell-pop-universal-key "C-t")
+    ;; need to do this manually or not picked up by `shell-pop'
+    (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+)
+#+END_SRC
