@@ -137,8 +137,9 @@
 #+END_SRC
 * Global key bindings
 #+BEGIN_SRC emacs-lisp
-;;; test out electric buffer mode
-(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
+;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
+;(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 
 ;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
 ; Re-enable swap frames with M-`
@@ -1156,6 +1157,115 @@ A groovy major mode, grails minor mode, and a groovy inferior mode.
   :mode "\\.groovy\\'\\|\\.gradle\\'"
 )
 #+END_SRC
+* ibuffer
+#+BEGIN_SRC emacs-lisp
+;;; -- ibuffer - *Nice* buffer switching
+;;
+;; ibuffer filtering
+;;
+;; Search all marked buffers
+;;   ‘M-s a C-s’ - Do incremental search in the marked buffers.
+;;   ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+;;   ‘U’ - Replace by regexp in each of the marked buffers.
+;;   ‘Q’ - Query replace in each of the marked buffers.
+;;   ‘I’ - As above, with a regular expression.
+(use-package ibuffer
+  :ensure nil
+  :bind ( "C-x C-b" . ibuffer)
+  :config
+    ;; Don't show empty buffer groups
+    (setq ibuffer-show-empty-filter-groups nil)
+
+    ;; work groups for ibuffer
+    (setq ibuffer-saved-filter-groups
+          '(("default"
+             ("version control" (or (mode . svn-status-mode)
+                       (mode . svn-log-edit-mode)
+                       (name . "^\\*svn-")
+                       (name . "^\\*vc\\*$")
+                       (name . "^\\*Annotate")
+                       (name . "^\\*vc-")
+                       (name . "^\\*git-")
+                       (name . "^\\*magit")))
+             ("emacs" (or (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")
+                          (name . "^TAGS\\(<[0-9]+>\\)?$")
+                          (name . "^\\*info\\*$")
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*grep\\*$")
+                          (name . "^\\*Compile-Log\\*$")
+                          (name . "^\\*Backtrace\\*$")
+                          (name . "^\\*Process List\\*$")
+                          (name . "^\\*gud\\*$")
+                          (name . "^\\*Man")
+                          (name . "^\\*WoMan")
+                          (name . "^\\*Kill Ring\\*$")
+                          (name . "^\\*Completions\\*$")
+                          (name . "^\\*tramp")
+                          (name . "^\\*shell\\*$")
+                          (name . "^\\*compilation\\*$")))
+             ("Helm" (or (name . "\*helm\*")))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))
+             ("emacs-source" (or (mode . emacs-lisp-mode)
+                                 (filename . "/Applications/Emacs.app")
+                                 (filename . "/bin/emacs")))
+             ("emacs-config" (or (filename . ".emacs.d")
+                                 (filename . "emacs-config")))
+            ("org" (or (name . "^\\*org-")
+                        (name . "^\\*Org")
+                        (mode . org-mode)
+                        (mode . muse-mode)
+                        (name . "^\\*Calendar\\*$")
+                        (name . "^+current$")
+                        (name . "^diary$")
+                        (name . "^\\*Agenda")))
+             ("latex" (or (mode . latex-mode)
+                          (mode . LaTeX-mode)
+                          (mode . bibtex-mode)
+                          (mode . reftex-mode)))
+             ("dired" (or (mode . dired-mode)))
+             ("perl" (mode . cperl-mode))
+             ("erc" (mode . erc-mode))
+             ("shell" (or (mode . shell-mode)
+                            (name . "^\\*terminal\\*$")
+                            (name . "^\\*ansi-term\\*$")
+                            (name . "^\\*shell\\*$")
+                            (name . "^\\*eshell\\*$")))
+             ("gnus" (or (name . "^\\*gnus trace\\*$")
+                            (mode . message-mode)
+                            (mode . bbdb-mode)
+                            (mode . mail-mode)
+                            (mode . gnus-group-mode)
+                            (mode . gnus-summary-mode)
+                            (mode . gnus-article-mode)
+                            (name . "^\\.bbdb$")
+                            (name . "^\\.newsrc-dribble"))))))
+
+    ;; Order the groups so the order is : [Default], [agenda], [emacs]
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+    ;; Hide the following buffers
+    ;;(setq ibuffer-never-show-predicates
+    ;;      (list "\\*Completions\\*"
+    ;;            "\\*vc\\*"))
+
+    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
+    (setq ibuffer-expert t)
+
+    ;; Load the 'work' group, can set to load groups by location
+    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+    ;; list up to date. I turn it on in my ibuffer-mode-hook:
+    (add-hook 'ibuffer-mode-hook
+              '(lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
+)
+#+END_SRC
+
 * ispell
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Spelling.html
 ispell - interactive spell, set ispell checks to use aspell
