@@ -1696,21 +1696,28 @@ https://emacs.stackexchange.com/questions/10065/how-can-i-defer-loading-elpy-usi
 Setup python env first:
   pip install ipython jedi flake8 autopep8 yapf
 
+Useful keybinds
+C-c C-c  evaluates the current script (or region if something is selected) in an interactive python shell. The python shell is automatically displayed aside of your script (if not already there).
+C-RET    evaluates the current statement (current line plus the following nested lines).
+C-c C-z  switches between your script and the interactive shell.
+C-c C-d  displays documentation for the thing under cursor (function or module). The
+
 #+BEGIN_SRC emacs-lisp
 (use-package elpy
   :ensure t
-  :commands elpy-enable
-  :init (with-eval-after-load 'python (elpy-enable))
+  :defer t
+  :init
+  (advice-add 'python-mode :before 'elpy-enable)
   :config
     ;; Explicitly choose backend
     (setq elpy-rpc-backend "jedi")
 
     ;; replace flymake with flycheck for on-the-fly checking
-    (when (require 'flycheck nil t)
-      (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-      (add-hook 'elpy-mode-hook 'flycheck-mode))
+    ;(when (require 'flycheck nil t)
+    ;  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    ;  (add-hook 'elpy-mode-hook 'flycheck-mode))
 
-    ;; Emable pep8 auto correct erros on save
+    ;; Emable pep8 auto correct erros on save - moved to py-autopep8 config
     ;(require 'py-autopep8)
     ;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
