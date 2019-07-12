@@ -18,7 +18,7 @@
         ("elpy"  . "http://jorgenschaefer.github.io/packages/")
         ("gnu"   . "http://elpa.gnu.org/packages/")
         ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
-        ("melpa" . "http://stable.melpa.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")
 ))
 (package-initialize)
 

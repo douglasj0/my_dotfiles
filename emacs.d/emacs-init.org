@@ -1385,6 +1385,20 @@ markdown-mode is a major mode for editing Markdown-formatted text.
   :ensure t
   :commands markdown-mode)
 #+END_SRC
+
+* neotree
+A emacs tree plugin like NerdTree for Vim.
+https://github.com/jaypei/emacs-neotree
+#  :bind ("C-;" . neotree-toggle)
+#  :config
+#  (setq neo-theme (if window-system 'icons 'arrows)))
+
+#+begin_src emacs-lisp
+(use-package neotree
+  :ensure t
+  :bind ("<f5>" . neotree-toggle)
+)
+#+end_src
 * org-mode
 #+BEGIN_SRC emacs-lisp
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,

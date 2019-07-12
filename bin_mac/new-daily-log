@@ -67,14 +67,16 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 * Monday
 \n.
-\n2:30-3:30 [Meeting] Team Otter Sprint Planning (Tenderloin 20th)
 \n* Tuesday
+\n9-9:15 [Meeting] Weekly GHC check (with Tim and Ryan)
 \n1-5 SRE Heads Down Time
+\n2-3 [Meeting] Recurring GFW+Core KT (with Jacob/Jason/Randy)
 \n* Wednesday
 \n11:20-12:30 Spicey Chicken
 \n2-2:30 [Meeting] Doug:Charlie 1:1
 \n* Thursday
 \n1-5 SRE Heads Down Time
+\n2-3 [Meeting] Recurring GFW+Core KT (with Jacob/Jason/Randy)
 \n* Friday
 \n9:30-10:30 [Meeting] SRE's Unite (Spanakopita 19th fl)
 \n10:30-11 Run 'topgrade' to update mac apps
