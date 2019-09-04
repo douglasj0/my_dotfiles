@@ -287,7 +287,8 @@ function parse_git_dirty {
 
 # Shell Prompt
 # if CHIC02RR812G8WP change to thorn
-if [[ ${HOSTNAME} == "C02RR812G8WP.grubhub.local" ]]; then
+#if [[ ${HOSTNAME} == "C02RR812G8WP.grubhub.local" ]]; then
+if [[ ${HOSTNAME} == "C02YF305JG5M.grubhub.local" ]]; then
   PROMPT_COMMAND='if [ $? = 0 ]; then
     PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
   else
@@ -384,7 +385,7 @@ function ediff {
     emacs --eval "(ediff \"$1\" \"$2\")"
 }
 
-function q { w3m -dump "http://google.com/search?q=$*" | more; }
+#function q { w3m -dump "http://google.com/search?q=$*" | more; }
 function traffic { netstat -w1 -I"$@"; }
 function qlook { qlmanage -p "$@" >& /dev/null & }
 

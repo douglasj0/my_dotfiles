@@ -61,7 +61,9 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 # | C-x r l    | list bookmarks   | | C-x r m   | set bookmark    |
 # | M-x bookmark-delete           | |           |                 |
 # | C-x C+ / - | change font size | | C-c p C-h | Projectile help |
-# | C-h m      | mode keys        | |           |                 |
+# | C-h m      | mode keys        | | C-c n     | Narrow region   |
+# | C-x 5 b    | buf in new frame | | C-x 5 f   | file in new frm |
+# | C-x 5 d    | dir in new frame | |           |                 |
 # NOTE: Track ALL interruptions
 
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
@@ -73,7 +75,7 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n2-3 [Meeting] Recurring GFW+Core KT (with Jacob/Jason/Randy)
 \n* Wednesday
 \n11:20-12:30 Spicey Chicken
-\n2-2:30 [Meeting] Doug:Charlie 1:1
+\n2-2:30 [Meeting] Doug:Randy/Charlie 1:1
 \n* Thursday
 \n1-5 SRE Heads Down Time
 \n2-3 [Meeting] Recurring GFW+Core KT (with Jacob/Jason/Randy)

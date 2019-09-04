@@ -920,6 +920,22 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
+* ansible-vault
+Minor mode for manipulating ansible-vault files
+https://github.com/zellio/ansible-vault-mode
+
+#+begin_src emacs-lisp
+(defun ansible-vault-mode-maybe ()
+  (when (ansible-vault--is-vault-file)
+    (ansible-vault-mode 1)))
+
+(use-package ansible-vault
+  :ensure t
+  :init (add-hook 'yaml-mode-hook 'ansible-vault-mode-maybe)
+  :config (setq ansible-vault-pass-file "~/.vault_core_pass.txt")
+)
+#+end_src
+
 * async
 https://github.com/jwiegley/emacs-async
 async.el is a module for doing asynchronous processing in Emacs. Some async applications are provided as well with this package:
