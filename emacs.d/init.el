@@ -29,6 +29,8 @@
 (eval-when-compile
   (require 'use-package)
   (setq use-package-verbose t)
+  ;(require 'diminish)                ;; if you use :diminish
+  ;(require 'bind-key)                ;; if you use any :bind variant
 )
 
 ;; Test out a package without installing it

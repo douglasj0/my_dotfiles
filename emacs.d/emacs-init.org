@@ -998,7 +998,9 @@ async.el is a module for doing asynchronous processing in Emacs. Some async appl
 ;;(require 'dired+ nil 'noerror) ;; uber enhanced dired, very large?
 ;(require 'dired-x nil 'noerror) ;included with emacs
 (use-package dired-x
+  :after hydra
   :ensure nil
+  :demand t
   :bind ("C-x C-j"   . dired-jump)
         ("C-x 4 C-j" . dired-jump-other-window)
         ("C-x d"     . diredp-dired-files)
@@ -1036,8 +1038,64 @@ async.el is a module for doing asynchronous processing in Emacs. Some async appl
     ;; When you will press C to copy, the other dir in the split pane will be
     ;; default destination.
     (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
+
+;; https://github.com/abo-abo/hydra/wiki/Dired
+;; note, requires :demand t to load properly
+(defhydra hydra-dired (:hint nil :color pink)
+"
+_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
+_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
+_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
+_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+_z_ compress-file  _A_ find regexp
+_Z_ compress       _Q_ repl regexp
+
+T - tag prefix
+"
+  ("\\" dired-do-ispell)
+  ("(" dired-hide-details-mode)
+  (")" dired-omit-mode)
+  ("+" dired-create-directory)
+  ("=" diredp-ediff)         ;; smart diff
+  ("?" dired-summary)
+  ("$" diredp-hide-subdir-nomove)
+  ("A" dired-do-find-regexp)
+  ("C" dired-do-copy)        ;; Copy all marked files
+  ("D" dired-do-delete)
+  ("E" dired-mark-extension)
+  ("e" dired-ediff-files)
+  ("F" dired-do-find-marked-files)
+  ("G" dired-do-chgrp)
+  ("g" revert-buffer)        ;; read all directories again (refresh)
+  ("i" dired-maybe-insert-subdir)
+  ("l" dired-do-redisplay)   ;; relist the marked or singel directory
+  ("M" dired-do-chmod)
+  ("m" dired-mark)
+  ("O" dired-display-file)
+  ("o" dired-find-file-other-window)
+  ("Q" dired-do-find-regexp-and-replace)
+  ("R" dired-do-rename)
+  ("r" dired-do-rsynch)
+  ("S" dired-do-symlink)
+  ("s" dired-sort-toggle-or-edit)
+  ("t" dired-toggle-marks)
+  ("U" dired-unmark-all-marks)
+  ("u" dired-unmark)
+  ("v" dired-view-file)      ;; q to exit, s to search, = gets line #
+  ("w" dired-kill-subdir)
+  ("Y" dired-do-relsymlink)
+  ("z" diredp-compress-this-file)
+  ("Z" dired-do-compress)
+  ("q" nil)
+  ("." nil :color blue))
+
+(define-key dired-mode-map "." 'hydra-dired/body)
 )
 #+END_SRC
+
 * dockerfile-mode
 https://github.com/spotify/dockerfile-mode
 An emacs mode for handling Dockerfiles
@@ -1130,6 +1188,23 @@ A groovy major mode, grails minor mode, and a groovy inferior mode.
   :mode "\\.groovy\\'\\|\\.gradle\\'"
 )
 #+END_SRC
+
+* hydra
+https://github.com/abo-abo/hydra
+make Emacs bindings that stick around
+#+begin_src emacs-lisp
+(use-package hydra
+  :ensure t)
+#+end_src
+
+https://writepermission.com/emacs-package-use-package-hydra.html
+use-package-hydra not working for me currently
+##+begin_src emacs-lisp
+#;(use-package use-package-hydra
+##+end_src
+#  :after hydra
+#  :ensure t)
+
 * ibuffer
 #+BEGIN_SRC emacs-lisp
 ;;; -- ibuffer - *Nice* buffer switching
@@ -1417,6 +1492,70 @@ https://github.com/jaypei/emacs-neotree
 #+end_src
 * org-mode
 #+BEGIN_SRC emacs-lisp
+;;https://github.com/abo-abo/hydra/wiki/Org-mode-block-templates
+(defhydra hydra-org-template (:color blue :hint nil)
+    "
+ _c_enter  _q_uote     _e_macs-lisp    _L_aTeX:
+ _l_atex   _E_xample   _p_erl          _i_ndex:
+ _a_scii   _v_erse     _P_erl tangled  _I_NCLUDE:
+ _s_rc     _n_ote      plant_u_ml      _H_TML:
+ _h_tml    ^ ^         ^ ^             _A_SCII:
+"
+    ("s" (hot-expand "<s"))
+    ("E" (hot-expand "<e"))
+    ("q" (hot-expand "<q"))
+    ("v" (hot-expand "<v"))
+    ("n" (hot-expand "<not"))
+    ("c" (hot-expand "<c"))
+    ("l" (hot-expand "<l"))
+    ("h" (hot-expand "<h"))
+    ("a" (hot-expand "<a"))
+    ("L" (hot-expand "<L"))
+    ("i" (hot-expand "<i"))
+    ("e" (hot-expand "<s" "emacs-lisp"))
+    ("p" (hot-expand "<s" "perl"))
+    ("u" (hot-expand "<s" "plantuml :file CHANGE.png"))
+    ("P" (hot-expand "<s" "perl" ":results output :exports both :shebang \"#!/usr/bin/env perl\"\n"))
+    ("I" (hot-expand "<I"))
+    ("H" (hot-expand "<H"))
+    ("A" (hot-expand "<A"))
+    ("<" self-insert-command "ins")
+    ("o" nil "quit"))
+
+  ;(require 'org-tempo) ; Required from org 9 onwards for old template expansion
+  (setq org-structure-template-alist (eval (car (get 'org-structure-template-alist 'standard-value))))
+  (defun hot-expand (str &optional mod header)
+    "Expand org template.
+
+STR is a structure template string recognised by org like <s. MOD is a
+string with additional parameters to add the begin line of the
+structure element. HEADER string includes more parameters that are
+prepended to the element after the #+HEADER: tag."
+    (let (text)
+      (when (region-active-p)
+        (setq text (buffer-substring (region-beginning) (region-end)))
+        (delete-region (region-beginning) (region-end))
+        (deactivate-mark))
+      (when header (insert "#+HEADER: " header) (forward-line))
+      (insert str)
+      (org-tempo-complete-tag)
+      (when mod (insert mod) (forward-line))
+      (when text (insert text))))
+
+  (define-key org-mode-map "<"
+    (lambda () (interactive)
+      (if (or (region-active-p) (looking-back "^"))
+          (hydra-org-template/body)
+        (self-insert-command 1))))
+
+  (eval-after-load "org"
+    '(cl-pushnew
+    '("not" . "note")
+      org-structure-template-alist))
+
+; -- hydra --
+
+
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
 ;; https://orgmode.org/manual/Easy-templates.html
 ;; https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L65
@@ -1868,24 +2007,24 @@ A regexp/replace command for Emacs with interactive visual feedback
    (define-key global-map (kbd "C-c m") 'vr/mc-mark)
 )
 #+END_SRC
-* which-key
+* which-key - disabled to try hydra
 https://github.com/justbur/emacs-which-key
 Emacs package that displays available keybindings in popup
 
 #+BEGIN_SRC emacs-lisp
-(use-package which-key
-   :ensure t
-   :defer 10
-   :config
-   (progn
-     (setq which-key-popup-type 'side-window) ;Default
-      ;; (setq which-key-popup-type 'minibuffer)
-
-      (setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
-
-      (setq which-key-allow-multiple-replacements t) ;Default = nil
-      (which-key-mode))
-)
+;(use-package which-key
+;   :ensure t
+;   :defer 10
+;   :config
+;   (progn
+;     (setq which-key-popup-type 'side-window) ;Default
+;      ;; (setq which-key-popup-type 'minibuffer)
+;
+;      (setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
+;
+;      (setq which-key-allow-multiple-replacements t) ;Default = nil
+;      (which-key-mode))
+;)
 #+END_SRC
 * yaml-mode
 https://github.com/yoshiki/yaml-mode
