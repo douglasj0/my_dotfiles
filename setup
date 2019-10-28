@@ -68,15 +68,15 @@ esac
 # Misc links from syncthing
 if [ -d ${HOME}/Sync ]; then
   # Diary
-    if [ -L ${HOME}/diary ]; then
-      rm ${HOME}/diary
-      ln -s ${HOME}/Dropbox/Documents/diary ${HOME}/diary
-    fi
+  #  if [ -L ${HOME}/diary ]; then
+  #    rm ${HOME}/diary
+  #    ln -s ${HOME}/Sync/diary ${HOME}/diary
+  #  fi
   # org
     if [ -L ${HOME}/org ]; then
       rm ${HOME}/org
     fi
-    ln -s ${HOME}/Dropbox/Home/org ${HOME}/org
+    ln -s ${HOME}/Sync/org ${HOME}/org
   # .newsrc
     if [ -L ${HOME}/.newsrc ]; then
       rm ${HOME}/.newsrc
