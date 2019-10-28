@@ -100,7 +100,7 @@ if [ -d ${HOME}/Sync ]; then
 fi
 
 # Specific links from internal work repos
-if [ -e ${HOME}/personal-repos/necronomicon/profile/workrc ]; then
+if [ -e ${HOME}/Sync/repos/necronomicon/profile/workrc ]; then
   if [ -L ${HOME}/.workrc ]; then rm ${HOME}/.workrc; fi
-  ln -s ${HOME}/personal-repos/necronomicon/profile/workrc ${HOME}/.workrc
+  ln -s ${HOME}/Sync/repos/necronomicon/profile/workrc ${HOME}/.workrc
 fi
