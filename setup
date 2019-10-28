@@ -104,3 +104,11 @@ if [ -e ${HOME}/Sync/repos/necronomicon/profile/workrc ]; then
   if [ -L ${HOME}/.workrc ]; then rm ${HOME}/.workrc; fi
   ln -s ${HOME}/Sync/repos/necronomicon/profile/workrc ${HOME}/.workrc
 fi
+if [ -e ${HOME}/Sync/repos/necronomicon/ldap ]; then
+  if [ -L ${HOME}/ldap ]; then rm ${HOME}/ldap; fi
+  ln -s ${HOME}/Sync/repos/necronomicon/ldap ${HOME}/ldap
+fi
+if [ -e ${HOME}/Sync/repos/necronomicon/myscripts ]; then
+  if [ -L ${HOME}/scripts ]; then rm ${HOME}/scripts; fi
+  ln -s ${HOME}/Sync/repos/necronomicon/myscripts ${HOME}/scripts
+fi
