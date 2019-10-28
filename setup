@@ -81,17 +81,17 @@ if [ -d ${HOME}/Sync ]; then
     if [ -L ${HOME}/.newsrc ]; then
       rm ${HOME}/.newsrc
     fi
-    ln -s ${HOME}/Dropbox/Home/NNTP/newsrc ${HOME}/.newsrc
+    ln -s ${HOME}/Sync/NNTP/newsrc ${HOME}/.newsrc
   # .newsrc.eld
     if [ -L ${HOME}/.newsrc.eld ]; then
       rm ${HOME}/.newsrc.eld
     fi
-    ln -s ${HOME}/Dropbox/Home/NNTP/newsrc.eld ${HOME}/.newsrc.eld
+    ln -s ${HOME}/Sync/NNTP/newsrc.eld ${HOME}/.newsrc.eld
   # .authinfo
     if [ -L ${HOME}/.authinfo ]; then
       rm ${HOME}/.authinfo
     fi
-    ln -s ${HOME}/Dropbox/Home/NNTP/authinfo ${HOME}/.authinfo
+    ln -s ${HOME}/Sync/NNTP/authinfo ${HOME}/.authinfo
   # .mutt
 #    if [ -L ${HOME}/.mutt ]; then
 #      rm ${HOME}/.mutt
