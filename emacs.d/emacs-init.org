@@ -58,7 +58,7 @@
 * Themes and housekeeping
 #+BEGIN_SRC emacs-lisp
 ;;; Load Customizations if they exist
-(setq custom-file "~/Dropbox/Home/elisp/custom.el")
+(setq custom-file "~/Sync/elisp/custom.el")
 (load custom-file 'noerror)
 
 ;;; Add 'info' and 'elisp' to load-path (C-h v load-path RET)
@@ -1096,6 +1096,19 @@ T - tag prefix
 )
 #+END_SRC
 
+* dired-git-info
+Show git info in Emacs dired
+https://github.com/clemera/dired-git-info
+http://xenodium.com/showhide-emacs-dired-details-in-style/
+
+#+begin_src emacs-lisp
+(use-package dired-git-info
+  :ensure t
+  :defer 0.3
+  :bind (:map dired-mode-map
+        (")" . dired-git-info-mode))
+)
+#+end_src
 * dockerfile-mode
 https://github.com/spotify/dockerfile-mode
 An emacs mode for handling Dockerfiles

@@ -65,8 +65,8 @@ esac
 #  ln -s ${CURRDIR}/${b} ${HOME}/bin
 #done
 
-# Misc links from Dropbox
-if [ -d ${HOME}/Dropbox ]; then
+# Misc links from syncthing
+if [ -d ${HOME}/Sync ]; then
   # Diary
     if [ -L ${HOME}/diary ]; then
       rm ${HOME}/diary
@@ -100,7 +100,7 @@ if [ -d ${HOME}/Dropbox ]; then
 fi
 
 # Specific links from internal work repos
-if [ -e ${HOME}/repos/djackson/necronomicon/profile/workrc ]; then
+if [ -e ${HOME}/personal-repos/necronomicon/profile/workrc ]; then
   if [ -L ${HOME}/.workrc ]; then rm ${HOME}/.workrc; fi
-  ln -s ${HOME}/repos/djackson/necronomicon/profile/workrc ${HOME}/.workrc
+  ln -s ${HOME}/personal-repos/necronomicon/profile/workrc ${HOME}/.workrc
 fi
