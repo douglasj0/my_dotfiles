@@ -2039,6 +2039,15 @@ Emacs package that displays available keybindings in popup
 ;      (which-key-mode))
 ;)
 #+END_SRC
+* wttrin weather
+#+begin_src emacs-lisp
+(use-package wttrin
+  :ensure t
+  :config
+  (setq wttrin-default-cities '("Chicago" "moon"))
+)
+#+end_src
+
 * yaml-mode
 https://github.com/yoshiki/yaml-mode
 The emacs major mode for editing files in the YAML data serialization format.

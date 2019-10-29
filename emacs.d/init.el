@@ -1,13 +1,13 @@
 ; -*- mode: emacs-lisp -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Doug's GNU Emacs startup file                                           ;;;
-;;; doug@jacksonspub.com                                                    ;;;
+;;; hpotter@hogworts.edu                                                    ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; whoami?
 (setq
  user-full-name "Douglas Jackson"
- user-mail-address "dbjackson@gmail.com")
+ user-mail-address "hpotter@hogworts.edu")
 
 ;; To refresh package list, run:  M-x package-refresh-contents
 ;; To manually update installed packages:  M-x package-list-packages U x
