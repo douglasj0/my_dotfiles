@@ -15,10 +15,10 @@
 (setq package-enable-at-startup nil)
 (setq package-archives
       '(
-        ("elpy"  . "http://jorgenschaefer.github.io/packages/")
-        ("gnu"   . "http://elpa.gnu.org/packages/")
-        ("org"   . "http://orgmode.org/elpa/") ; provides org-plus-contrib
-        ("melpa" . "http://melpa.org/packages/")
+        ;("elpy"  . "http://jorgenschaefer.github.io/packages/") ; elpy package archive
+        ;("gnu"   . "https://elpa.gnu.org/packages/") ; default package archive
+        ("org"   . "https://orgmode.org/elpa/") ; provides org-plus-contrib
+        ("melpa" . "https://melpa.org/packages/") ; milkypostman's pkg archive
 ))
 (package-initialize)
 
@@ -26,12 +26,12 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package)
-  (setq use-package-verbose t)
-  ;(require 'diminish)                ;; if you use :diminish
-  ;(require 'bind-key)                ;; if you use any :bind variant
-)
+;(eval-when-compile
+;  (require 'use-package)
+;  (setq use-package-verbose t)
+;  ;(require 'diminish)                ;; if you use :diminish
+;  ;(require 'bind-key)                ;; if you use any :bind variant
+;)
 
 ;; Test out a package without installing it
 ;(use-package try
@@ -48,5 +48,6 @@
                      user-emacs-directory))
 
 ;; Disable ad-redefinition-action messages on startup
+;; Caused by third party functions redefining defadvice
 ;; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
 (setq ad-redefinition-action 'accept)
