@@ -69,6 +69,10 @@ function lhd { last $* | head; }
 function calc { awk "BEGIN{ print $* }"; }
 function rmd { pandoc $1 | lynx -stdin ; }
 
+# remove entry from ~/.ssh/known_hosts
+function delhost { ssh-keygen -R $@; }
+#function delprevhost { ssh-keygen -R !$; }
+
 # get mac addr
 function mac { ping -c 2 $1 > /dev/null 2>&1; arp $1 | awk '{print $3}' | tail -1; }
 
