@@ -62,7 +62,7 @@ shopt -s checkwinsize   # check term row/column size after each command before p
 ###############
 #  Functions  #
 ###############
-function p3 { cd ~/.virtualenvs/p3/bin; source ./activate; }
+function p3 { source ~/.virtualenvs/p3/bin/activate; }
 function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command; }
 function psg { ps -aef | grep $* | grep -v grep; }  # sysv ps
 function psb { ps aux | grep $* | grep -v grep; }  # bsd ps
@@ -408,6 +408,10 @@ fi
 # pyenv darwin
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+
+# jenv darwin
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
