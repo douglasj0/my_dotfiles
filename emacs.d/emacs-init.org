@@ -1239,8 +1239,11 @@ brew install pyenv-virtualenvwrapper
 
 Instlall virtualenv: pip install virtualenv
 Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+or, for python3:  python3 -m venv ~/.virtualenvs/p3
 enable: workon p3
+or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
 stop:   deactivate p3
+or, for python3:  deactivate
 
 To run code in emacs:
 M-x python-mode

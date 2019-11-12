@@ -62,6 +62,7 @@ shopt -s checkwinsize   # check term row/column size after each command before p
 ###############
 #  Functions  #
 ###############
+function p3 { cd ~/.virtualenvs/p3/bin; source ./activate; }
 function my_ps { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command; }
 function psg { ps -aef | grep $* | grep -v grep; }  # sysv ps
 function psb { ps aux | grep $* | grep -v grep; }  # bsd ps
