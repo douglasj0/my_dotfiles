@@ -834,6 +834,26 @@ ivy counsel-projectile
   :ensure t
   :commands counsel-projectile)
 #+END_SRC
+
+* magit
+https://github.com/magit/magit
+It's Magit! A Git porcelain inside Emacs. https://magit.vc
+
+#+begin_src emacs-lisp
+(use-package magit
+  :ensure t
+  :defer 5
+  :commands magit
+  :bind
+    (("C-x g" . magit-status)
+     ("C-x G" . magit-status-with-prefix)
+     ("C-x M-g" . magit-dispatch-popup)
+     ("C-c M-g" . global-magit-file-mode))
+  :config
+    (setq magit-completing-read-function 'ivy-completing-read)
+)
+#+end_src
+
 * org-mode
 #+BEGIN_SRC emacs-lisp
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
@@ -1220,6 +1240,7 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
   (setq company-minimum-prefix-length 3)
 
   (global-company-mode t)
+  (setq company-global-modes '(not org-mode))
 )
 #+end_src
 
