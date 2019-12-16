@@ -1365,3 +1365,22 @@ Install python lsp:
     (setq mode-line-format nil))
 )
 #+end_src
+* vterm
+https://github.com/akermu/emacs-libvterm
+Emacs libvterm integration
+
+# build on Mac
+cd .emacs.d
+brew install libvterm cmake libtool (renamed as glibtool)
+cd ~/.emacs.d
+git clone git@github.com:akermu/emacs-libvterm.git
+mkdir -p build
+cd build
+cmake ..
+make
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :load-path  "~/.emacs.d/emacs-libvterm/"
+)
+#+end_src

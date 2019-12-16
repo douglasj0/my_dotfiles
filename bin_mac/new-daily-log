@@ -63,7 +63,7 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 # | C-x C+ / - | change font size | | C-c p C-h | Projectile help |
 # | C-h m      | mode keys        | | C-c n     | Narrow region   |
 # | C-x 5 b    | buf in new frame | | C-x 5 f   | file in new frm |
-# | C-x 5 d    | dir in new frame | |           |                 |
+# | C-x 5 d    | dir in new frame | | C-c C-,   | select block    |
 # NOTE: Track ALL interruptions
 
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n

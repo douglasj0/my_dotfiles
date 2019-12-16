@@ -352,6 +352,14 @@ else
   TERM=xterm-256color
 fi
 
+# https://github.com/akermu/emacs-libvterm
+#if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+#    function clear(){
+#        printf  "\e]51;Evterm-clear-scrollback\e\\";
+#        tput clear;
+#    }
+#fi
+
 export CLICOLOR=1
 
 alias ldd="otool -L"
