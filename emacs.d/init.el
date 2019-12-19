@@ -16,7 +16,7 @@
 (setq package-archives
       '(
         ;("elpy"  . "http://jorgenschaefer.github.io/packages/") ; elpy package archive
-        ;("gnu"   . "https://elpa.gnu.org/packages/") ; default package archive
+        ("gnu"   . "https://elpa.gnu.org/packages/") ; default package archive
         ("org"   . "https://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "https://melpa.org/packages/") ; milkypostman's pkg archive
 ))

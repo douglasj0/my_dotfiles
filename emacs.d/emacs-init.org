@@ -598,6 +598,17 @@ Hide file detail toggle `(`
 )
 #+end_src
 
+* elpa-keyring-update
+https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html
+Required to fix issue with spinner and lsp
+
+#+begin_src emacs-lisp
+(use-package gnu-elpa-keyring-update
+  :ensure t
+  :config
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+)
+#+end_src
 * git gutter
 https://github.com/syohex/emacs-git-gutter
 Emacs port of GitGutter which is Sublime Text Plugin
@@ -1258,7 +1269,7 @@ https://github.com/pyenv/pyenv-virtualenvwrapper
 brew install pyenv-virtualenvwrapper
 (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
 
-Instlall virtualenv: pip install virtualenv
+Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
 Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
 or, for python3:  python3 -m venv ~/.virtualenvs/p3
 enable: workon p3
@@ -1298,14 +1309,14 @@ C-c C-t t python-skeleton-try
 C-c C-t w python-skeleton-while
 
 #+begin_src emacs-lisp
-(use-package virtualenvwrapper
-  :ensure t
-  :config
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell))
-
-(venv-workon "p3")
-(setq lsp-python-executable-cmd "python3")
+;(use-package virtualenvwrapper
+;  :ensure t
+;  :config
+;  (venv-initialize-interactive-shells)
+;  (venv-initialize-eshell))
+;
+;(venv-workon "p3")
+;(setq lsp-python-executable-cmd "python3")
 #+end_src
 * lsp-mode
 https://github.com/emacs-lsp/lsp-mode
@@ -1314,6 +1325,16 @@ Emacs client/library for the Language Server Protocol
 Install python lsp:
   workon p3
   pip install 'python-language-server[all]'
+
+
+#+begin_src emacs-lisp
+(use-package company-lsp
+  :ensure t
+  :config
+ (setq company-lsp-enable-snippet t)
+ (push 'company-lsp company-backends)
+)
+#+end_src
 
 #+begin_src emacs-lisp
 (use-package company-lsp
@@ -1382,5 +1403,6 @@ make
 #+begin_src emacs-lisp
 (use-package vterm
   :load-path  "~/.emacs.d/emacs-libvterm/"
+  :defer t
 )
 #+end_src
