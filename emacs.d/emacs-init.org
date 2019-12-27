@@ -600,7 +600,10 @@ Hide file detail toggle `(`
 
 * elpa-keyring-update
 https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html
-Required to fix issue with spinner and lsp
+https://stackoverflow.com/questions/58202993/emacs-failed-to-verify-signature-archive-contents-sig
+Old key expired Sep 23, 2019
+
+Required to install elpa packages
 
 #+begin_src emacs-lisp
 (use-package gnu-elpa-keyring-update
