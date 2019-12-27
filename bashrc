@@ -360,6 +360,10 @@ fi
 #    }
 #fi
 
+# Mac OS Catalina, new shell is zsh
+# to disable notice
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 export CLICOLOR=1
 
 alias ldd="otool -L"
@@ -418,8 +422,7 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 # jenv darwin
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+if which jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jenv init -)"; fi
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
