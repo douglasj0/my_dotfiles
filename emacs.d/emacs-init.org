@@ -1268,17 +1268,28 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
 )
 #+END_SRC
 * python
-https://github.com/pyenv/pyenv-virtualenvwrapper
-brew install pyenv-virtualenvwrapper
-(for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+# https://github.com/pyenv/pyenv-virtualenvwrapper
+# brew install pyenv-virtualenvwrapper
+# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+#
+# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
+# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+# or, for python3:  python3 -m venv ~/.virtualenvs/p3
+# enable: workon p3
+# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
+# stop:   deactivate p3
+# or, for python3:  deactivate
 
-Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
-Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
-or, for python3:  python3 -m venv ~/.virtualenvs/p3
-enable: workon p3
-or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
-stop:   deactivate p3
-or, for python3:  deactivate
+# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
+pyenv virtualenv 3.8.0 python3-emacs
+pyenv global python3-emacs
+pyenv versions
+
+pip install --upgrade pip
+#pip install virtualenv
+pip install 'python-language-server[all]'
+
+--
 
 To run code in emacs:
 M-x python-mode
@@ -1311,7 +1322,7 @@ C-c C-t m python-skeleton-import
 C-c C-t t python-skeleton-try
 C-c C-t w python-skeleton-while
 
-#+begin_src emacs-lisp
+;#+begin_src emacs-lisp
 ;(use-package virtualenvwrapper
 ;  :ensure t
 ;  :config
@@ -1320,7 +1331,21 @@ C-c C-t w python-skeleton-while
 ;
 ;(venv-workon "p3")
 ;(setq lsp-python-executable-cmd "python3")
+;#+end_src
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :init
+  (add-to-list 'exec-path "~/.pyenv/shims")
+  (setenv "WORKON_HOME" "~/.pyenv/versions/")
+  :config
+  (pyvenv-mode 1)
+  ;:bind
+  ;("C-x p e" . pyenv-activate-current-project)
+)
 #+end_src
+
 * lsp-mode
 https://github.com/emacs-lsp/lsp-mode
 Emacs client/library for the Language Server Protocol
@@ -1357,6 +1382,8 @@ Install python lsp:
   (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
   :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer))
   :hook ((python-mode) . lsp)
+  :config
+  (setq lsp-pyls-server-command '("~/.pyenv/shims/pyls"))
 )
 
 (use-package lsp-ui
@@ -1407,5 +1434,7 @@ make
 (use-package vterm
   :load-path  "~/.emacs.d/emacs-libvterm/"
   :defer t
+  :config
+  (define-key vterm-mode-map [return] #'vterm-send-return)
 )
 #+end_src
