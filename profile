@@ -33,7 +33,7 @@ export PATH MANPATH TMPDIR
 ;; # end Linux
 
 *)
-echo "bash_profile uname not reporing Darwin or Linux.  Where are we?"
+echo "profile uname not reporing Darwin or Linux.  Where are we?"
 ;;
 
 esac  # End System Specific case statement

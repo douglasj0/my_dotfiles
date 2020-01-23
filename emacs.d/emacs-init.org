@@ -1282,12 +1282,13 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
 
 # Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
 pyenv virtualenv 3.8.0 python3-emacs
-pyenv global python3-emacs
+pyenv local python3-emacs
 pyenv versions
 
 pip install --upgrade pip
 #pip install virtualenv
 pip install 'python-language-server[all]'
+pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
 
 --
 
