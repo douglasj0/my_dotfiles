@@ -1,9 +1,11 @@
-#!/bin/bash -x
-#
-#exec emacsclient --alternate-editor="" -t "$@"
+#!/bin/bash
 
+EMACS_SOCKET="${HOME}/.emacs.d/tmp/server"
+
+# Prefer emacs with alternalte zile
+# -s: socket   -n: don't wait   -a: alternate editor
 if [ `command -v emacsclient` >/dev/null 2>&1 ]; then
-    exec emacsclient -t "$@"
+    exec emacsclient -s "${EMACS_SOCKET}" -n -a zile "$@"
 elif [ `command -v zile` >/dev/null 2>&1 ]; then
     exec zile "$@"
 else
