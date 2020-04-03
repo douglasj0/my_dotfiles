@@ -598,6 +598,25 @@ Hide file detail toggle `(`
 )
 #+end_src
 
+dired-launchc
+https://github.com/thomp/dired-launch
+#+begin_src emacs-lisp
+;(use-package dired-launch
+;  :ensure t
+;  :config
+;  ;; use xdg-open as the default launcher
+;  (setq dired-launch-default-launcher '("xdg-open"))
+;  bind the 'l' key to dired-launch-command
+;  (define-key dired-launch-mode-map (kbd "l") 'dired-launch-command)
+;)
+
+(use-package dired-launch
+  :ensure t
+  :hook
+  (dired-mode . dired-launch-mode)
+)
+#+end_src
+
 * elpa-keyring-update
 https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html
 https://stackoverflow.com/questions/58202993/emacs-failed-to-verify-signature-archive-contents-sig
@@ -612,6 +631,52 @@ Required to install elpa packages
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 )
 #+end_src
+* eshell
+From zamandsky
+https://github.com/zamansky/dot-emacs
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize)
+)
+
+(use-package eshell-git-prompt
+  :ensure t
+  :config
+  (eshell-git-prompt-use-theme 'git-radar)
+)
+
+(setq scroll-step 1)
+
+(require 'cl-lib)
+ (defun select-or-create (arg)
+   "Commentary ARG."
+   (if (string= arg "New eshell")
+       (eshell t)
+     (switch-to-buffer arg)))
+ (defun eshell-switcher (&optional arg)
+   "Commentary ARG."
+   (interactive)
+   (let* (
+          (buffers (cl-remove-if-not (lambda (n) (eq (buffer-local-value 'major-mode n) 'eshell-mode)) (buffer-list)) )
+          (names (mapcar (lambda (n) (buffer-name n)) buffers))
+          (num-buffers (length buffers) )
+          (in-eshellp (eq major-mode 'eshell-mode)))
+     (cond ((eq num-buffers 0) (eshell (or arg t)))
+           ((not in-eshellp) (switch-to-buffer (car buffers)))
+           (t (select-or-create (completing-read "Select Shell:" (cons "New eshell" names)))))))
+
+(defun eshell/in-term (prog &rest args)
+  "Run shell command in term buffer."
+  (switch-to-buffer (apply #'make-term prog prog nil args))
+  (term-mode)
+  (term-char-mode))
+
+(global-set-key (kbd "C-c x") 'eshell-switcher)
+#+end_src
+
 * git gutter
 https://github.com/syohex/emacs-git-gutter
 Emacs port of GitGutter which is Sublime Text Plugin
@@ -839,6 +904,14 @@ swiper
 (use-package swiper
   :ensure t
   :after ivy)
+
+; https://emacs.stackexchange.com/questions/40556/swiper-get-last-search-term
+; https://emacs.stackexchange.com/questions/55775/how-can-i-resume-swiper-isearch-with-the-next-line-selected
+;(defun my-swiper-isearch-again ()
+;  "Start swiper-isearch with the last thing searched for."
+;  (interactive)
+;  (swiper-isearch (car swiper-history)))
+;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
 #+END_SRC
 
 ivy counsel-projectile
@@ -868,6 +941,20 @@ It's Magit! A Git porcelain inside Emacs. https://magit.vc
 )
 #+end_src
 
+* neotree
+A emacs tree plugin like NerdTree for Vim.
+https://github.com/jaypei/emacs-neotree
+#  :bind ("C-;" . neotree-toggle)
+#  :config
+#  (setq neo-theme (if window-system 'icons 'arrows)))
+#   :bind ("<f5>" . neotree-toggle)
+
+#+begin_src emacs-lisp
+(use-package neotree
+  :ensure t
+  :bind ("M-p" . neotree-toggle)
+)
+#+end_src
 * org-mode
 #+BEGIN_SRC emacs-lisp
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
