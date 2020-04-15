@@ -4,6 +4,12 @@
 
 * Housekeeping
 #+BEGIN_SRC emacs-lisp
+;;; set font size to 15, overriding default 12
+; M-x describe-font:
+; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+;(set-face-attribute 'default (selected-frame) :height 150)
+(set-face-attribute 'default nil :height 150)
+
 ;;; Load Customizations if they exist
 (setq custom-file "~/Sync/elisp/custom.el")
 (load custom-file 'noerror)
@@ -1485,6 +1491,7 @@ Install python lsp:
   :hook ((python-mode) . lsp)
   :config
   (setq lsp-pyls-server-command '("~/.pyenv/shims/pyls"))
+  (setq lsp-signature-auto-activate t lsp-signature-doc-lines 1)
 )
 
 (use-package lsp-ui
@@ -1526,10 +1533,14 @@ cd .emacs.d
 brew install libvterm cmake libtool (renamed as glibtool)
 cd ~/.emacs.d
 git clone git@github.com:akermu/emacs-libvterm.git
-mkdir -p build
-cd build
+cd emacs-libvterm
+mkdir -p build && cd build
 cmake ..
 make
+
+# check signed vaule
+$ codesign -dv ./vterm-module.so
+./vterm-module.so: code object is not signed at all
 
 #+begin_src emacs-lisp
 (use-package vterm

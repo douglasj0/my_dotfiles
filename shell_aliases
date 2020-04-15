@@ -1,0 +1,27 @@
+# General aliases
+
+alias -- la='ls -a'
+alias -- lf='ls -F'
+alias -- ll='ls -la'
+alias -- pu='pushd'
+alias -- po='popd'
+alias -- t1='TERM=vt100; export TERM; stty rows 24; DISPLAY=kludge:0.0; export DISPLAY'
+
+alias keepalive='while true; do date; sleep 120; done'
+alias git_repo_name='git remote show -n origin | grep Fetch | cut -d: -f2-'
+alias ping4='ping -c4'
+alias weather='curl wttr.in/chicago'
+alias speedtest='wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test100.zip'
+alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
+
+# Proksel's aliases
+alias aspen='tree -h -f -C'
+alias atomize='open . -a Atom'
+alias killmercer='sudo $(history -p !!)'
+alias public_ip='curl ipecho.net/plain; echo'
+alias terraform_graph='terraform graph | dot -Tpng > graph.png'
+
+# git aliases
+alias gg="git grep"
+alias git-unfuck="git reset --hard HEAD"
+alias gitGraph='git log --graph --oneline --all --decorate --color'
