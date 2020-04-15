@@ -202,7 +202,7 @@ rt-activate() {
 ###################
 case "$(uname)" in
 Darwin)  # Darwin Environment
-if [[ ! -z $PS1 ]]; then echo ".darwin bashrc loaded"; fi  # Interactive
+if [[ ! -z $PS1 ]]; then echo ".darwin zshrc loaded"; fi  # Interactive
 
 # Load Darwin aliases
 source $HOME/.dotfiles/darwin_shell_aliases
@@ -258,7 +258,7 @@ if which jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jen
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
-if [[ ! -z $PS1 ]]; then echo ".linux bashrc loaded"; fi	# interactive
+if [[ ! -z $PS1 ]]; then echo ".linux zshrc loaded"; fi # interactive
 
 # Load Linux aliases
 source $HOME/.dotfiles/linux_shell_aliases
