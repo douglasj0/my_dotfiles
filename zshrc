@@ -15,9 +15,6 @@ limit core 0
 
 umask 077
 
-# setenv for csh junkies (including tset)
-setenv() { export $1=$2 }
-
 
 # prompt colors
 autoload -U colors && colors
@@ -41,12 +38,50 @@ fi
 
 # functions to autoload
 # autoload cx acx mere yu yp randline proto namedir ilogin
-autoload -Uz compinit #autocompletion on hosts and usernames
-compinit
+autoload -Uz compinit && compinit #autocompletion on hosts and usernames
+# small letters will match small and capital letters. (i.e. capital letters match only capital letters.)
+#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# capital letters also match small letters use instead:
+#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# If you want case-insensitive matching only if there are no case-sensitive matches add '', e.g.
+#zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
-MAILCHECK=30
-HISTSIZE=600
-DIRSTACKSIZE=50
+
+# https://www.viget.com/articles/zsh-config-productivity-plugins-for-mac-oss-default-shell/
+# History
+[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=10000
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt inc_append_history
+setopt share_history
+# Changing directories
+setopt auto_cd
+setopt auto_pushd
+unsetopt pushd_ignore_dups
+setopt pushdminus
+# Completion
+setopt auto_menu
+setopt always_to_end
+setopt complete_in_word
+unsetopt flow_control
+unsetopt menu_complete
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+# Other
+setopt prompt_subst
+
+
+#MAILCHECK=30
+#HISTSIZE=600
+#DIRSTACKSIZE=50
 
 setopt notify cdablevars autolist \
         sun_keyboard_hack auto_cd recexact long_list_jobs \
@@ -59,26 +94,26 @@ autoload -U compinit
 compinit
 
 # some nice bindings
-bindkey '^X^Z' universal-argument ' ' magic-space
-bindkey '^X^A' vi-find-prev-char-skip
-bindkey '^Z' accept-and-hold
-bindkey -s '\M-/' \\\\
-bindkey -s '\M-=' \|
+#bindkey '^X^Z' universal-argument ' ' magic-space
+#bindkey '^X^A' vi-find-prev-char-skip
+#bindkey '^Z' accept-and-hold
+#bindkey -s '\M-/' \\\\
+#bindkey -s '\M-=' \|
 
 # jsamuels stuff
 
 # PROMPT="%m:%3c[$SHLVL]>"
 # RPROMPT="%B%*%b"
-HISTFILE=~/.zhistory
-SAVEHIST='1000'
-HISTSIZE='1000'
+#HISTFILE=~/.zhistory
+#SAVEHIST='1000'
+#HISTSIZE='1000'
 # DIRSTACKSIZE=50
 # WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 # stty intr '^C'
 # chpwd () { print -Pn '' }
-# chpwd () { print -Pn '' }
+
 # cd
-psg () { ps -aef | grep $* | grep -v grep }
+
 # stty erase ^H
 stty -echoprt
 
@@ -90,8 +125,10 @@ LESS="-XgmR"
 source $HOME/.dotfiles/shell_aliases
 
 # Functions
+# setenv for csh junkies (including tset)
+seten() { export $1=$2 }
 # repeat last command with sudo
-function fucking {
+fucking() {
      LAST_CMD=`fc -nl -1`
      echo sudo $LAST_CMD
      sudo zsh -c $LAST_CMD
@@ -109,10 +146,10 @@ flip() {
   echo     "  (╯°□°）╯︵ ┻━┻"; sleep .5;
 }
 
-function calc { awk "BEGIN{ print $* }"; }
-function delhost { ssh-keygen -R $@; }  # remove entry from ~/.ssh/known_hosts
+calc() { awk "BEGIN{ print $* }"; }
+delhost() { ssh-keygen -R $@; }  # remove entry from ~/.ssh/known_hosts
 
-function rot13 {	# For some reason, rot13 pops up everywhere
+rot13() {  # For some reason, rot13 pops up everywhere
     if [ $# -eq 0 ]; then
 	tr '[a-m][n-z][A-M][N-Z]' '[n-z][a-m][N-Z][A-M]'
     else
