@@ -257,9 +257,9 @@ fi
 # Configure Emacs and Emacsclient
 # adapted from http://philipweaver.blogspot.com/2009/08/emacs-23.html
 ###
-#alias emacs="Emacs"
+alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"  # lowercase bin/emacs is broken
 EMACS_SOCKET="${HOME}/.emacs.d/tmp/server"
-alias ecw="emacsclient -s $EMACS_SOCKET -n -c -a emacs" # start a windowed frame
+alias ecw="emacsEclient -s $EMACS_SOCKET -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -s $EMACS_SOCKET -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -s $EMACS_SOCKET -n -a emacs" # do not start a new frame
 

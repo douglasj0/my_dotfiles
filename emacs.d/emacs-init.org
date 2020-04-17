@@ -105,6 +105,12 @@
 #+END_SRC
 * Global settings
 #+BEGIN_SRC emacs-lisp
+;; set default shell to zsh
+(setq explicit-shell-file-name "/bin/zsh")
+(setq shell-file-name "zsh")
+(setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
+(setenv "SHELL" shell-file-name)
+
 ;; automatically follow symlinks to files under version control without prompting
 (setq vc-follow-symlinks t)
 
