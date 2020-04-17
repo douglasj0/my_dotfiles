@@ -28,7 +28,7 @@ zstyle ':vcs_info:git:*' formats '(%b)'
 
 # Set prompt, was PROMPT='%T %m[%h]%# ', reset color %{$reset_color%}%
 if [[ ${HOST} == "C02YF305JG5M.grubhub.local" ]]; then
-PROMPT='%F{yellow}%T %n@thorn[%h] %F{cyan}[%~] %F{green}${vcs_info_msg_0_}
+PROMPT='%F{yellow}%T %n@thorn[%h]%f %F{cyan}[%~]%f %F{green}${vcs_info_msg_0_}%f
 %F{white}%# %f'
 else
 PROMPT='%T %m[%h] [%~] ${vcs_info_msg_0_}
