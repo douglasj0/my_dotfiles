@@ -35,7 +35,7 @@ elif [[ ${HOST} == "flowers" ]]; then
 PROMPT='%F{green}%T %n@flowers[%h]%f %F{cyan}[%~]%f %F{yellow}${vcs_info_msg_0_}%f
 %F{white}%# %f'
 elif [[ ${HOST} == "lothlorien.local" ]]; then
-PROMPT='%F{yellow}%T %n@flowers[%h]%f %F{cyan}[%~]%f %F{greeb}${vcs_info_msg_0_}%f
+PROMPT='%F{yellow}%T %n@lothlorien[%h]%f %F{cyan}[%~]%f %F{greeb}${vcs_info_msg_0_}%f
 %F{white}%# %f'
 else
 PROMPT='%T %m[%h] [%~] ${vcs_info_msg_0_}
