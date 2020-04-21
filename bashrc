@@ -291,9 +291,9 @@ function parse_git_dirty {
 }
 
 # Shell Prompt
-# if CHIC02RR812G8WP change to thorn
-#if [[ ${HOSTNAME} == "C02RR812G8WP.grubhub.local" ]]; then
-if [[ ${HOSTNAME} == "C02YF305JG5M.grubhub.local" ]]; then
+# change unpleasnt name to thorn
+if [[ $(echo $HOSTNAME | grep "b.local") ]]; then MYHOSTNAME="b.local"; fi
+if [[ ${MYHOSTNAME} == "b.local" ]]; then
   PROMPT_COMMAND='if [ $? = 0 ]; then
     PS1="${YELLOW}\A \u${RESET}${YELLOW}@thorn[\!] ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
   else

@@ -32,7 +32,7 @@ if [[ ${MYHOST} == "b.local" ]]; then
 PROMPT='%F{yellow}%T %n@thorn[%h]%f %F{cyan}[%~]%f %F{green}${vcs_info_msg_0_}%f
 %F{white}%# %f'
 elif [[ ${HOST} == "flowers" ]]; then
-PROMPT='%F{yellow}%T %n@flowers[%h]%f %F{cyan}[%~]%f %F{green}${vcs_info_msg_0_}%f
+PROMPT='%F{green}%T %n@flowers[%h]%f %F{cyan}[%~]%f %F{yellow}${vcs_info_msg_0_}%f
 %F{white}%# %f'
 else
 PROMPT='%T %m[%h] [%~] ${vcs_info_msg_0_}

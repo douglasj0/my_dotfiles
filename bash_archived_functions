@@ -376,7 +376,7 @@ RESET="\[\033[0m\]"
 #export PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\` \`\` \n${RESET}${RED}\$${RESET}${WHITE} ${RESET}"
 #PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 # if CHIC02RR812G8WP change to thorn
-if [[ ${HOSTNAME} == "CHIC02RR812G8WP.grubhub.local" ]];then
+if [[ ${HOSTNAME} == "badname-to-fix" ]];then
   PS1="${YELLOW}\u${RESET}${WHITE}@thorn ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
 else
   PS1="${YELLOW}\u${RESET}${WHITE}@\h ${RESET}${CYAN}[\w]${RESET}${WHITE} \`parse_git_branch\`\n${WHITE}\$${RESET} "
