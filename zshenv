@@ -17,7 +17,7 @@
 ###################
 case $(uname) in
 Darwin)  # Darwin Environment
-echo ".darwin zshenv loaded"
+[ ! -z "$PS1" ] && echo ".darwin zshenv loaded"
 
 path=( ~ ~/bin /Applications/Emacs.app/Contents/MacOS
   /Applications/Emacs.app/Contents/MacOS/bin
@@ -31,7 +31,7 @@ export TMPDIR=/tmp
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
-echo ".linux zshenv loaded"
+[ ! -z "$PS1" ] && echo ".linux zshenv loaded"
 
 path=(~ ~/bin ~/scripts ~/.local/bin /usr/local/sbin /usr/local/bin
   /usr/sbin /usr/bin /sbin /bin /usr/games /opt/jdk /opt/jdk/bin
