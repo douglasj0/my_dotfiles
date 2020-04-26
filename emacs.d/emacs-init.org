@@ -1309,17 +1309,31 @@ counsel-M-x re-uses smex while offering extra features.
 zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
 The Zenburn colour theme ported to Emacs
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package zenburn-theme
+  :ensure f
+  ;:config
+  ;(if (display-graphic-p)
+  ;    (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
+  ;  (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+  ;)
+)
+#+end_src
+
+tomorrow-theme
+https://github.com/purcell/color-theme-sanityinc-tomorrow
+A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' themes
+#+begin_src emacs-lisp
+(use-package color-theme-sanityinc-tomorrow
   :ensure t
   :config
   (if (display-graphic-p)
-      (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
+      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (zenburn)
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
 )
-#+END_SRC
+#+end_src
+
 * which-key
 https://github.com/justbur/emacs-which-key
 Emacs package that displays available keybindings in popup
