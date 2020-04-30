@@ -22,30 +22,22 @@
 ))
 (package-initialize)
 
-;; use-package - https://github.com/jwiegley/use-package
+;; install use-package - https://github.com/jwiegley/use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-;(eval-when-compile
-;  (require 'use-package)
-;  (setq use-package-verbose t)
-;  ;(require 'diminish)                ;; if you use :diminish
-;  ;(require 'bind-key)                ;; if you use any :bind variant
-;)
 
-;; Test out a package without installing it
-;(use-package try
-;  :ensure t)
+;; keep customize settings in their own file
+;(setq custom-file "~/.emacs.d/custom.el")
+;(when (file-exists-p custom-file)
+;  (load custom-file))
 
-;; Load org-plus-contrib for org-babel
-(use-package org
-  :mode (("\\.org$" . org-mode))
-  :ensure org-plus-contrib
-)
-
-;; org-babel
+;; enable included org mode to provide org-babel
+(require 'org)
+(when (file-exists-p "~/.emacs.d/emacs-init.org")
 (org-babel-load-file (expand-file-name "emacs-init.org"
                      user-emacs-directory))
+(byte-compile-file (concat user-emacs-directory "emacs-init.el")))
 
 ;; Disable ad-redefinition-action messages on startup
 ;; Caused by third party functions redefining defadvice

@@ -2,6 +2,41 @@
 #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 
+* Don't delay compiler warnings
+https://emacs.stackexchange.com/questions/13532/warning-bytecomp-is-a-bit-vague-can-i-get-any-more-information
+
+#+BEGIN_SRC emacs-lisp
+(defun dont-delay-compile-warnings (fun type &rest args)
+  (if (eq type 'bytecomp)
+      (let ((after-init-time t))
+        (apply fun type args))
+    (apply fun type args)))
+(advice-add 'display-warning :around #'dont-delay-compile-warnings)
+#+END_SRC
+* Benchmarking
+** esup
+https://github.com/jschaf/esup
+ESUP - Emacs Start Up Profiler
+
+#+BEGIN_SRC emacs-lisp
+;(use-package esup
+;  :ensure t
+;  ;; To use MELPA Stable use ":pin mepla-stable",
+;  :pin melpa
+;  :commands (esup))
+#+END_SRC
+** benchmark-init
+https://github.com/dholm/benchmark-init-el
+Benchmark your Emacs initialization
+
+#+begin_src emacs-lisp
+;(use-package benchmark-init
+;  :ensure t
+;  :config
+;  ;; To disable collection of benchmark data after init is done.
+;  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+#+end_src
+
 * Housekeeping
 #+BEGIN_SRC emacs-lisp
 ;;; set font size to 15, overriding default 12
@@ -37,17 +72,6 @@
   (eq system-type 'gnu/linux)
   "Is this running on Linux?")
 #+END_SRC
-* benchmark-init
-https://github.com/dholm/benchmark-init-el
-Benchmark your Emacs initialization
-
-#+begin_src emacs-lisp
-;(use-package benchmark-init
-;  :ensure t
-;  :config
-;  ;; To disable collection of benchmark data after init is done.
-;  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-#+end_src
 * Enable functions that are disabled by default
 #+BEGIN_SRC emacs-lisp
 ;; Upcase and downcase regions
@@ -176,9 +200,7 @@ Benchmark your Emacs initialization
 (setq woman-cache-filename "~/.emacs.d/cache/wmcache.el")
 
 ;;; Make tooltips appear in the echo area (checks if function exists)
-(if (fboundp 'tooltip-mode)
- (tooltip-mode -1)
- (setq tooltip-use-echo-area t))
+(tooltip-mode nil)
 
 ;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
 ;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
@@ -277,13 +299,16 @@ Benchmark your Emacs initialization
 (if *is-linux*
    (progn
 
+(defvar browse-url-browser-function)
+(defvar browse-url-browser-program)
 ;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
 ;(setq pop-up-frames 'graphic-only)
 (setq pop-up-frames nil)
 
 ;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
-;;; Open up URLs in browser using gnome-open
-(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+;;; Open up URLs in browser using gnome-open (errors on bytecompile)
+;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+(setq browse-url-browser-function 'browse-url-firefox)
 
 ;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
 ;;; List fonts with M-x descript-font
@@ -542,19 +567,21 @@ https://github.com/zellio/ansible-vault-mode
 (use-package ansible-vault
   :ensure t
   :init (add-hook 'yaml-mode-hook 'ansible-vault-mode-maybe)
-  :config (setq ansible-vault-pass-file "~/.vault_core_pass.txt")
+  :config (setq ansible-vault-password-file "~/.vault_core_pass.txt")
 )
 #+end_src
 
 * deft
+https://jblevins.org/projects/deft/
+-- deft - an Emacs mode for quickly browsing, filtering, and editing
+directories of plain text notes.  http://jblevins.org/projects/deft/
+http://jblevins.org/git/deft.git
+
 #+BEGIN_SRC emacs-lisp
-;;; -- deft - an Emacs mode for quickly browsing, filtering, and editing
-;;; directories of plain text notes.  http://jblevins.org/projects/deft/
-;;; http://jblevins.org/git/deft.git
 (use-package deft
   :ensure t
-  :bind ("<f8>" . deft-or-close)
-        ("C-c C-g" . deft-find-file)
+  :bind
+        ("C-c d" . deft)
   :commands (deft)
   :config
     (setq
@@ -564,26 +591,6 @@ https://github.com/zellio/ansible-vault-mode
       deft-use-filename-as-title t
       deft-recursive t
       deft-ignore-file-regexp "archive\.*")
-
-    ;; Notational Velocity provides a show-hide function key, letting you pop
-    ;; in-and-out of the interface quickly. I recreated a crude version of this
-    ;; in Deft, bound to f6.
-    (define-minor-mode deft-note-mode "Deft notes" nil " Deft-Notes" nil)
-    (setq deft-text-mode 'deft-note-mode)
-    (defun kill-all-deft-notes ()
-      (interactive)
-      (save-excursion
-        (let((count 0))
-          (dolist(buffer (buffer-list))
-            (set-buffer buffer)
-            (when (not (eq nil deft-note-mode))
-              (setq count (1+ count))
-              (kill-buffer buffer)))
-          )))
-    (defun deft-or-close () (interactive) (if (or (eq major-mode 'deft-mode) (not (eq nil deft-note-mode)))
-                                              (progn (kill-all-deft-notes) (kill-buffer "*Deft*"))
-                                            (deft)
-                                            ))
 )
 #+END_SRC
 * dired
@@ -639,7 +646,6 @@ https://github.com/thomp/dired-launch
   (dired-mode . dired-launch-mode)
 )
 #+end_src
-
 * elpa-keyring-update
 https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html
 https://stackoverflow.com/questions/58202993/emacs-failed-to-verify-signature-archive-contents-sig
@@ -648,11 +654,11 @@ Old key expired Sep 23, 2019
 Required to install elpa packages
 
 #+begin_src emacs-lisp
-(use-package gnu-elpa-keyring-update
-  :ensure t
-  :config
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-)
+;(use-package gnu-elpa-keyring-update
+;  :ensure t
+;  :config
+;  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;)
 #+end_src
 * eshell
 From zamandsky
@@ -691,11 +697,14 @@ https://github.com/zamansky/dot-emacs
            ((not in-eshellp) (switch-to-buffer (car buffers)))
            (t (select-or-create (completing-read "Select Shell:" (cons "New eshell" names)))))))
 
-(defun eshell/in-term (prog &rest args)
-  "Run shell command in term buffer."
-  (switch-to-buffer (apply #'make-term prog prog nil args))
-  (term-mode)
-  (term-char-mode))
+;;;
+;; Error- Warning: the following functions are not known to be defined: term-mode, term-char-mode
+;;;
+;(defun eshell/in-term (prog &rest args)
+;  "Run shell command in term buffer."
+;  (switch-to-buffer (apply #'make-term prog prog nil args))
+;  (term-mode)
+;  (term-char-mode))
 
 (global-set-key (kbd "C-c x") 'eshell-switcher)
 #+end_src
@@ -837,23 +846,28 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
      ;; sug-mode=fast is more accurate, slower then ultra
      (ispell-extra-args '("--sug-mode=fast")))
 #+END_SRC
-* ivy, swiper, counsel, and counsel-projectile
+* ivy, swiper, console, and counsel-projectile
 https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 
+** flx
+flx - fuzzy matching
+https://github.com/lewang/flx
+Fuzzy matching for Emacs ... a la Sublime Text.
+can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
 #+BEGIN_SRC emacs-lisp
-;https://github.com/lewang/flx
-;Fuzzy matching for Emacs ... a la Sublime Text.
-;can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
 (use-package flx
   :ensure t
 )
+#+END_SRC
 
-;;; -- ivy-mode - a generic completion mechanism for Emacs
-;;; swiper - an alternative to isearch uses ivy to show overview of all matches
-;;; https://github.com/abo-abo/swiper
-;;; changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
+** ivy
+ivy-mode - a generic completion mechanism for Emacs
+swiper - an alternative to isearch uses ivy to show overview of all matches
+https://github.com/abo-abo/swiper
+changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
+#+BEGIN_SRC emacs-lisp
 (use-package ivy
   :ensure t
   :defer 0.5
@@ -889,40 +903,7 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 )
 #+END_SRC
 
-ivy-avy
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  :ensure t
-  :bind
-  (("C-c SPC" . avy-goto-word-1))
-  :config
-  (setq avy-background t))
-#+END_SRC
-
-counsel
-#+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :ensure t
-  :after ivy
-  :config (counsel-mode)
-)
-#+END_SRC
-
-ivy-rich (can't find package?) - removed
-https://github.com/Yevgnen/ivy-rich
-#+BEGIN_SRC emacs-lisp
-;(use-package ivy-rich
-;  :after ivy
-;  :custom
-;  (ivy-virtual-abbreviate 'full
-;                          ivy-rich-switch-buffer-align-virtual-buffer t
-;                          ivy-rich-path-style 'abbrev)
-;  :config
-;  (ivy-set-display-transformer 'ivy-switch-buffer
-;                               'ivy-rich-switch-buffer-transformer))
-#+END_SRC
-
-swiper
+** swiper
 #+BEGIN_SRC emacs-lisp
 (use-package swiper
   :ensure t
@@ -937,7 +918,7 @@ swiper
 ;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
 #+END_SRC
 
-ivy counsel-projectile
+** counsel-projectile
 #+BEGIN_SRC emacs-lisp
 ;; projectile ivy integration
 (use-package counsel-projectile
@@ -957,7 +938,7 @@ It's Magit! A Git porcelain inside Emacs. https://magit.vc
   :bind
     (("C-x g" . magit-status)
      ("C-x G" . magit-status-with-prefix)
-     ("C-x M-g" . magit-dispatch-popup)
+     ("C-x M-g" . magit-dispatch)
      ("C-c M-g" . global-magit-file-mode))
   :config
     (setq magit-completing-read-function 'ivy-completing-read)
@@ -980,6 +961,11 @@ https://github.com/jaypei/emacs-neotree
 #+end_src
 * org-mode
 #+BEGIN_SRC emacs-lisp
+(use-package org-plus-contrib
+  :ensure t
+  :mode ("\\.org$" . org-mode)
+)
+
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
 ;; https://orgmode.org/manual/Easy-templates.html
 ;; https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L65
@@ -1174,13 +1160,13 @@ SCHEDULED: %^t
             ((((class color) (min-colors 16) (background dark))
                (:foreground "LightSalmon" :strike-through t)))))
 
-;;; Make sure to hightlight mysql sql keywords:
+;;; Make sure to hightlight mysql sql keywords: - errors on compile
 ;;; ex. #+BEGIN_SRC sql
 ;;;        SELECT foo FROM bar
 ;;;     #+END_SRC
-(add-hook 'sql-mode-hook
-          (lambda ()
-            (sql-highlight-mysql-keywords)))
+;(add-hook 'sql-mode-hook
+;          (lambda ()
+;            (sql-highlight-mysql-keywords)))
 
 ;;; Enable other org-babel langauges
 (org-babel-do-load-languages
@@ -1391,168 +1377,4 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
 )
 #+end_src
 
-* yasnippet
-https://github.com/joaotavora/yasnippet
-A template system for Emacs http://joaotavora.github.com/yasnippet/
-
-#+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-  :ensure t
-)
-#+END_SRC
-* python
-# https://github.com/pyenv/pyenv-virtualenvwrapper
-# brew install pyenv-virtualenvwrapper
-# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
-#
-# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
-# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
-# or, for python3:  python3 -m venv ~/.virtualenvs/p3
-# enable: workon p3
-# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
-# stop:   deactivate p3
-# or, for python3:  deactivate
-
-# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
-pyenv virtualenv 3.8.0 python3-emacs
-pyenv local python3-emacs
-pyenv versions
-
-pip install --upgrade pip
-#pip install virtualenv
-pip install 'python-language-server[all]'
-pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
-
---
-
-To run code in emacs:
-M-x python-mode
-C-c C-p : run-python
-C-c C-c : python-shell-send-buffer
-
-C-c C-z : open a python shell
-C-c C-c : run the content of the buffer in the opened python shell
-C-c C-r : run the selected region in the python shell
-
-C-c C-c       python-shell-send-buffer
-C-c C-d       python-describe-at-point
-C-c C-f       python-eldoc-at-point
-C-c C-j       imenu
-C-c C-l       python-shell-send-file
-C-c C-p       run-python
-C-c C-r       python-shell-send-region
-C-c C-s       python-shell-send-string
-C-c C-t       Prefix Command
-C-c C-v       python-check
-C-c C-z       python-shell-switch-to-shell
-C-c <     python-indent-shift-left
-C-c >     python-indent-shift-right
-
-C-c C-t c python-skeleton-class
-C-c C-t d python-skeleton-def
-C-c C-t f python-skeleton-for
-C-c C-t i python-skeleton-if
-C-c C-t m python-skeleton-import
-C-c C-t t python-skeleton-try
-C-c C-t w python-skeleton-while
-
-;#+begin_src emacs-lisp
-;(use-package virtualenvwrapper
-;  :ensure t
-;  :config
-;  (venv-initialize-interactive-shells)
-;  (venv-initialize-eshell))
-;
-;(venv-workon "p3")
-;(setq lsp-python-executable-cmd "python3")
-;#+end_src
-
-#+begin_src emacs-lisp
-;(use-package pyvenv
-;  :ensure t
-;  :init
-;  (add-to-list 'exec-path "~/.pyenv/shims")
-;  (setenv "WORKON_HOME" "~/.pyenv/versions/")
-;  :config
-;  (pyvenv-mode 1)
-;  ;:bind
-;  ;("C-x p e" . pyenv-activate-current-project)
-;)
-#+end_src
-
-* live-py-plugin
-https://www.youtube.com/watch?v=bYy90EUAh98
-
-https://github.com/donkirkby/live-py-plugin
-Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
-
-#+begin_src emacs-lisp
-(use-package live-py-mode
-  :ensure t
-  :defer t
-)
-#+end_src
-
-* lsp-mode
-https://github.com/emacs-lsp/lsp-mode
-Emacs client/library for the Language Server Protocol
-
-Install python lsp:
-  workon p3
-  pip install 'python-language-server[all]'
-
-;; company-lsp: Company completion backend for lsp-mode
-#+begin_src emacs-lisp
-(use-package company-lsp
-  :ensure t
-  :config
-  (setq company-lsp-enable-snippet t)
-  (push 'company-lsp company-backends)
-)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :custom
-  (lsp-auto-guess-root nil)
-  ;(lsp-prefer-flymake nil) ; Use flycheck instead of flymake
-  ;; but now errors with: Error (use-package): company-lsp/:catch: Symbol’s function definition is void: flycheck-define-generic-checker
-  :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer))
-  :hook ((python-mode) . lsp)
-  :config
-  (setq lsp-pyls-server-command '("~/.pyenv/shims/pyls"))
-  (setq lsp-signature-auto-activate t lsp-signature-doc-lines 1)
-)
-
-(use-package lsp-ui
-  :after lsp-mode
-  :ensure t
-  :diminish
-  :commands lsp-ui-mode
-  :custom-face
-  (lsp-ui-doc-background ((t (:background nil))))
-  (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-  :bind (:map lsp-ui-mode-map
-              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-              ([remap xref-find-references] . lsp-ui-peek-find-references)
-              ("C-c u" . lsp-ui-imenu))
-  :custom
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-header t)
-  (lsp-ui-doc-include-signature t)
-  (lsp-ui-doc-position 'top)
-  (lsp-ui-doc-border (face-foreground 'default))
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-sideline-ignore-duplicate t)
-  (lsp-ui-sideline-show-code-actions nil)
-  :config
-  ;; Use lsp-ui-doc-webkit only in GUI
-  (setq lsp-ui-doc-use-webkit t)
-  ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-  ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-  (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-    (setq mode-line-format nil))
-)
-#+end_src
+* python and lsp-mode not installed yet

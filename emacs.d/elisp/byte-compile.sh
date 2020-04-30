@@ -20,5 +20,5 @@ find ${HOME}/.emacs.d/elisp -type f -name "*.elc" -exec rm {} \;
     echo "Byte Compiling ${i}/*.el files"
 #    cd  ${i}
     ${EMACS} -Q -L . -batch -f batch-byte-compile *.el > /dev/null 2>&1
-    ${EMACS} -Q -L . -batch -f batch-byte-compile ${HOME}/.emacs.d/emacs-init.el
+#    ${EMACS} -Q -L . -batch -f batch-byte-compile ${HOME}/.emacs.d/emacs-init.el
 #done
