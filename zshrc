@@ -1,3 +1,4 @@
+# -*- mode: sh -*-
 #
 # my rc file for zsh 2.2
 # all this runs in interactive shells only
@@ -41,7 +42,7 @@ else
 PROMPT='%T %m[%h] [%~] ${vcs_info_msg_0_}
 %# '
 fi
- 
+
 # Prevent text pasted into the terminal from being highlighted
 # Introduced in zsh 5.1
 zle_highlight+=(paste:none)

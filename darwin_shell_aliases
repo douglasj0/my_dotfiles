@@ -1,3 +1,4 @@
+# -*- mode: sh -*-
 # Darwin specific aliases
 
 alias ls="ls -G"

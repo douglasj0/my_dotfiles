@@ -1,3 +1,4 @@
+# -*- mode: sh -*-
 # Linux specific aliases
 
 alias ls="ls --color=auto"

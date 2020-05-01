@@ -593,6 +593,16 @@ http://jblevins.org/git/deft.git
       deft-ignore-file-regexp "archive\.*")
 )
 #+END_SRC
+* delsel
+C-c C-g always quits minubuffer
+
+#+begin_src emacs-lisp
+(use-package delsel
+  :bind
+  (:map mode-specific-map
+        ("C-g" . minibuffer-keyboard-quit)))
+#+end_src
+
 * dired
 https://www.gnu.org/software/emacs/manual/dired-x.html
 https://www.emacswiki.org/emacs/DiredExtra#Dired_X
@@ -707,6 +717,17 @@ https://github.com/zamansky/dot-emacs
 ;  (term-char-mode))
 
 (global-set-key (kbd "C-c x") 'eshell-switcher)
+#+end_src
+
+* gcmh
+https://gitlab.com/koral/gcmh
+The GNU Emacs Garbage Collector Magic Hack
+
+#+begin_src emacs-lisp
+(use-package gcmh
+  :ensure t
+  :init
+  (gcmh-mode 1))
 #+end_src
 
 * git gutter
@@ -846,16 +867,16 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
      ;; sug-mode=fast is more accurate, slower then ultra
      (ispell-extra-args '("--sug-mode=fast")))
 #+END_SRC
-* ivy, swiper, console, and counsel-projectile
+* ivy and friends
 https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 
 ** flx
-flx - fuzzy matching
 https://github.com/lewang/flx
 Fuzzy matching for Emacs ... a la Sublime Text.
 can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
+
 #+BEGIN_SRC emacs-lisp
 (use-package flx
   :ensure t
@@ -919,8 +940,9 @@ changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 #+END_SRC
 
 ** counsel-projectile
+projectile ivy integration
+
 #+BEGIN_SRC emacs-lisp
-;; projectile ivy integration
 (use-package counsel-projectile
   :ensure t
   :commands counsel-projectile)
@@ -959,12 +981,45 @@ https://github.com/jaypei/emacs-neotree
   :bind ("M-p" . neotree-toggle)
 )
 #+end_src
-* org-mode
+* org
 #+BEGIN_SRC emacs-lisp
-(use-package org-plus-contrib
+(use-package org
+  :defer t
+  ;; to be sure we have the latest Org version
+  :ensure org-plus-contrib
+  :hook
+  ;(org-mode . variable-pitch-mode)
+  (org-mode . visual-line-mode)
+  :custom
+  (org-src-tab-acts-natively t))
+
+(use-package calendar
+  :defer t
+  :custom
+  (calendar-week-start-day 0))
+
+;(use-package org-passwords
+;  :ensure org-plus-contrib
+;  :bind
+;  (:map org-mode-map
+;        ("C-c C-p p" . org-passwords-copy-password)
+;        ("C-c C-p u" . org-passwords-copy-username)
+;        ("C-c C-p o" . org-passwords-open-url)))
+
+;;; https://github.com/sabof/org-bullets
+(use-package org-bullets
   :ensure t
-  :mode ("\\.org$" . org-mode)
-)
+  :custom
+  ;; org-bullets-bullet-list
+  ;; default: "◉ ○ ✸ ✿"
+  ;; large: ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+  ;; Small: ► • ★ ▸
+  (org-bullets-bullet-list '("•"))
+  ;; others: ▼, ↴, ⬎, ⤷,…, and ⋱.
+  ;; (org-ellipsis "⤵")
+  (org-ellipsis "…")
+  :hook
+  (org-mode . org-bullets-mode))
 
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
 ;; https://orgmode.org/manual/Easy-templates.html
@@ -1292,6 +1347,10 @@ https://github.com/nonsequitur/smex
 A smart M-x enhancement for Emacs.
 counsel-M-x re-uses smex while offering extra features.
 
+Tried amx, but results seemed lacking
+https://github.com/DarwinAwardWinner/amx
+An alternative M-x interface for Emacs.
+
 #+BEGIN_SRC emacs-lisp
 (use-package smex
   :ensure t
@@ -1377,4 +1436,65 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
 )
 #+end_src
 
+* writing
+
+Thesaurus
+#+begin_src emacs-lisp
+(use-package synosaurus
+  :defer t
+  :ensure t
+  :custom
+  (synosaurus-choose-method 'default)
+  :config
+  (synosaurus-mode))
+#+end_src
+
+Style
+#+begin_src emacs-lisp
+(use-package writegood-mode
+  :defer t
+  :ensure t)
+#+end_src
+* programming
+** Shell
+MODE isn't working right yet
+
+#+begin_src emacs-lisp
+(use-package sh-script
+  :mode (("zshecl" . sh-mode)
+         ("\\.zsh\\'" . sh-mode))
+  :custom
+  ;; zsh
+  (system-uses-terminfo nil))
+
+(use-package executable
+  :hook
+  (after-save . executable-make-buffer-file-executable-if-script-p))
+#+end_src
+** Web
+
+#+begin_src emacs-lisp
+(use-package web-mode
+  :mode (("\\.erb\\'" . web-mode)
+         ("\\.mustache\\'" . web-mode)
+         ("\\.html?\\'" . web-mode)
+         ("\\.php\\'" . web-mode)
+         ("\\.jsp\\'" . web-mode)
+         ;; ("\\.jsx?$" . web-mode)
+         ("\\.es6\\'" . web-mode)
+         ("\\.ejs\\'" . web-mode)
+         ("\\.phtml\\'" . web-mode)
+         ("\\.tpl\\.php\\'" . web-mode)
+         ("\\.[agj]sp\\'" . web-mode)
+         ("\\.as[cp]x\\'" . web-mode)
+         ("\\.djhtml\\'" . web-mode)))
+#+end_src
+* daemons
+https://github.com/cbowdon/daemons.el
+An Emacs UI for managing init system services
+
+#+begin_src emacs-lisp
+(use-package daemons
+  :ensure t)
+#+end_src
 * python and lsp-mode not installed yet
