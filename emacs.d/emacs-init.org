@@ -322,9 +322,11 @@ Benchmark your Emacs initialization
 
 ;; Disable railwaycat's tab bar
 ;; https://github.com/railwaycat/homebrew-emacsmacport/issues/123
+(defvar mac-frame-tabbing)
 (setq mac-frame-tabbing nil)
 
 ;; Don't open up new frames for files dropped on icon, use active frame
+(defvar ns-pop-up-frames)
 (setq ns-pop-up-frames nil)
 
 ;;; Drag and drop on the emacs window opens the file in a new buffer instead of appending it to the current buffer
