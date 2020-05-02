@@ -1427,9 +1427,7 @@ https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
 #+begin_src emacs-lisp
 (use-package flycheck
   :ensure t
-  :diminish
-  :defer
-  :config
+  :init
   (add-hook 'after-init-hook #'global-flycheck-mode))
 #+end_src
 
@@ -1452,6 +1450,7 @@ https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
 
 #+begin_src emacs-lisp
 (use-package web-mode
+  :ensure t
   :mode (("\\.erb\\'" . web-mode)
          ("\\.mustache\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
@@ -1587,6 +1586,7 @@ Install python lsp in venv:
 
 (use-package lsp-mode
   :ensure t
+  :after flycheck-mode
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (python-mode . lsp-deferred)
          ;; if you want which-key integration
@@ -1595,9 +1595,11 @@ Install python lsp in venv:
 
 (use-package lsp-ui
   :ensure t
-  :after lsp-mode
-  :diminish
-  :commands lsp-ui-mode)
+  :after (:all lsp-mode flycheck-mode)
+  :commands lsp-ui-mode
+  :config
+  (add-hook 'python-mode-hook 'flycheck-mode)
+)
 
 ;;Recommended settings for lsp-mode related packages
 ;;company
@@ -1608,8 +1610,7 @@ Install python lsp in venv:
 ;; Company completion backend for lsp-mode
 (use-package company-lsp
   :ensure t
-  :after lsp-mode
-  :diminish
+  :after (:all lsp-mode flycheck-mode)
   :config
   (push 'company-lsp company-backends)
 )
