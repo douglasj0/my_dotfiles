@@ -39,6 +39,13 @@ Benchmark your Emacs initialization
 
 * Housekeeping
 #+BEGIN_SRC emacs-lisp
+;; more useful frame title, that show either a file or a
+;; buffer name (if the buffer isn't visiting a file)
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
 ;;; set font size to 15, overriding default 12
 ; M-x describe-font:
 ; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
@@ -871,6 +878,7 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
 https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 
 ** flx
 https://github.com/lewang/flx
@@ -939,6 +947,27 @@ changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 ;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
 #+END_SRC
 
+** counsel
+NOTE: if smex is installed, counsel will use it to sort by most recently used
+
+#+begin_src emacs-lisp
+(use-package counsel
+  :ensure t
+  :config
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c a") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+#+end_src
+
 ** counsel-projectile
 projectile ivy integration
 
@@ -948,7 +977,8 @@ projectile ivy integration
   :commands counsel-projectile)
 #+END_SRC
 
-* magit
+* source control
+** magit
 https://github.com/magit/magit
 It's Magit! A Git porcelain inside Emacs. https://magit.vc
 
@@ -967,6 +997,41 @@ It's Magit! A Git porcelain inside Emacs. https://magit.vc
 )
 #+end_src
 
+** git-timemachine
+https://github.com/emacsmirror/git-timemachine
+Walk through git revisions of a file https://gitlab.com/pidu/git-timemachine
+
+toggle the time machine you can use M-x git-timemachine-toggle.
+
+Use the following keys to navigate historic version of the file
+
+    p Visit previous historic version
+    n Visit next historic version
+    w Copy the abbreviated hash of the current historic version
+    W Copy the full hash of the current historic version
+    g Goto nth revision
+    t Goto revision by selected commit message
+    q Exit the time machine.
+    b Run magit-blame on the currently visited revision (if magit available).
+    c Show current commit using magit (if magit available).
+
+#+begin_src emacs-lisp
+(use-package git-timemachine
+  :ensure t
+  :bind (("s-g" . git-timemachine)))
+#+end_src
+
+* move-text
+https://github.com/emacsfodder/move-text
+move current line or region up or down
+
+#+begin_src emacs-lisp
+(use-package move-text
+  :ensure t
+  :bind
+  (([(meta shift up)] . move-text-up)
+   ([(meta shift down)] . move-text-down)))
+#+end_src
 * neotree
 A emacs tree plugin like NerdTree for Vim.
 https://github.com/jaypei/emacs-neotree
@@ -1351,15 +1416,17 @@ Tried amx, but results seemed lacking
 https://github.com/DarwinAwardWinner/amx
 An alternative M-x interface for Emacs.
 
+Disabled as counsel seems to be adequate
+
 #+BEGIN_SRC emacs-lisp
-(use-package smex
-  :ensure t
-  :defer 2
+;(use-package smex
+;  :ensure t)
+;  :defer 2
   ;:bind (("M-x" . smex)
   ;       ("M-X" . smex-major-mode-commands))
-  :config
-  (progn
-    (smex-initialize)))
+;  :config
+;  (progn
+;    (smex-initialize)))
 #+END_SRC
 
 * themes
@@ -1398,7 +1465,7 @@ Emacs package that displays available keybindings in popup
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
    :ensure t
-  :defer 10
+   :defer 10
    :config
    (progn
      (setq which-key-popup-type 'side-window) ;Default
@@ -1410,13 +1477,17 @@ Emacs package that displays available keybindings in popup
       (which-key-mode))
 )
 #+END_SRC
-* flyceck - causing startup error with company-lsp
+* flycheck
+https://github.com/flycheck/flycheck
+On the fly syntax checking for GNU Emacs https://www.flycheck.org
+
+was: NOTE causing startup error with company-lsp
+
 #+begin_src emacs-lisp
-;(use-package flycheck
-;  :ensure t
-;  ;:init
-;  ;(global-flycheck-mode t)
-;)
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 #+end_src
 
 * company
@@ -1496,5 +1567,13 @@ An Emacs UI for managing init system services
 #+begin_src emacs-lisp
 (use-package daemons
   :ensure t)
+#+end_src
+* windmove
+
+#+begin_src emacs-lisp
+(use-package windmove
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings))
 #+end_src
 * python and lsp-mode not installed yet
