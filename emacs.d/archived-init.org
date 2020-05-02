@@ -4534,6 +4534,15 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
   :ensure t
 )
 #+END_SRC
+* windmove
+https://www.emacswiki.org/emacs/WindMove
+
+#+begin_src emacs-lisp
+(use-package windmove
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings))
+#+end_src
 * python
 # https://github.com/pyenv/pyenv-virtualenvwrapper
 # brew install pyenv-virtualenvwrapper
@@ -4696,9 +4705,10 @@ https://github.com/emacs-lsp/lsp-mode
 Emacs client/library for the Language Server Protocol
 
 Install python lsp in venv:
-  pyenv virtualenv 3.8.1 emacs-python
+  pyenv virtualenv 2.7.17 emacs-python2
+  pyenv virtualenv 3.8.1 emacs-python3
   pip install --upgrade pip
-  pyenv global emacs-python
+  pyenv global emacs-python3
   pyenv version
   pip install 'python-language-server[all]'
 
@@ -4738,4 +4748,57 @@ Install python lsp in venv:
   :ensure t
   :after lsp
   :commands (dap-debug dap-debug-edit-template))
+#+end_src
+
+* lsp-mode cleanerer and not working
+
+#+begin_src emacs-lisp
+;; https://github.com/tigersoldier/company-lsp
+;; Company completion backend for lsp-mode
+(use-package company-lsp
+  :ensure t
+  :after (:all lsp flycheck)
+  :config
+  (push 'company-lsp company-backends)
+)
+#+end_src
+
+#+begin_src emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;(setq lsp-keymap-prefix "s-l") ; can apply with C-x @ s l
+(setq lsp-keymap-prefix "C-c ;")
+
+(use-package lsp-mode
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp-deferred)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred)
+#+end_src
+* lsp-mode kinda working
+#+begin_src emacs-lisp
+;; https://github.com/emacs-lsp/lsp-mode
+;; Emacs client/library for the Language Server Protocol
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :custom
+  (lsp-auto-guess-root nil)
+  ;(lsp-prefer-flymake nil) ; Use flycheck instead of flymake
+  ;; but now errors with: Error (use-package): company-lsp/:catch: Symbol’s function definition is void: flycheck-define-generic-checker
+  :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer))
+  :hook ((python-mode) . lsp)
+  :config
+  ;(setq lsp-pyls-server-command '("~/.pyenv/shims/pyls"))
+  (setq lsp-signature-auto-activate t lsp-signature-doc-lines 1)
+)
+
+;; https://github.com/tigersoldier/company-lsp
+;; Company completion backend for lsp-mode
+(use-package company-lsp
+  :ensure t
+  :config
+  (setq company-lsp-enable-snippet t)
+  (push 'company-lsp company-backends)
+)
 #+end_src
