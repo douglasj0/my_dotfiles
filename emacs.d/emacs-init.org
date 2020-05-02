@@ -1415,23 +1415,22 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
 )
 #+end_src
 
-* flycheck - disabled for lsp testing
+* flycheck
 https://github.com/flycheck/flycheck
 On the fly syntax checking for GNU Emacs https://www.flycheck.org
 
-was: NOTE causing startup error with company-lsp
+was: NOTE was causing startup error with company-lsp
 
 Comparison flycheck vs flymake (updated in 26.x)
 https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
 
-#  :diminish
-#  :defer
-
 #+begin_src emacs-lisp
-;(use-package flycheck
-;  :ensure t
-;  :config
-;  (add-hook 'after-init-hook #'global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :diminish
+  :defer
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 #+end_src
 
 * programming
@@ -1582,6 +1581,9 @@ Install python lsp in venv:
 ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
 ;(setq lsp-keymap-prefix "s-l")
 (setq lsp-keymap-prefix "C-c ;")
+
+;; How to disable lsp as flycheck's default checker #1413
+(setq lsp-diagnostic-package :none)
 
 (use-package lsp-mode
   :ensure t
