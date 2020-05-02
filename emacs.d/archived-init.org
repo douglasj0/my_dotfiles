@@ -4690,3 +4690,52 @@ Install python lsp:
     (setq mode-line-format nil))
 )
 #+end_src
+
+* lsp-mode - cleaner but not working?
+https://github.com/emacs-lsp/lsp-mode
+Emacs client/library for the Language Server Protocol
+
+Install python lsp in venv:
+  pyenv virtualenv 3.8.1 emacs-python
+  pip install --upgrade pip
+  pyenv global emacs-python
+  pyenv version
+  pip install 'python-language-server[all]'
+
+#+begin_src emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;(setq lsp-keymap-prefix "s-l") ; can apply with C-x @ s l
+
+(use-package lsp-mode
+  :ensure t
+  :init (setq lsp-keymap-prefix "C-c ;")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp-deferred)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred)
+
+(use-package lsp-ui
+  :ensure t
+  :after lsp
+  ;; flycheck integration & higher level UI modules
+  :commands lsp-ui-mode)
+
+;; company-lsp: Company completion backend for lsp-mode
+(use-package company-lsp
+  :ensure t
+  :after lsp
+  :commands company-lsp
+  :config (push 'company-lsp company-backends))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp
+  ;; project wide overview
+  :commands lsp-treemacs-errors-list)
+
+(use-package dap-mode
+  :ensure t
+  :after lsp
+  :commands (dap-debug dap-debug-edit-template))
+#+end_src

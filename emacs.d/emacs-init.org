@@ -1403,6 +1403,12 @@ On the fly syntax checking for GNU Emacs https://www.flycheck.org
 
 was: NOTE causing startup error with company-lsp
 
+Comparison flycheck vs flymake (updated in 26.x)
+https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
+
+#  :diminish
+#  :defer
+
 #+begin_src emacs-lisp
 (use-package flycheck
   :ensure t
@@ -1427,6 +1433,15 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
 )
 #+end_src
 
+* windmove
+https://www.emacswiki.org/emacs/WindMove
+
+#+begin_src emacs-lisp
+(use-package windmove
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings))
+#+end_src
 * programming
 ** shell
 #+begin_src emacs-lisp
@@ -1460,12 +1475,138 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
          ("\\.as[cp]x\\'" . web-mode)
          ("\\.djhtml\\'" . web-mode)))
 #+end_src
-* windmove
-https://www.emacswiki.org/emacs/WindMove
+* python
+# https://github.com/pyenv/pyenv-virtualenvwrapper
+# brew install pyenv-virtualenvwrapper
+# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+#
+# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
+# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+# or, for python3:  python3 -m venv ~/.virtualenvs/p3
+# enable: workon p3
+# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
+# stop:   deactivate p3
+# or, for python3:  deactivate
+
+# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
+pyenv virtualenv 3.8.0 python3-emacs
+pyenv local python3-emacs
+pyenv versions
+
+pip install --upgrade pip
+#pip install virtualenv
+pip install 'python-language-server[all]'
+pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
+
+--
+
+To run code in emacs:
+M-x python-mode
+C-c C-p : run-python
+C-c C-c : python-shell-send-buffer
+
+C-c C-z : open a python shell
+C-c C-c : run the content of the buffer in the opened python shell
+C-c C-r : run the selected region in the python shell
+
+C-c C-c       python-shell-send-buffer
+C-c C-d       python-describe-at-point
+C-c C-f       python-eldoc-at-point
+C-c C-j       imenu
+C-c C-l       python-shell-send-file
+C-c C-p       run-python
+C-c C-r       python-shell-send-region
+C-c C-s       python-shell-send-string
+C-c C-t       Prefix Command
+C-c C-v       python-check
+C-c C-z       python-shell-switch-to-shell
+C-c <     python-indent-shift-left
+C-c >     python-indent-shift-right
+
+C-c C-t c python-skeleton-class
+C-c C-t d python-skeleton-def
+C-c C-t f python-skeleton-for
+C-c C-t i python-skeleton-if
+C-c C-t m python-skeleton-import
+C-c C-t t python-skeleton-try
+C-c C-t w python-skeleton-while
+
+** live-py-plugin
+https://www.youtube.com/watch?v=bYy90EUAh98
+
+https://github.com/donkirkby/live-py-plugin
+Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
 
 #+begin_src emacs-lisp
-(use-package windmove
+(use-package live-py-mode
+  :ensure t
+  :defer t
+)
+#+end_src
+** virtualenvwrapper - disabled
+;#+begin_src emacs-lisp
+;(use-package virtualenvwrapper
+;  :ensure t
+;  :config
+;  (venv-initialize-interactive-shells)
+;  (venv-initialize-eshell))
+;
+;(venv-workon "p3")
+;(setq lsp-python-executable-cmd "python3")
+;#+end_src
+
+** pyvenv
+# https://github.com/pythonic-emacs/pyenv-mode
+# Integrate pyenv with python-mode.
+
+https://github.com/jorgenschaefer/pyvenv
+Python virtual environment interface for Emacs
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :init
+  (add-to-list 'exec-path "~/.pyenv/shims")
+  (setenv "WORKON_HOME" "~/.pyenv/versions/")
   :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings))
+  (pyvenv-mode 1)
+  (pyvenv-activate "~/.pyenv/versions/emacs-python/")
+  ;:bind
+  ;("C-x p e" . pyenv-activate-current-project)
+)
+#+end_src
+* lsp-mode
+https://github.com/emacs-lsp/lsp-mode
+Emacs client/library for the Language Server Protocol
+
+Install python lsp in venv:
+  pyenv virtualenv 3.8.1 emacs-python
+  pip install --upgrade pip
+  pyenv global emacs-python
+  pyenv version
+  pip install 'python-language-server[all]'
+
+
+#+begin_src emacs-lisp
+;; https://github.com/tigersoldier/company-lsp
+;; Company completion backend for lsp-mode
+(use-package company-lsp
+  :ensure t
+  :after (:all lsp flycheck)
+  :config
+  (push 'company-lsp company-backends)
+)
+#+end_src
+
+#+begin_src emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;(setq lsp-keymap-prefix "s-l") ; can apply with C-x @ s l
+(setq lsp-keymap-prefix "C-c ;")
+
+(use-package lsp-mode
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp-deferred)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred)
 #+end_src
