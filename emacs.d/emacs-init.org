@@ -37,13 +37,14 @@
 (unless (server-running-p) (server-start))
 
 ;;; Define booleans based on system type
-(defconst *is-a-mac*
+(defconst *is-darwin*
   (eq system-type 'darwin)
   "Is this running on OS X?")
 (defconst *is-linux*
   (eq system-type 'gnu/linux)
   "Is this running on Linux?")
 #+END_SRC
+
 * Enable disabled functions
 #+BEGIN_SRC emacs-lisp
 ;; Upcase and downcase regions
@@ -110,6 +111,11 @@
 #+END_SRC
 * Global settings
 #+BEGIN_SRC emacs-lisp
+
+;; disable company-mode completions in shells
+(add-hook 'shell-mode-hook (lambda () (company-mode -1)) 'append)
+(add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
+
 ;; set default shell to zsh
 (setq explicit-shell-file-name "/bin/zsh")
 (setq shell-file-name "zsh")
@@ -266,31 +272,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+END_SRC
 * OS specific settings
-** Linux settings
-#+BEGIN_SRC emacs-lisp
-;;; -=Linux specific settings
-(if *is-linux*
-   (progn
-
-(defvar browse-url-browser-function)
-(defvar browse-url-browser-program)
-;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
-;(setq pop-up-frames 'graphic-only)
-(setq pop-up-frames nil)
-
-;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
-;;; Open up URLs in browser using gnome-open (errors on bytecompile)
-;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
-(setq browse-url-browser-function 'browse-url-firefox)
-
-;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
-;;; List fonts with M-x descript-font
-;(set-default-font "Monospace-10")
-))
-#+END_SRC
 ** Darwin settings
 #+BEGIN_SRC emacs-lisp
-(if *is-a-mac*
+(if *is-darwin*
    (progn
 
 ;; Disable railwaycat's tab bar
@@ -346,6 +330,30 @@
 
 ))
 #+END_SRC
+
+** Linux settings
+#+BEGIN_SRC emacs-lisp
+;;; -=Linux specific settings
+(if *is-linux*
+   (progn
+
+(defvar browse-url-browser-function)
+(defvar browse-url-browser-program)
+;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
+;(setq pop-up-frames 'graphic-only)
+(setq pop-up-frames nil)
+
+;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
+;;; Open up URLs in browser using gnome-open (errors on bytecompile)
+;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+(setq browse-url-browser-function 'browse-url-firefox)
+
+;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
+;;; List fonts with M-x descript-font
+;(set-default-font "Monospace-10")
+))
+#+END_SRC
+
 * Functions
 #+BEGIN_SRC emacs-lisp
 ;;; ---------------------------------------------------------------------------
@@ -528,6 +536,7 @@ last sentence."
 ;;
 ;; Please call if you have any questions.
 #+END_SRC
+
 * ansible-vault
 Minor mode for manipulating ansible-vault files
 https://github.com/zellio/ansible-vault-mode
@@ -566,6 +575,7 @@ http://jblevins.org/git/deft.git
       deft-ignore-file-regexp "archive\.*")
 )
 #+END_SRC
+
 * delsel
 C-c C-g always quits minubuffer
 
@@ -629,6 +639,7 @@ https://github.com/thomp/dired-launch
   (dired-mode . dired-launch-mode)
 )
 #+end_src
+
 * eshell
 From zamandsky
 https://github.com/zamansky/dot-emacs
@@ -782,6 +793,7 @@ on mac:  `brew install aspell --lang=en` (instead of ispell)
      ;; sug-mode=fast is more accurate, slower then ultra
      (ispell-extra-args '("--sug-mode=fast")))
 #+END_SRC
+
 * ivy and friends
 https://github.com/abo-abo/swiper
 http://cestlaz.github.io/posts/using-emacs-6-swiper/
@@ -954,6 +966,7 @@ move current line or region up or down
   (([(meta shift up)] . move-text-up)
    ([(meta shift down)] . move-text-down)))
 #+end_src
+
 * neotree
 https://github.com/jaypei/emacs-neotree
 A emacs tree plugin like NerdTree for Vim.
@@ -971,6 +984,7 @@ A emacs tree plugin like NerdTree for Vim.
   ([f8] . neotree-toggle)
 )
 #+end_src
+
 * org
 #+BEGIN_SRC emacs-lisp
 (use-package org
@@ -1258,6 +1272,7 @@ SCHEDULED: %^t
           ;(sqlite .t)     ;SQLite
 )))
 #+END_SRC
+
 * osx-trash
 https://github.com/lunaryorn/osx-trash.el
 Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
@@ -1296,6 +1311,7 @@ Keybindings: https://projectile.readthedocs.io/en/latest/usage/
     (setq projectile-cache-file (concat user-emacs-directory "cache/projectile.cache"))
 )
 #+END_SRC
+
 * recentf
 https://www.emacswiki.org/emacs/RecentFiles
 a minor mode that builds a list of recently opened files
@@ -1350,6 +1366,7 @@ The long lost Emacs string manipulation library
 (use-package s
   :ensure t)
 #+END_SRC
+
 * themes
 zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
@@ -1398,6 +1415,7 @@ Emacs package that displays available keybindings in popup
       (which-key-mode))
 )
 #+END_SRC
+
 * company
 http://company-mode.github.io/
 Company is a text completion framework for Emacs. The name stands for "complete anything".
@@ -1446,6 +1464,7 @@ https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
   :hook
   (after-save . executable-make-buffer-file-executable-if-script-p))
 #+end_src
+
 ** web
 
 #+begin_src emacs-lisp
@@ -1465,6 +1484,7 @@ https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html
          ("\\.as[cp]x\\'" . web-mode)
          ("\\.djhtml\\'" . web-mode)))
 #+end_src
+
 * python
 # https://github.com/pyenv/pyenv-virtualenvwrapper
 # brew install pyenv-virtualenvwrapper
@@ -1565,6 +1585,7 @@ Python virtual environment interface for Emacs
   ;("C-x p e" . pyenv-activate-current-project)
 )
 #+end_src
+
 * lsp-mode
 Install python lsp in venv:
   pyenv virtualenv 2.7.17 emacs-python2
