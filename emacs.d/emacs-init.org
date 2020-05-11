@@ -143,7 +143,7 @@
 ;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
 ;; Warning (bytecomp): ‘focus-out-hook’ is an obsolete variable (as of 27.1); after-focus-change-function
 ;(add-hook 'focus-out-hook #'garbage-collect)
-(add-hook 'after-focus-change-function #'garbage-collect)
+;(add-hook 'after-focus-change-function #'garbage-collect)
 
 ;;; Kill line backwards
 ;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
