@@ -4,6 +4,18 @@
 
 * Housekeeping
 #+BEGIN_SRC emacs-lisp
+;;; Ignore byte-compile warning
+;; ex. for Emacs 27: Warning: cl package required at runtime
+(setq byte-compile-warnings '(not nresolved
+                                  free-vars
+                                  callargs
+                                  redefine
+                                  obsolete
+                                  noruntime
+                                  cl-functions
+                                  interactive-only
+                                  ))
+
 ;; more useful frame title, that show either a file or a
 ;; buffer name (if the buffer isn't visiting a file)
 (setq frame-title-format
@@ -129,7 +141,9 @@
 (setq vc-follow-symlinks t)
 
 ;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
-(add-hook 'focus-out-hook #'garbage-collect)
+;; Warning (bytecomp): ‘focus-out-hook’ is an obsolete variable (as of 27.1); after-focus-change-function
+;(add-hook 'focus-out-hook #'garbage-collect)
+(add-hook 'after-focus-change-function #'garbage-collect)
 
 ;;; Kill line backwards
 ;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
@@ -903,6 +917,10 @@ https://github.com/magit/magit
 It's Magit! A Git porcelain inside Emacs. https://magit.vc
 
 #+begin_src emacs-lisp
+;; Fixes for emacs 27
+;; Magit Error: Warning (with-editor): Cannot determine a suitable Emacsclient
+(setq-default with-editor-emacsclient-executable "emacsclient")
+
 (use-package magit
   :ensure t
   :defer 5
