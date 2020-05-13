@@ -1390,14 +1390,14 @@ zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
 The Zenburn colour theme ported to Emacs
 #+begin_src emacs-lisp
-;(use-package zenburn-theme
-;  :ensure t
+(use-package zenburn-theme
+  :ensure t
 ;  :config
 ;  (if (display-graphic-p)
 ;      (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
 ;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
 ;  )
-;)
+)
 #+end_src
 
 tomorrow-theme
@@ -1411,6 +1411,18 @@ A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' th
       (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
+)
+#+end_src
+
+solarized-theme
+#+begin_src emacs-lisp
+(use-package solarized-theme
+  :ensure t
+;  :config
+;  (if (display-graphic-p)
+;      (load-theme 'solarized-dark :no-confirm)  ; Emacs in own window (solarized-dark)
+;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+;  )
 )
 #+end_src
 

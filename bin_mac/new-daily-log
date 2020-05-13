@@ -74,11 +74,18 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n* Tuesday
 \n9-9:15 [Meeting] Weekly GHC check (with Tim and Ryan)
 \n11:30-12 [Meeting] GTFO - Team Meeting (Naan, 19tl)
+# Notes
+
+# Done
+
+# Today
+
+# Working on / TODO
+
 \n1-5 SRE Heads Down Time
 \n* Wednesday
 \n11:20-12:30 Spicey Chicken
 \n* Thursday
-\n10-10:30 [Meeting] GTFO - Team Meeting
 \n1-5 SRE Heads Down Time
 \n* Friday
 \n9:30-10:30 [Meeting] SRE's Unite (Spanakopita 19th fl)
