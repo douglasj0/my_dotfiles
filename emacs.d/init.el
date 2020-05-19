@@ -9,6 +9,10 @@
  user-full-name "Douglas Jackson"
  user-mail-address "hpotter@hogworts.edu")
 
+;; set elpa directory name based on emacs major version
+;(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version))
+(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version))
+
 ;; To refresh package list, run:  M-x package-refresh-contents
 ;; To manually update installed packages:  M-x package-list-packages U x
 (require 'package)
