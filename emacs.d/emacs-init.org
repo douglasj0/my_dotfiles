@@ -659,6 +659,15 @@ From zamandsky
 https://github.com/zamansky/dot-emacs
 
 #+begin_src emacs-lisp
+;; Run commands from eterm in an emacs term session
+;; https://www.reddit.com/r/emacs/comments/gksqhl/emacs_eshell_demo/
+;; ex:  in-term uptime
+(defun eshell/in-term (prog &rest args)
+  (switch-to-buffer
+    (apply #'make-term (format "in-term %s %s" prog args) prog nil args))
+  (term-mode)
+  (term-char-mode))
+
 (use-package exec-path-from-shell
   :ensure t
   :config
@@ -1458,8 +1467,8 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 3)
 
+  (setq company-global-modes '(not org-mode eshell-mode shell-mode lisp-interaction-mode))
   (global-company-mode t)
-  (setq company-global-modes '(not org-mode))
 )
 #+end_src
 
