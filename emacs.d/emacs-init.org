@@ -380,7 +380,7 @@
         ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
         ((equal major-mode 'org-mode) (org-narrow-to-subtree))
         (t (error "Please select a region to narrow to"))))
-(global-set-key (kbd "C-c n") 'narrow-or-widen-dwim)
+(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)
 
 ;; I bind this key to C-c n, using the bind-key function that comes with use-package.
 ;(bind-key "C-c n" 'narrow-or-widen-dwim)
@@ -573,20 +573,20 @@ https://jblevins.org/projects/deft/
 directories of plain text notes.  http://jblevins.org/projects/deft/
 http://jblevins.org/git/deft.git
 
+Modified for org-roam
+
 #+BEGIN_SRC emacs-lisp
 (use-package deft
   :ensure t
+  :after org
   :bind
-        ("C-c d" . deft)
-  :commands (deft)
-  :config
-    (setq
-      deft-extensions '("txt" "org" "md")
-      deft-directory "~/org/notes"
-      deft-text-mode 'org-mode
-      deft-use-filename-as-title t
-      deft-recursive t
-      deft-ignore-file-regexp "archive\.*")
+  ("C-c n d" . deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory "~/org/org-roam/")
+  (deft-text-mode 'org-mode)
 )
 #+END_SRC
 
@@ -1005,11 +1005,109 @@ A emacs tree plugin like NerdTree for Vim.
 #  ("M-p" . neotree-toggle)
 
 #+begin_src emacs-lisp
-(use-package neotree
-  :ensure t
-  :bind
-  ([f8] . neotree-toggle)
-)
+;(use-package neotree
+;  :ensure t
+;  :bind
+;  ([f8] . neotree-toggle)
+;)
+#+end_src
+
+* treemacs
+https://github.com/Alexander-Miller/treemacs
+A tree layout file explorer for Emacs
+
+#+begin_src emacs-lisp
+;(use-package treemacs
+;  :ensure t
+;  :defer t
+;  :init
+;  (with-eval-after-load 'winum
+;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;  :config
+;  (progn
+;    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+;          treemacs-deferred-git-apply-delay      0.5
+;          treemacs-directory-name-transformer    #'identity
+;          treemacs-display-in-side-window        t
+;          treemacs-eldoc-display                 t
+;          treemacs-file-event-delay              5000
+;          treemacs-file-extension-regex          treemacs-last-period-regex-value
+;          treemacs-file-follow-delay             0.2
+;          treemacs-file-name-transformer         #'identity
+;          treemacs-follow-after-init             t
+;          treemacs-git-command-pipe              ""
+;          treemacs-goto-tag-strategy             'refetch-index
+;          treemacs-indentation                   2
+;          treemacs-indentation-string            " "
+;          treemacs-is-never-other-window         nil
+;          treemacs-max-git-entries               5000
+;          treemacs-missing-project-action        'ask
+;          treemacs-move-forward-on-expand        nil
+;          treemacs-no-png-images                 nil
+;          treemacs-no-delete-other-windows       t
+;          treemacs-project-follow-cleanup        nil
+;          treemacs-persist-file                  (expand-file-name "~/.emacs.d/cache/treemacs-persist" user-emacs-directory)
+;          treemacs-position                      'left
+;          treemacs-recenter-distance             0.1
+;          treemacs-recenter-after-file-follow    nil
+;          treemacs-recenter-after-tag-follow     nil
+;          treemacs-recenter-after-project-jump   'always
+;          treemacs-recenter-after-project-expand 'on-distance
+;          treemacs-show-cursor                   nil
+;          treemacs-show-hidden-files             t
+;          treemacs-silent-filewatch              nil
+;          treemacs-silent-refresh                nil
+;          treemacs-sorting                       'alphabetic-asc
+;          treemacs-space-between-root-nodes      t
+;          treemacs-tag-follow-cleanup            t
+;          treemacs-tag-follow-delay              1.5
+;          treemacs-user-mode-line-format         nil
+;          treemacs-user-header-line-format       nil
+;          treemacs-width                         35)
+;
+;    ;; The default width and height of the icons is 22 pixels. If you are
+;    ;; using a Hi-DPI display, uncomment this to double the icon size.
+;    ;;(treemacs-resize-icons 44)
+;
+;    (treemacs-follow-mode t)
+;    (treemacs-filewatch-mode t)
+;    (treemacs-fringe-indicator-mode t)
+;    (pcase (cons (not (null (executable-find "git")))
+;                 (not (null treemacs-python-executable)))
+;      (`(t . t)
+;       (treemacs-git-mode 'deferred))
+;      (`(t . _)
+;       (treemacs-git-mode 'simple))))
+;  :bind
+;  (:map global-map
+;        ("M-0"       . treemacs-select-window)
+;        ("C-x t 1"   . treemacs-delete-other-windows)
+;        ("C-x t t"   . treemacs)
+;        ("C-x t B"   . treemacs-bookmark)
+;        ("C-x t C-t" . treemacs-find-file)
+;        ("C-x t M-t" . treemacs-find-tag)))
+;
+;;(use-package treemacs-evil
+;;  :after treemacs evil
+;;  :ensure t)
+;
+;(use-package treemacs-projectile
+;  :after treemacs projectile
+;  :ensure t)
+;
+;(use-package treemacs-icons-dired
+;  :after treemacs dired
+;  :ensure t
+;  :config (treemacs-icons-dired-mode))
+;
+;(use-package treemacs-magit
+;  :after treemacs magit
+;  :ensure t)
+;
+;(use-package treemacs-persp
+;  :after treemacs persp-mode
+;  :ensure t
+;  :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
 
 * org
@@ -1021,12 +1119,12 @@ A emacs tree plugin like NerdTree for Vim.
   :hook
   ;(org-mode . variable-pitch-mode)
   (org-mode . visual-line-mode)
-  (org-mode . org-num-mode)
+  ;(org-mode . org-num-mode)
   :custom
   (org-src-tab-acts-natively t))
 
 (use-package calendar
-  :defer t
+  :ensure nil
   :custom
   (calendar-week-start-day 0))
 
@@ -1735,5 +1833,39 @@ Install python lsp in venv:
   :after (:all lsp-mode flycheck-mode)
   :config
   (push 'company-lsp company-backends)
+)
+#+end_src
+* org-roam
+Rudimentary Roam replica with Org-mode
+https://github.com/org-roam/org-roam
+https://org-roam.readthedocs.io/en/master/
+
+Useful links
+Matt Williams video: https://www.youtube.com/watch?v=Lg61ocfxk3c
+Reddit: https://www.reddit.com/r/emacs/comments/gsv5np/care_to_share_configs_for_how_you_use_orgroam/
+
+
+#+begin_src emacs-lisp
+(use-package company-org-roam
+  :ensure t
+  :after (company org-roam))
+
+(use-package org-roam
+  :ensure t
+  :after org
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/org/org-roam/")
+  ;(org-roam-index-file "index.org")
+  (org-roam-completion-system 'ivy)
+  :bind (:map org-roam-mode-map
+          (("C-c n l" . org-roam)
+           ("C-c n f" . org-roam-find-file)
+           ("C-c n j" . org-roam-jump-to-index)
+           ("C-c n b" . org-roam-switch-to-buffer)
+           ("C-c n g" . org-roam-graph))
+          :map org-mode-map
+          (("C-c n i" . org-roam-insert)))
 )
 #+end_src
