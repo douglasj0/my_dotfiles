@@ -1833,8 +1833,8 @@ Modified for org-roam 20200601
   :bind
   ("C-c n d" . deft)
   :custom
-  (deft-directory org-roam-directory-location)
   ;(deft-directory "~/org-roam/")
+  (deft-directory org-roam-directory-location)
   (deft-recursive t)
   (deft-use-filename-as-title nil)
   (deft-use-filter-string-for-filename t)
@@ -1882,10 +1882,12 @@ https://org-roam.readthedocs.io/en/master/
   ;((org-mode . org-roam-mode)
   ; (after-init . org-roam--build-cache-async))
   :custom
+  (org-roam-link-title-format "R:%s")
   ;(make-directory "~/org-roam")
   ;(org-roam-directory "~/org-roam/")
   (org-roam-directory org-roam-directory-location)
-  ;(org-roam-index-file "index.org")
+  (org-roam-db-location "~/.emacs.d/cache/org-roam.db")
+  (org-roam-index-file "index.org")
   (org-roam-completion-system 'ivy)
   :bind (:map org-roam-mode-map
           (("C-c n l" . org-roam)
