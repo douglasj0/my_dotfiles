@@ -380,7 +380,7 @@
         ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
         ((equal major-mode 'org-mode) (org-narrow-to-subtree))
         (t (error "Please select a region to narrow to"))))
-(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)
+(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
 
 ;; I bind this key to C-c n, using the bind-key function that comes with use-package.
 ;(bind-key "C-c n" 'narrow-or-widen-dwim)
@@ -567,29 +567,6 @@ https://github.com/zellio/ansible-vault-mode
 )
 #+end_src
 
-* deft
-https://jblevins.org/projects/deft/
--- deft - an Emacs mode for quickly browsing, filtering, and editing
-directories of plain text notes.  http://jblevins.org/projects/deft/
-http://jblevins.org/git/deft.git
-
-Modified for org-roam
-
-#+BEGIN_SRC emacs-lisp
-(use-package deft
-  :ensure t
-  :after org
-  :bind
-  ("C-c n d" . deft)
-  :custom
-  (deft-recursive t)
-  (deft-use-filter-string-for-filename t)
-  (deft-default-extension "org")
-  (deft-directory "~/org/org-roam/")
-  (deft-text-mode 'org-mode)
-)
-#+END_SRC
-
 * delsel
 C-c C-g always quits minubuffer
 
@@ -667,6 +644,9 @@ https://github.com/zamansky/dot-emacs
     (apply #'make-term (format "in-term %s %s" prog args) prog nil args))
   (term-mode)
   (term-char-mode))
+
+;; save pwd to kill ring for later use
+(setq eshell-pwd-convert-function #'kill-new)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -1836,14 +1816,58 @@ Install python lsp in venv:
 )
 #+end_src
 * org-roam
+# deft
+deft - an Emacs mode for quickly browsing, filtering, and editing
+directories of plain text notes.  http://jblevins.org/projects/deft/
+http://jblevins.org/git/deft.git
+
+Modified for org-roam 20200601
+
+#+begin_src emacs-lisp
+;; Set org-roam directory in one place to prevent madness
+(setq org-roam-directory-location "~/org-roam/")
+
+(use-package deft
+  :ensure t
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  (deft-directory org-roam-directory-location)
+  ;(deft-directory "~/org-roam/")
+  (deft-recursive t)
+  (deft-use-filename-as-title nil)
+  (deft-use-filter-string-for-filename t)
+  ;(deft-org-mode-title-prefix t)
+  (deft-file-naming-rules '((noslash . "-")
+                            (nospace . "-")
+                            (case-fn . downcase)))
+  (deft-extensions '("org" "txt" "text" "md" "markdown" "org.gpg"))
+  (deft-default-extension "org")
+  (deft-text-mode 'org-mode)
+)
+#+end_src
+
+# org-journal
+#+begin_src emacs-lisp
+(use-package org-journal
+  :ensure t
+  :after org
+  :bind
+  ("C-c n n" . org-journal-new-entry)
+  :custom
+  (org-journal-date-prefix "#+TITLE: ")
+  (org-journal-file-format "%Y-%m-%d.org")
+  ;(org-journal-dir "~/org-roam/")
+  (org-journal-dir org-roam-directory-location)
+  (org-journal-date-format "%A, %d %B %Y")
+)
+#+end_src
+
+# org-roam
 Rudimentary Roam replica with Org-mode
 https://github.com/org-roam/org-roam
 https://org-roam.readthedocs.io/en/master/
-
-Useful links
-Matt Williams video: https://www.youtube.com/watch?v=Lg61ocfxk3c
-Reddit: https://www.reddit.com/r/emacs/comments/gsv5np/care_to_share_configs_for_how_you_use_orgroam/
-
 
 #+begin_src emacs-lisp
 (use-package company-org-roam
@@ -1855,15 +1879,21 @@ Reddit: https://www.reddit.com/r/emacs/comments/gsv5np/care_to_share_configs_for
   :after org
   :hook
   (after-init . org-roam-mode)
+  ;((org-mode . org-roam-mode)
+  ; (after-init . org-roam--build-cache-async))
   :custom
-  (org-roam-directory "~/org/org-roam/")
+  ;(make-directory "~/org-roam")
+  ;(org-roam-directory "~/org-roam/")
+  (org-roam-directory org-roam-directory-location)
   ;(org-roam-index-file "index.org")
   (org-roam-completion-system 'ivy)
   :bind (:map org-roam-mode-map
           (("C-c n l" . org-roam)
+           ("C-c n t" . org-roam-dailies-today)
            ("C-c n f" . org-roam-find-file)
            ("C-c n j" . org-roam-jump-to-index)
            ("C-c n b" . org-roam-switch-to-buffer)
+           ;("C-c n g" . org-roam-show-graph))
            ("C-c n g" . org-roam-graph))
           :map org-mode-map
           (("C-c n i" . org-roam-insert)))
