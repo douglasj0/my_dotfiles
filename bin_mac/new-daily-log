@@ -59,9 +59,9 @@ echo -e "#-*- mode: org; fill-column: 78 -*-
 #+STARTUP: overview
 
 # | C-x r l    | list bookmarks   | | C-x r m   | set bookmark    |
-# | M-x bookmark-delete           | |           |                 |
+# | M-x bookmark-delete           | | C-c 5 C-o | org opn otr frm |
 # | C-x C+ / - | change font size | | C-c p C-h | Projectile help |
-# | C-h m      | mode keys        | | C-c n     | Narrow region   |
+# | C-h m      | mode keys        | | C-c x     | Narrow region   |
 # | C-x 5 b    | buf in new frame | | C-x 5 f   | file in new frm |
 # | C-x 5 d    | dir in new frame | | C-c C-,   | select block    |
 # NOTE: Track ALL interruptions

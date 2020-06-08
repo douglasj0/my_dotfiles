@@ -371,6 +371,16 @@
 * Functions
 #+BEGIN_SRC emacs-lisp
 ;;; ---------------------------------------------------------------------------
+;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
+;;; Open link at point in new frame
+(defun zin/org-open-other-frame ()
+  "Jump to bookmark in another frame. See `bookmark-jump' for more."
+  (interactive)
+  (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
+    (org-open-at-point)))
+(global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
+
+;;; ---------------------------------------------------------------------------
 ;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
 ;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 (defun narrow-or-widen-dwim ()
