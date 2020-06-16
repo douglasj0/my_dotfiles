@@ -696,7 +696,7 @@ Search all marked buffers
 #+BEGIN_SRC emacs-lisp
 (use-package ibuffer
   :ensure nil
-  :bind ( "C-x C-b" . ibuffer)
+  :bind ("C-x C-b" . ibuffer)
   :config
     ;; Don't show empty buffer groups
     (setq ibuffer-show-empty-filter-groups nil)
@@ -1474,6 +1474,28 @@ C-c C-i: show information on resclient variables at point
   :ensure t)
 #+end_src
 
+* rg - ripgrep
+Emacs search tool based on ripgrep https://rgel.readthedocs.io
+https://github.com/dajva/rg.el
+
+#+begin_src emacs-lisp
+(use-package rg
+  :ensure t
+  :defer t
+  :bind ("M-s" . rg-dwim)
+  ;      ;("C-x s" . rg-project)
+        ("M-S" . rg-project)
+  :config
+  (rg-enable-default-bindings)
+  ;(add-hook 'rg-mode-hook 'wgrep-ag-setup)
+  ;(setq rg-show-columns t
+  ;      rg-show-header t
+  ;      rg-command-line-flags (list "-uuu")
+  ;)
+  ;(bind-keys :map rg-mode-map
+  ;           ("W" . wgrep-change-to-wgrep-mode))
+)
+#+end_src
 * s
 https://github.com/magnars/s.el
 The long lost Emacs string manipulation library
@@ -1911,4 +1933,42 @@ https://org-roam.readthedocs.io/en/master/
           :map org-mode-map
           (("C-c n i" . org-roam-insert)))
 )
+#+end_src
+* notmuch
+Emacs major mode for interacting with Notmuch
+https://notmuchmail.org/notmuch-emacs/
+
+To open html files in a browser, ex. firefox, on a Mac with ". v"
+Add the following to ~/.mailcap:
+text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.html
+
+#+begin_src emacs-lisp
+  ;;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-notmuch.el
+  ;;; error: not available
+  ;use-package org-notmuch
+  ; ;:ensure t
+  ; ;:demand t
+  ; :after (org notmuch)
+  ; ;:after (:any org-plus-contrib notmuch)
+  ;
+
+  (use-package notmuch
+    :ensure t
+    :defer t
+    :config
+    (setq notmuch-search-oldest-first nil
+          notmuch-show-logo nil
+          mm-text-html-renderer 'shr
+          shr-inhibit-images nil
+          mime-view-text/html-previewer 'shr
+          mm-inline-text-html-with-images t
+          notmuch-multipart/alternative-discouraged '("text/html"))
+    (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
+  )
+
+  (use-package counsel-notmuch
+    :ensure t
+    :defer t
+    :after notmuch
+  )
 #+end_src
