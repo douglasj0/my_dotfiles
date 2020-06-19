@@ -1,0 +1,7 @@
+# osascript ~/bin/get_dark.osascript
+
+tell application "System Events"
+	tell appearance preferences
+		get dark mode
+	end tell
+end tell
