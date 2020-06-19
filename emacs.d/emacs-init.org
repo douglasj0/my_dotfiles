@@ -342,6 +342,29 @@
 (global-set-key [?\C-x ?\C-y] 'pt-pbpaste)
 (global-set-key [?\C-x ?\M-w] 'pt-pbcopy)
 
+
+;; On a Mac: make Emacs detect if you have light or dark mode enabled system wide.
+;;If you have two themes, a light one and a dark one, and you want the dark theme by default unless you have light mode enabled, add this to your init.el:
+
+;; If we're on a Mac and the file "~/bin/get_dark.osascript" exists
+;; and it outputs "false", activate light mode. Otherwise activate
+;; dark mode.
+;(cond ((and (file-exists-p "~/bin/get_dark.osascript")
+;            (string> (shell-command-to-string "command -v osascript") "")
+;            (equal "false\n"
+;                   (shell-command-to-string "osascript ~/bin/get_dark.osascript")))
+;       (mcj/theme-set-light))
+;      (t (mcj/theme-set-dark)))
+
+;; (mcj/theme-set-light and mcj/theme-set-light are functions that enable the light and the dark theme, respectively).
+
+;;~/bin/get_dark.osascript contains the following:
+;;
+;;tell application "System Events"
+;;        tell appearance preferences
+;;        	get dark mode
+;;        end tell
+;;end tell
 ))
 #+END_SRC
 
@@ -1932,7 +1955,49 @@ https://org-roam.readthedocs.io/en/master/
            ("C-c n c" . org-roam-db-build-cache))
           :map org-mode-map
           (("C-c n i" . org-roam-insert)))
+  :config
+  (setq org-roam-capture-templates
+    '(("d" "default" plain (function org-roam--capture-get-point)
+       "%?"
+       :file-name "%<%Y%m%d%H%M%S>-${slug}"
+       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+       :unnarrowed t)
+
+;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
+;      ("a" "daily" plain (function org-roam-capture--get-point)
+;        ""
+;       :immediate-finish t
+;       :file-name "dailies/%<%Y-%m-%d>"
+;       :head "#+TITLE: %<%Y-%m-%d>")
+  ))
+
 )
+
+; --
+
+;; how to modify last_modified tag in file
+;;https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321/9
+;(require 'time-stamp)
+;(add-hook 'write-file-functions 'time-stamp)
+
+;--
+
+;; where no roam has gone before - oldfxiny
+;; https://www.reddit.com/r/emacs/comments/h9zoy9/weekly_tipstricketc_thread/
+
+;(setq my/roam-dir-list '(
+;  "~/org-roam/"
+;  "~/org-roam-wip/"))
+;
+;(defun my/pick-roam-dir ()
+;  "Select directories from a list"
+;  (interactive)
+;  (setq org-roam-directory
+;  (completing-read "Select directory: " my/roam-dir-list))
+;  ;;(deft)
+;  ;;(deft-refresh)
+;)
+
 #+end_src
 * notmuch
 Emacs major mode for interacting with Notmuch
