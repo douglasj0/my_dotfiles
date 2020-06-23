@@ -1563,87 +1563,88 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 #+begin_src emacs-lisp
 (use-package dracula-theme
     :ensure t
-    :init
-    (setq dracula-enlarge-headings nil)
-    (setq dracula-alternate-mode-line-and-minibuffer t)
-    :config
-    (load-theme 'dracula t))
-
-;(set-face-attribute 'default nil
-;        	      :family "JetBrains Mono"
-;        	      :foundry "outline"
-;        	      :slant 'normal
-;        	      :weight 'normal
-;        	      :height 120
-;        	      :width 'semi-condensed)
-
-(add-hook 'display-line-numbers-mode-hook
-	    (lambda ()
-	      (set-face-attribute 'line-number nil
-				  :weight 'normal)
-	      (set-face-attribute 'line-number-current-line nil
-				  :foreground (face-attribute 'cursor :background)
-				  :weight 'bold
-				  :slant 'normal))
+;    :init
+;    (setq dracula-enlarge-headings nil)
+;    (setq dracula-alternate-mode-line-and-minibuffer t)
+;    :config
+;    (load-theme 'dracula t))
+;
+;;(set-face-attribute 'default nil
+;;        	      :family "JetBrains Mono"
+;;        	      :foundry "outline"
+;;        	      :slant 'normal
+;;        	      :weight 'normal
+;;        	      :height 120
+;;        	      :width 'semi-condensed)
+;
+;(add-hook 'display-line-numbers-mode-hook
+;            (lambda ()
+;              (set-face-attribute 'line-number nil
+;        			  :weight 'normal)
+;              (set-face-attribute 'line-number-current-line nil
+;        			  :foreground (face-attribute 'cursor :background)
+;        			  :weight 'bold
+;        			  :slant 'normal))
 )
 
-(use-package telephone-line
-    :ensure t
-    :init
-    (setq telephone-line-primary-left-separator 'telephone-line-gradient
-	  telephone-line-secondary-left-separator 'telephone-line-nil
-	  telephone-line-primary-right-separator 'telephone-line-gradient
-	  telephone-line-secondary-right-separator 'telephone-line-nil)
-    (setq ;telephone-line-height 24
-	  telephone-line-evil-use-short-tag nil)
-
-    (defface telephone-line-evil
-      '((t (:foreground "#000000" :weight bold :inherit mode-line)))
-      "Meta-face used for property inheritance on all telephone-line-evil faces."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-insert
-      '((t (:background "#5AF78E" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Insert state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-normal
-      '((t (:background "#BFBFBF" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Normal state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-visual
-      '((t (:background "#F1FA8C" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Visual{,-Block,-Line} state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-replace
-      '((t (:background "#FF5555" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Replace state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-motion
-      '((t (:background "#FF79C6" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Motion state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-operator
-      '((t (:background "#CAA9FA" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Operator state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-emacs
-      '((t (:background "#BD93F9" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in Emacs state."
-      :group 'telephone-line-evil)
-
-    (defface telephone-line-evil-god
-      '((t (:background "#8BE9FD" :inherit telephone-line-evil)))
-      "Face used in evil color-coded segments when in God state.
-  God state is provided by the package evil-god-state."
-      :group 'telephone-line-evil)
-    :config
-    (telephone-line-mode t))
+;(use-package telephone-line
+;    :ensure t
+;    :init
+;    (setq telephone-line-primary-left-separator 'telephone-line-gradient
+;          telephone-line-secondary-left-separator 'telephone-line-nil
+;          telephone-line-primary-right-separator 'telephone-line-gradient
+;          telephone-line-secondary-right-separator 'telephone-line-nil)
+;    (setq ;telephone-line-height 24
+;          telephone-line-evil-use-short-tag nil)
+;
+;
+;    (defface telephone-line-evil
+;      '((t (:foreground "#000000" :weight bold :inherit mode-line)))
+;      "Meta-face used for property inheritance on all telephone-line-evil faces."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-insert
+;      '((t (:background "#5AF78E" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Insert state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-normal
+;      '((t (:background "#BFBFBF" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Normal state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-visual
+;      '((t (:background "#F1FA8C" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Visual{,-Block,-Line} state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-replace
+;      '((t (:background "#FF5555" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Replace state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-motion
+;      '((t (:background "#FF79C6" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Motion state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-operator
+;      '((t (:background "#CAA9FA" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Operator state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-emacs
+;      '((t (:background "#BD93F9" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in Emacs state."
+;      :group 'telephone-line-evil)
+;
+;    (defface telephone-line-evil-god
+;      '((t (:background "#8BE9FD" :inherit telephone-line-evil)))
+;      "Face used in evil color-coded segments when in God state.
+;  God state is provided by the package evil-god-state."
+;      :group 'telephone-line-evil)
+;    :config
+;    (telephone-line-mode t))
 #+end_src
 
 zenburn-theme
@@ -1666,11 +1667,11 @@ A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' th
 #+begin_src emacs-lisp
 (use-package color-theme-sanityinc-tomorrow
   :ensure t
-;  :config
-;  (if (display-graphic-p)
-;      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
-;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-;  )
+  :config
+  (if (display-graphic-p)
+      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
+    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+  )
 )
 #+end_src
 
