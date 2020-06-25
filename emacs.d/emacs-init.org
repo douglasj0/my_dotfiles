@@ -1891,7 +1891,7 @@ Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
 )
 #+end_src
 ** virtualenvwrapper - disabled
-;#+begin_src emacs-lisp
+#+begin_src emacs-lisp
 ;(use-package virtualenvwrapper
 ;  :ensure t
 ;  :config
@@ -1900,7 +1900,7 @@ Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
 ;
 ;(venv-workon "p3")
 ;(setq lsp-python-executable-cmd "python3")
-;#+end_src
+#+end_src
 
 ** pyvenv
 # https://github.com/pythonic-emacs/pyenv-mode
@@ -1917,7 +1917,7 @@ Python virtual environment interface for Emacs
   (setenv "WORKON_HOME" "~/.pyenv/versions/")
   :config
   (pyvenv-mode 1)
-  (pyvenv-activate "~/.pyenv/versions/emacs-python3/")
+  (pyvenv-activate "~/.pyenv/versions/3.8.3/")
   ;:bind
   ;("C-x p e" . pyenv-activate-current-project)
 )
