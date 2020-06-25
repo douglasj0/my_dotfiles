@@ -1924,9 +1924,9 @@ Python virtual environment interface for Emacs
 #+end_src
 
 * lsp-mode
-Install python lsp in venv:
-  pyenv virtualenv 2.7.17 emacs-python2
-  pyenv virtualenv 3.8.1 emacs-python3
+If installing python lsp in venv:
+  pyenv virtualenv 2.7.18 emacs-python2
+  pyenv virtualenv 3.8.3 emacs-python3
   pip install --upgrade pip
   pyenv global emacs-python3
   pyenv version
