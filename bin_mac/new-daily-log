@@ -63,16 +63,19 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n.
 \n10:30-11 Log into GH4W to keep account active
 \n11-11:30 [Meeting] Douglas / Randy 1:1
+# This week
+
+# Last week
 \n* Tuesday
 \n9-9:15 [Meeting] Weekly GHC check (with Tim and Ryan)
 \n11:30-12 [Meeting] GTFO - Team Meeting (Naan, 19tl)
-# Notes
+#+begin_text conf
+# Notes / Agenda
 
-# Done
+# Done tasks
 
-# Today
-
-# Working on / TODO
+# Today / Working on / TODO
+#+end_text
 
 \n1-5 SRE Heads Down Time
 \n* Wednesday
