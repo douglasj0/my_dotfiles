@@ -68,7 +68,8 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt inc_append_history
-setopt share_history
+#setopt share_history
+setopt no_share_history
 # Changing directories
 setopt auto_cd
 setopt auto_pushd
