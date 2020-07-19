@@ -1561,8 +1561,8 @@ https://github.com/domtronn/all-the-icons.el
 dracula-theme with telephone line status bar
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
 #+begin_src emacs-lisp
-(use-package dracula-theme
-    :ensure t
+;(use-package dracula-theme
+;    :ensure t
 ;    :init
 ;    (setq dracula-enlarge-headings nil)
 ;    (setq dracula-alternate-mode-line-and-minibuffer t)
@@ -1585,7 +1585,7 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 ;        			  :foreground (face-attribute 'cursor :background)
 ;        			  :weight 'bold
 ;        			  :slant 'normal))
-)
+;)
 
 ;(use-package telephone-line
 ;    :ensure t
@@ -1647,44 +1647,69 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 ;    (telephone-line-mode t))
 #+end_src
 
+dracula
+#+begin_src emacs-lisp
+(use-package dracula-theme
+    :ensure t
+    :init
+    (setq dracula-enlarge-headings nil)
+    (setq dracula-alternate-mode-line-and-minibuffer t)
+    :config
+    (if (display-graphic-p)
+        (load-theme 'dracula :no-confirm)  ; Emacs in own window (zenburn)
+      (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+    )
+)
+#+end_src
+
+
 zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
 The Zenburn colour theme ported to Emacs
 #+begin_src emacs-lisp
-(use-package zenburn-theme
-  :ensure t
+;(use-package zenburn-theme
+;  :ensure t
 ;  :config
 ;  (if (display-graphic-p)
 ;      (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
 ;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
 ;  )
-)
+;)
 #+end_src
 
-tomorrow-theme
+tomorrow-theme (nice blue theme)
 https://github.com/purcell/color-theme-sanityinc-tomorrow
 A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' themes
 #+begin_src emacs-lisp
-(use-package color-theme-sanityinc-tomorrow
-  :ensure t
-  :config
-  (if (display-graphic-p)
-      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
-    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-  )
-)
+;(use-package color-theme-sanityinc-tomorrow
+;  :ensure t
+;  :config
+;  (if (display-graphic-p)
+;      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
+;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+;  )
+;)
 #+end_src
 
 solarized-theme
 #+begin_src emacs-lisp
-(use-package solarized-theme
-  :ensure t
+;(use-package solarized-theme
+;  :ensure t
 ;  :config
 ;  (if (display-graphic-p)
 ;      (load-theme 'solarized-dark :no-confirm)  ; Emacs in own window (solarized-dark)
 ;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
 ;  )
-)
+;)
+#+end_src
+
+acme
+https://github.com/ianpan870102/acme-emacs-theme
+#+begin_src emacs-lisp
+;(use-package acme-theme
+;  :ensure t
+;  :config
+;  (load-theme 'acme t))
 #+end_src
 
 * which-key
