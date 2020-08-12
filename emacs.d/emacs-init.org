@@ -2,6 +2,7 @@
 #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 
+# To look into:  hydra, swiper, counsel, org, ripgrep, fasd, expand-region
 * Init
 Transfered from init.el
 
