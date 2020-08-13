@@ -62,7 +62,7 @@ Transfered from ~/.emacs.d/init.el
 ; M-x describe-font:
 ; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
 ;(set-face-attribute 'default (selected-frame) :height 150)
-;(set-face-attribute 'default nil :height 150)
+(set-face-attribute 'default nil :height 150)
 
 ;;; Load Customizations if they exist
 (setq custom-file "~/Sync/elisp/custom.el")
