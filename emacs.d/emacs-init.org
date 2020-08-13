@@ -13,8 +13,8 @@ Transfered from ~/.emacs.d/init.el
  user-mail-address "hpotter@hogworts.edu")
 
 ;; set elpa directory name based on emacs major version
-;(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version))
-(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version))
+;(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version)) ;elpa-27
+(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version)) ;elpa-27.1
 
 ;; To refresh package list, run:  M-x package-refresh-contents
 ;; To manually update installed packages:  M-x package-list-packages U x
@@ -97,7 +97,233 @@ Transfered from ~/.emacs.d/init.el
   "Is this running on Linux?")
 #+end_src
 
-* Enable disabled functions
+* Performance Optimization
+** Garbage Collection
+Make startup faster by reducing the frequency of garbage collection. Set gc-cons-threshold (the default is 800 kilobytes) to maximum value available, to prevent any garbage collection from happening during load time.
+
+Note: tangle to early-init.el to make startup even faster?
+#+Begin_src emacs-lisp
+(setq gc-cons-threshold most-positive-fixnum)
+#+end_src
+
+Restore it to reasonable value after init.
+#+begin_src emacs-lisp
+;; (defun fk/increase-gc-threshold ()
+;;   "Increase garbage collection threshold to speed-up emacs by reducing the
+;; frequency of garbage collection stops."
+;;   (setq gc-cons-threshold (* 1024 1024 20))
+;;   (setq gc-cons-percentage 0.3))
+
+;; (add-hook 'after-init-hook 'fk/increase-gc-threshold)
+
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
+#+end_src
+
+** Emacs Start Up Profiler
+Benchmark Emacs startup time.
+
+#+begin_src emacs-lisp
+;(use-package esup
+;  :ensure t
+;  :commands esup)
+#+end_src
+
+* Better Defaults
+** Better Defaults Package
+https://github.com/technomancy/better-defaults
+A small number of better defaults for Emacs
+
+#+BEGIN_SRC emacs-lisp
+;(menu-bar-mode -1) ; was making tabbar tabs on 2nd frame
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
+
+(require 'uniquify)
+ (setq uniquify-buffer-name-style 'forward)
+
+(require 'saveplace)
+  (setq-default save-place t)
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+;(global-set-key (kbd "C-x C-b") 'ibuffer) ; set elsewhere in file
+;(global-set-key (kbd "M-z") 'zap-up-to-char) ; doesn't exist?
+
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
+(show-paren-mode 1)
+(setq save-interprogram-paste-before-kill t
+      apropos-do-all t
+      mouse-yank-at-point t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      save-place-file (concat user-emacs-directory "places")
+      backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "backups"))))
+#+END_SRC
+** Helpful
+A better, more detailed help buffer.
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :ensure t
+  ;; TODO: setup shackle
+  ;; :init
+  ;; (defalias 'describe-function 'helpful-callable)
+  ;; (defalias 'describe-variable 'helpful-variable)
+  ;; (defalias 'describe-key 'helpful-key)
+  :bind
+  (([remap describe-function] . helpful-callable)
+   ([remap describe-variable] . helpful-variable)
+   ([remap describe-key] . helpful-key)
+   :map emacs-lisp-mode-map
+   ("C-c C-d" . helpful-at-point)))
+#+end_src
+** Su/Sudo
+read-only files will be writable but if you attempt to save your modifications, emacs will ask root user’s password if needed. Can save pw to ~/.authinfo.
+https://github.com/PythonNut/su.el
+
+#+begin_src emacs-lisp
+(use-package su
+  ;:straight (:host github :repo "PythonNut/su.el")
+  :config (su-mode +1))
+#+end_src
+
+* Themes
+** Disable all themes before loading a theme
+
+#+begin_src emacs-lisp
+(defadvice load-theme (before disable-themes-first activate)
+  (fk/disable-all-themes))
+
+(defun fk/disable-all-themes ()
+  "Disable all active themes."
+  (interactive)
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme)))
+#+end_src
+
+** load-theme without annoying confirmation
+#+begin_src emacs-lisp
+(advice-add 'load-theme
+            :around
+            (lambda (fn theme &optional no-confirm no-enable)
+              (funcall fn theme t)))
+#+end_src
+
+** all-the-icons
+Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
+"M-x all-the-icons-install-fonts" to install fonts at the first time.
+https://github.com/domtronn/all-the-icons.el
+
+#+begin_src emacs-lisp
+(use-package all-the-icons
+  :ensure t)
+#+end_src
+
+** Dracula Theme
+dracula-theme with telephone line status bar
+https://github.com/dracula/emacs
+https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
+#+begin_src emacs-lisp
+(use-package dracula-theme
+  :ensure t
+  :init
+  (setq dracula-enlarge-headings nil)
+  (setq dracula-alternate-mode-line-and-minibuffer t)
+  :config
+  (if (display-graphic-p)
+      (load-theme 'dracula :no-confirm)  ; Emacs in own window (zenburn)
+    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+  )
+
+ ;; too small
+ ;(set-face-attribute 'default nil
+ ;        	      :family "JetBrains Mono"
+ ;        	      :foundry "outline"
+ ;        	      :slant 'normal
+ ;        	      :weight 'normal
+ ;        	      :height 120
+ ;        	      :width 'semi-condensed)
+
+ ;; need to investigate
+ ;(add-hook 'display-line-numbers-mode-hook
+ ;            (lambda ()
+ ;              (set-face-attribute 'line-number nil
+ ;        			  :weight 'normal)
+ ;              (set-face-attribute 'line-number-current-line nil
+ ;        			  :foreground (face-attribute 'cursor :background)
+ ;        			  :weight 'bold
+ ;        			  :slant 'normal))
+ ;)
+)
+#+end_src
+
+** Telephone line modeline
+https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
+https://github.com/dbordak/telephone-line
+
+#+begin_src emacs-lisp
+(use-package telephone-line
+  :ensure t
+  :init
+  (telephone-line-mode 1)
+)
+#+end_src
+
+* Hightlight TODOs (move to org?)
+#+begin_src emacs-lisp
+(use-package hl-todo
+  :ensure t
+  :custom
+  ;; Better hl-todo colors, taken from spacemacs
+  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
+                           ("NEXT" . "#dc752f")
+                           ("THEM" . "#2d9574")
+                           ("PROG" . "#4f97d7")
+                           ("OKAY" . "#4f97d7")
+                           ("DONT" . "#f2241f")
+                           ("FAIL" . "#f2241f")
+                           ("DONE" . "#86dc2f")
+                           ("NOTE" . "#b1951d")
+                           ("KLUDGE" . "#b1951d")
+                           ("HACK" . "#b1951d")
+                           ("TEMP" . "#b1951d")
+                           ("QUESTION" . "#b1951d")
+                           ("HOLD" . "#dc752f")
+                           ("FIXME" . "#dc752f")
+                           ("XXX+" . "#dc752f")))
+  :config
+  (global-hl-todo-mode))
+#+end_src
+
+* Which Key (Keybinding Completion)
+Emacs package that displays available keybindings in popup
+https://github.com/justbur/emacs-which-key
+
+#+begin_src emacs-lisp
+(use-package which-key
+   :ensure t
+   :defer 10
+   :config
+   (progn
+     ;(setq which-key-popup-type 'side-window) ;Default
+     ;(setq which-key-popup-type 'minibuffer)
+     ;(setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
+     ;(setq which-key-allow-multiple-replacements t) ;Default = nil
+     (which-key-setup-side-window-bottom) ; Default
+     (which-key-mode))
+)
+#+end_src
+* enable disabled functions
 #+BEGIN_SRC emacs-lisp
 ;; Upcase and downcase regions
 ;(put 'upcase-region 'disabled nil)  ;C-x C-u
@@ -135,7 +361,7 @@ Transfered from ~/.emacs.d/init.el
 (when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
 #+END_SRC
 
-* Global key bindings
+* global key bindings
 #+BEGIN_SRC emacs-lisp
 ;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
 ;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
@@ -162,7 +388,7 @@ Transfered from ~/.emacs.d/init.el
 (global-set-key "\C-c\C-m" 'execute-extended-command)
 #+END_SRC
 
-* Global settings
+* global settings
 #+begin_src emacs-lisp
 
 ;; disable company-mode completions in shells
@@ -328,7 +554,7 @@ Transfered from ~/.emacs.d/init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
 
-* OS specific settings
+* os specific settings
 ** Darwin settings
 #+BEGIN_SRC emacs-lisp
 (if *is-darwin*
@@ -434,7 +660,7 @@ Transfered from ~/.emacs.d/init.el
 ))
 #+END_SRC
 
-* Functions
+* gunctions
 #+begin_src emacs-lisp
 ;;; ---------------------------------------------------------------------------
 ;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
@@ -528,47 +754,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
 (global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
 #+end_src
 
-* Better defaults
-https://github.com/technomancy/better-defaults
-A small number of better defaults for Emacs
-
-#+BEGIN_SRC emacs-lisp
-;(menu-bar-mode -1) ; was making tabbar tabs on 2nd frame
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
-
-(require 'uniquify)
- (setq uniquify-buffer-name-style 'forward)
-
-(require 'saveplace)
-  (setq-default save-place t)
-
-(global-set-key (kbd "M-/") 'hippie-expand)
-;(global-set-key (kbd "C-x C-b") 'ibuffer) ; set elsewhere in file
-;(global-set-key (kbd "M-z") 'zap-up-to-char) ; doesn't exist?
-
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-
-(show-paren-mode 1)
-(setq save-interprogram-paste-before-kill t
-      apropos-do-all t
-      mouse-yank-at-point t
-      require-final-newline t
-      visible-bell t
-      load-prefer-newer t
-      ediff-window-setup-function 'ediff-setup-windows-plain
-      save-place-file (concat user-emacs-directory "places")
-      backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                               "backups"))))
-#+END_SRC
-* Daily log
+* daily log
 #+BEGIN_SRC emacs-lisp
 ;;; -- daily log -
 
@@ -1277,77 +1463,71 @@ I was trying to make a nice setup for recentf but then I realized I could just e
 
 (savehist-mode 1)
 #+end_src
-* themes
-all-the-icons
-https://github.com/domtronn/all-the-icons.el
+* Company (Code & Text Completion)
+** Company
+Company is a text completion framework for Emacs. The name stands for "complete anything". It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
+https://github.com/company-mode/company-mode
+http://company-mode.github.io/
+
 #+begin_src emacs-lisp
-(use-package all-the-icons
-  :ensure t)
+(use-package company
+  :ensure t
+)
 #+end_src
 
-dracula-theme with telephone line status bar
-https://github.com/dracula/emacs
-https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
+** Company Box
+A company front-end with icons.
+
+https://github.com/sebastiencs/company-box
+
 #+begin_src emacs-lisp
-(use-package dracula-theme
+(use-package company-box
   :ensure t
-  :init
-  (setq dracula-enlarge-headings nil)
-  (setq dracula-alternate-mode-line-and-minibuffer t)
+  ;:straight (:host github :repo "gcentauri/company-box")
+  :custom
+  (company-box-show-single-candidate t)
+  (company-box-backends-colors nil) ;; Same colors for all backends
+  :custom-face
+  (company-box-selection ((t (:inherit company-tooltip-selection :extend t))))
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+** Company Statistics
+Company-statistics is a global minor mode built on top of the in-buffer completion system company-mode. The idea is to keep a log of a certain number of completions you choose, along with some context information, and use that to rank candidates the next time you have to choose — hopefully showing you likelier candidates at the top of the list.
+https://github.com/company-mode/company-statistics
+
+#+begin_src emacs-lisp
+(use-package company-statistics
+  :ensure t
+  :hook (company-mode . company-statistics-mode))
+#+end_src
+
+* YASnippet (Snippet Completion)
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
+https://github.com/joaotavora/yasnippet
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  ;; Expand snippets with `C-j', not with `TAB'. Use `TAB' to always
+  ;; jump to next field, even when company window is active. If there
+  ;; is need to complete company's selection, use `C-s'
+  ;; (`company-complete-selection').
+  :ensure t
+  :defer nil
+  :custom
+  (yas-indent-line nil)
+  :custom-face
+  (yas-field-highlight-face ((t (:inherit region))))
+  :bind*
+  (("C-j" . yas-expand)
+   :map yas-minor-mode-map
+   ("TAB" . nil)
+   ("<tab>" . nil)
+   :map yas-keymap
+   ("TAB" . (lambda () (interactive) (company-abort) (yas-next-field)))
+   ("<tab>" . (lambda () (interactive) (company-abort) (yas-next-field))))
+  :hook
+  (snippet-mode . (lambda () (setq-local require-final-newline nil)))
   :config
-  (if (display-graphic-p)
-      (load-theme 'dracula :no-confirm)  ; Emacs in own window (zenburn)
-    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-  )
-)
-
- ;; too small
- ;(set-face-attribute 'default nil
- ;        	      :family "JetBrains Mono"
- ;        	      :foundry "outline"
- ;        	      :slant 'normal
- ;        	      :weight 'normal
- ;        	      :height 120
- ;        	      :width 'semi-condensed)
-
- ;; need to investigate
- ;(add-hook 'display-line-numbers-mode-hook
- ;            (lambda ()
- ;              (set-face-attribute 'line-number nil
- ;        			  :weight 'normal)
- ;              (set-face-attribute 'line-number-current-line nil
- ;        			  :foreground (face-attribute 'cursor :background)
- ;        			  :weight 'bold
- ;        			  :slant 'normal))
- ;)
-
-
-;; Telephone line
-;; https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
-;; https://github.com/dbordak/telephone-line
-(use-package telephone-line
-  :ensure t
-  :init
-  (telephone-line-mode 1)
-)
+  (yas-global-mode))
 #+end_src
-
-* which-key
-https://github.com/justbur/emacs-which-key
-Emacs package that displays available keybindings in popup
-
-#+BEGIN_SRC emacs-lisp
-(use-package which-key
-   :ensure t
-   :defer 10
-   :config
-   (progn
-     (setq which-key-popup-type 'side-window) ;Default
-      ;; (setq which-key-popup-type 'minibuffer)
-
-      (setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
-
-      (setq which-key-allow-multiple-replacements t) ;Default = nil
-      (which-key-mode))
-)
-#+END_SRC
