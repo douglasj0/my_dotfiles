@@ -2,7 +2,8 @@
 #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 
-# To look into:  hydra, swiper, counsel, org, ripgrep, fasd, expand-region
+# TODO:  hydra, swiper, counsel, org, ripgrep, fasd, expand-region
+
 * Init
 Transfered from ~/.emacs.d/init.el
 
@@ -108,14 +109,6 @@ Note: tangle to early-init.el to make startup even faster?
 
 Restore it to reasonable value after init.
 #+begin_src emacs-lisp
-;; (defun fk/increase-gc-threshold ()
-;;   "Increase garbage collection threshold to speed-up emacs by reducing the
-;; frequency of garbage collection stops."
-;;   (setq gc-cons-threshold (* 1024 1024 20))
-;;   (setq gc-cons-percentage 0.3))
-
-;; (add-hook 'after-init-hook 'fk/increase-gc-threshold)
-
 (add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
 #+end_src
 
@@ -197,8 +190,9 @@ https://github.com/PythonNut/su.el
   :config (su-mode +1))
 #+end_src
 
-* Themes
-** Disable all themes before loading a theme
+* Appearance
+** Themes
+*** Disable all themes before loading a theme
 
 #+begin_src emacs-lisp
 (defadvice load-theme (before disable-themes-first activate)
@@ -211,7 +205,7 @@ https://github.com/PythonNut/su.el
     (disable-theme theme)))
 #+end_src
 
-** load-theme without annoying confirmation
+*** load-theme without annoying confirmation
 #+begin_src emacs-lisp
 (advice-add 'load-theme
             :around
@@ -219,7 +213,7 @@ https://github.com/PythonNut/su.el
               (funcall fn theme t)))
 #+end_src
 
-** all-the-icons
+*** all-the-icons
 Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
 "M-x all-the-icons-install-fonts" to install fonts at the first time.
 https://github.com/domtronn/all-the-icons.el
@@ -229,7 +223,7 @@ https://github.com/domtronn/all-the-icons.el
   :ensure t)
 #+end_src
 
-** Dracula Theme
+*** Dracula Theme
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
@@ -267,7 +261,7 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 )
 #+end_src
 
-** Telephone line modeline
+*** Telephone line modeline
 https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
 https://github.com/dbordak/telephone-line
 
@@ -279,50 +273,6 @@ https://github.com/dbordak/telephone-line
 )
 #+end_src
 
-* Hightlight TODOs (move to org?)
-#+begin_src emacs-lisp
-(use-package hl-todo
-  :ensure t
-  :custom
-  ;; Better hl-todo colors, taken from spacemacs
-  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
-                           ("NEXT" . "#dc752f")
-                           ("THEM" . "#2d9574")
-                           ("PROG" . "#4f97d7")
-                           ("OKAY" . "#4f97d7")
-                           ("DONT" . "#f2241f")
-                           ("FAIL" . "#f2241f")
-                           ("DONE" . "#86dc2f")
-                           ("NOTE" . "#b1951d")
-                           ("KLUDGE" . "#b1951d")
-                           ("HACK" . "#b1951d")
-                           ("TEMP" . "#b1951d")
-                           ("QUESTION" . "#b1951d")
-                           ("HOLD" . "#dc752f")
-                           ("FIXME" . "#dc752f")
-                           ("XXX+" . "#dc752f")))
-  :config
-  (global-hl-todo-mode))
-#+end_src
-
-* Which Key (Keybinding Completion)
-Emacs package that displays available keybindings in popup
-https://github.com/justbur/emacs-which-key
-
-#+begin_src emacs-lisp
-(use-package which-key
-   :ensure t
-   :defer 10
-   :config
-   (progn
-     ;(setq which-key-popup-type 'side-window) ;Default
-     ;(setq which-key-popup-type 'minibuffer)
-     ;(setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
-     ;(setq which-key-allow-multiple-replacements t) ;Default = nil
-     (which-key-setup-side-window-bottom) ; Default
-     (which-key-mode))
-)
-#+end_src
 * enable disabled functions
 #+BEGIN_SRC emacs-lisp
 ;; Upcase and downcase regions
@@ -813,7 +763,88 @@ last sentence."
 ;; Please call if you have any questions.
 #+END_SRC
 
-* ibuffer
+* Navigation and Search
+** Winum
+Window numbers for Emacs: Navigate your windows and frames using numbers
+https://github.com/deb0ch/emacs-winum
+
+#+begin_src emacs-lisp
+(use-package winum
+  :ensure t
+  :bind*
+  (
+   ("C-`" . winum-select-window-by-number)
+   ;("M-0" . winum-select-window-0-or-10)
+   ("M-1" . winum-select-window-1)
+   ("M-2" . winum-select-window-2)
+   ("M-3" . winum-select-window-3)
+   ("M-4" . winum-select-window-4)
+   ("M-5" . winum-select-window-5)
+   ("M-6" . winum-select-window-6)
+   ("M-7" . winum-select-window-7)
+   ("M-8" . winum-select-window-8)
+   ("M-9" . winum-select-window-9))
+  :config
+  (winum-mode))
+#+end_src
+** Mwim (Move Where I Mean)
+This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
+https://github.com/alezost/mwim.el
+
+#+begin_src emacs-lisp
+(use-package mwim
+  :ensure t
+  :bind
+  (("C-a" . mwim-beginning-of-code-or-line)
+   ("C-e" . mwim-end-of-code-or-line)))
+#+end_src
+** Deadgrep
+Deadgrep is the fast, beautiful text search that your Emacs deserves.
+https://github.com/Wilfred/deadgrep
+NOTE: Install ripgrep. You need version 0.8 or later.
+
+Keybindings
+|-------------+----------------------------------------------------------------|
+| Key         | Action                                                         |
+|-------------+----------------------------------------------------------------|
+| RET         | Visit the result, file or push button at point                 |
+| o           | Visit the result in another window                             |
+| n and p     | Move between results or buttons                                |
+| N and P     | Move between search hits                                       |
+| M-n and M-p | Move between file headers                                      |
+| g           | Re-run the search                                              |
+| TAB         | Expand/collapse results for a file                             |
+| C-c C-k     | Stop a running search                                          |
+| C-u         | prefix argument prevents searches from starting automatically. |
+|-------------+----------------------------------------------------------------|
+You can also use M-x imenu to move between files in a results buffer.
+
+#+begin_src emacs-lisp
+(use-package deadgrep
+  :ensure t
+  :commands deadgrep
+  :bind
+  (
+   :map deadgrep-mode-map
+   ("C-c C-e" . deadgrep-edit-mode)))
+#+end_src
+
+** Avy
+avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
+https://github.com/Wilfred/deadgrep
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :config
+  (avy-setup-default)
+  :bind
+  (("M-g w" . avy-goto-word-or-subword-1)
+   ("M-g b" . avy-pop-mark))
+)
+#+end_src
+* Package configuration
+** Ibuffer
 https://www.emacswiki.org/emacs/IbufferMode
 ibuffer - *Nice* buffer switching
 
@@ -824,7 +855,7 @@ Search all marked buffers
   ‘Q’ - Query replace in each of the marked buffers.
   ‘I’ - As above, with a regular expression.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ibuffer
   :ensure nil
   :bind ("C-x C-b" . ibuffer)
@@ -920,15 +951,9 @@ Search all marked buffers
                  (ibuffer-auto-mode 1)
                  (ibuffer-switch-to-saved-filter-groups "default")))
 )
-#+END_SRC
+#+end_src
 
-* ivy and friends
-https://github.com/abo-abo/swiper
-http://cestlaz.github.io/posts/using-emacs-6-swiper/
-https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
-https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-
-** flx
+** Flx
 https://github.com/lewang/flx
 Fuzzy matching for Emacs ... a la Sublime Text.
 can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
@@ -939,12 +964,15 @@ can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
 )
 #+END_SRC
 
-** ivy
+** Ivy
 ivy-mode - a generic completion mechanism for Emacs
 swiper - an alternative to isearch uses ivy to show overview of all matches
 https://github.com/abo-abo/swiper
 changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
-#+BEGIN_SRC emacs-lisp
+https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+
+#+begin_src emacs-lisp
 (use-package ivy
   :ensure t
   :defer 0.5
@@ -978,10 +1006,13 @@ changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
         (t      . ivy--regex-fuzzy))) ;but enable for ivy
     (ivy-initial-inputs-alist nil)
 )
-#+END_SRC
+#+end_src
 
-** swiper
-#+BEGIN_SRC emacs-lisp
+** Swiper
+https://github.com/abo-abo/swiper
+http://cestlaz.github.io/posts/using-emacs-6-swiper/
+
+#+begin_src emacs-lisp
 (use-package swiper
   :ensure t
   :after ivy)
@@ -993,9 +1024,9 @@ changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 ;  (interactive)
 ;  (swiper-isearch (car swiper-history)))
 ;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
-#+END_SRC
+#+end_src
 
-** counsel
+** Counsel
 NOTE: if smex is installed, counsel will use it to sort by most recently used
 
 #+begin_src emacs-lisp
@@ -1016,7 +1047,7 @@ NOTE: if smex is installed, counsel will use it to sort by most recently used
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 #+end_src
 
-* org
+** Org
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :defer t
@@ -1305,7 +1336,7 @@ SCHEDULED: %^t
 )))
 #+END_SRC
 
-* org-roam
+** Org-roam
 # deft
 deft - an Emacs mode for quickly browsing, filtering, and editing
 directories of plain text notes.  http://jblevins.org/projects/deft/
@@ -1434,11 +1465,11 @@ https://org-roam.readthedocs.io/en/master/
 ;)
 
 #+end_src
-* osx-trash
+** Osx-trash
 https://github.com/lunaryorn/osx-trash.el
 Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package osx-trash
    :ensure t
    :config
@@ -1446,9 +1477,9 @@ Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
      (osx-trash-setup))
    (setq delete-by-moving-to-trash t)
 )
-#+END_SRC
+#+end_src
 
-* savehist
+** Savehist
 https://www.reddit.com/r/emacs/comments/gqsz8u/weekly_tipstricketc_thread/
 prawnandcocktail
 
@@ -1463,8 +1494,75 @@ I was trying to make a nice setup for recentf but then I realized I could just e
 
 (savehist-mode 1)
 #+end_src
-* Company (Code & Text Completion)
-** Company
+** Tremacs
+a tree layout file explorer for Emacs
+https://github.com/Alexander-Miller/treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :ensure t
+  :custom
+  (treemacs-width 20)
+  :bind
+  ("M-0" . treemacs-select-window)
+)
+#+end_src
+
+** Treemacs Projectile
+Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
+
+#+begin_src emacs-lisp
+(use-package treemacs-projectile
+  :ensure t
+  :after treemacs projectile
+)
+#+end_src
+** Which Key (Keybinding Completion)
+Emacs package that displays available keybindings in popup
+https://github.com/justbur/emacs-which-key
+
+#+begin_src emacs-lisp
+(use-package which-key
+   :ensure t
+   :defer 10
+   :config
+   (progn
+     ;(setq which-key-popup-type 'side-window) ;Default
+     ;(setq which-key-popup-type 'minibuffer)
+     ;(setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
+     ;(setq which-key-allow-multiple-replacements t) ;Default = nil
+     (which-key-setup-side-window-bottom) ; Default
+     (which-key-mode))
+)
+#+end_src
+** Hightlight TODOs (move to org?)
+#+begin_src emacs-lisp
+(use-package hl-todo
+  :ensure t
+  :custom
+  ;; Better hl-todo colors, taken from spacemacs
+  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
+                           ("NEXT" . "#dc752f")
+                           ("THEM" . "#2d9574")
+                           ("PROG" . "#4f97d7")
+                           ("OKAY" . "#4f97d7")
+                           ("DONT" . "#f2241f")
+                           ("FAIL" . "#f2241f")
+                           ("DONE" . "#86dc2f")
+                           ("NOTE" . "#b1951d")
+                           ("KLUDGE" . "#b1951d")
+                           ("HACK" . "#b1951d")
+                           ("TEMP" . "#b1951d")
+                           ("QUESTION" . "#b1951d")
+                           ("HOLD" . "#dc752f")
+                           ("FIXME" . "#dc752f")
+                           ("XXX+" . "#dc752f")))
+  :config
+  (global-hl-todo-mode))
+#+end_src
+
+** Company (Code & Text Completion)
+*** Company
 Company is a text completion framework for Emacs. The name stands for "complete anything". It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
 https://github.com/company-mode/company-mode
 http://company-mode.github.io/
@@ -1475,7 +1573,7 @@ http://company-mode.github.io/
 )
 #+end_src
 
-** Company Box
+*** Company Box
 A company front-end with icons.
 
 https://github.com/sebastiencs/company-box
@@ -1492,7 +1590,7 @@ https://github.com/sebastiencs/company-box
   :hook (company-mode . company-box-mode))
 #+end_src
 
-** Company Statistics
+*** Company Statistics
 Company-statistics is a global minor mode built on top of the in-buffer completion system company-mode. The idea is to keep a log of a certain number of completions you choose, along with some context information, and use that to rank candidates the next time you have to choose — hopefully showing you likelier candidates at the top of the list.
 https://github.com/company-mode/company-statistics
 
@@ -1502,7 +1600,7 @@ https://github.com/company-mode/company-statistics
   :hook (company-mode . company-statistics-mode))
 #+end_src
 
-* YASnippet (Snippet Completion)
+** YASnippet (Snippet Completion)
 YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
 https://github.com/joaotavora/yasnippet
 
@@ -1531,107 +1629,169 @@ https://github.com/joaotavora/yasnippet
   :config
   (yas-global-mode))
 #+end_src
-* Navigation and Search
-** Winum
-Window numbers for Emacs: Navigate your windows and frames using numbers
-https://github.com/deb0ch/emacs-winum
+** Open alternative from Xah Lee
+#+begin_src emacs-lisp
+(defun xah-open-in-external-app (&optional @fname)
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
+
+When called in emacs lisp, if @fname is given, open that.
+
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2019-11-04"
+  (interactive)
+  (let* (
+         ($file-list
+          (if @fname
+              (progn (list @fname))
+            (if (string-equal major-mode "dired-mode")
+                (dired-get-marked-files)
+              (list (buffer-file-name)))))
+         ($do-it-p (if (<= (length $file-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+    (when $do-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda ($fpath)
+           (w32-shell-execute "open" $fpath)) $file-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda ($fpath)
+           (shell-command
+            (concat "open " (shell-quote-argument $fpath))))  $file-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda ($fpath) (let ((process-connection-type nil))
+                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
+
+(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
+#+end_src
+** notmuch
+Emacs major mode for interacting with Notmuch
+https://notmuchmail.org/notmuch-emacs/
+
+To open html files in a browser, ex. firefox, on a Mac with ". v"
+Add the following to ~/.mailcap:
+text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.html
 
 #+begin_src emacs-lisp
-(use-package winum
+  ;;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-notmuch.el
+  ;;; error: not available
+  ;use-package org-notmuch
+  ; ;:ensure t
+  ; ;:demand t
+  ; :after (org notmuch)
+  ; ;:after (:any org-plus-contrib notmuch)
+  ;
+
+  (use-package notmuch
+    :ensure t
+    :defer t
+    :config
+    (setq notmuch-search-oldest-first nil
+          notmuch-show-logo nil
+          mm-text-html-renderer 'shr
+          shr-inhibit-images nil
+          mime-view-text/html-previewer 'shr
+          mm-inline-text-html-with-images t
+          notmuch-multipart/alternative-discouraged '("text/html"))
+    (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
+  )
+
+  (use-package counsel-notmuch
+    :ensure t
+    :defer t
+    :after notmuch
+  )
+#+end_src
+* Language Configuration
+* Testing
+https://gitlab.com/shilling.jake/emacsd/-/blob/master/config.org
+
+#+begin_src emacs-lisp
+;;Smartparens
+(use-package smartparens
   :ensure t
-  :bind*
-  (
-   ("C-`" . winum-select-window-by-number)
-   ;("M-0" . winum-select-window-0-or-10)
-   ("M-1" . winum-select-window-1)
-   ("M-2" . winum-select-window-2)
-   ("M-3" . winum-select-window-3)
-   ("M-4" . winum-select-window-4)
-   ("M-5" . winum-select-window-5)
-   ("M-6" . winum-select-window-6)
-   ("M-7" . winum-select-window-7)
-   ("M-8" . winum-select-window-8)
-   ("M-9" . winum-select-window-9))
+  :hook (after-init . smartparens-global-mode)
+  :config (require 'smartparens-config))
+
+;; smoothscrolling
+;;https://github.com/aspiers/smooth-scrolling
+;;The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
+(use-package smooth-scrolling
+  :ensure t
   :config
-  (winum-mode))
-#+end_src
-** Mwim (Move Where I Mean)
-This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
-https://github.com/alezost/mwim.el
+  (smooth-scrolling-mode 1))
 
-#+begin_src emacs-lisp
-(use-package mwim
+;Helpful
+;; https://github.com/Wilfred/helpful
+;Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
+(use-package helpful
   :ensure t
-  :bind
-  (("C-a" . mwim-beginning-of-code-or-line)
-   ("C-e" . mwim-end-of-code-or-line)))
-#+end_src
-** Deadgrep
-Deadgrep is the fast, beautiful text search that your Emacs deserves.
-https://github.com/Wilfred/deadgrep
-NOTE: Install ripgrep. You need version 0.8 or later.
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)))
 
-Keybindings
-|-------------+----------------------------------------------------------------|
-| Key         | Action                                                         |
-|-------------+----------------------------------------------------------------|
-| RET         | Visit the result, file or push button at point                 |
-| o           | Visit the result in another window                             |
-| n and p     | Move between results or buttons                                |
-| N and P     | Move between search hits                                       |
-| M-n and M-p | Move between file headers                                      |
-| g           | Re-run the search                                              |
-| TAB         | Expand/collapse results for a file                             |
-| C-c C-k     | Stop a running search                                          |
-| C-u         | prefix argument prevents searches from starting automatically. |
-|-------------+----------------------------------------------------------------|
-You can also use M-x imenu to move between files in a results buffer.
+;Hydra
+(use-package hydra
+  :ensure t)
 
-#+begin_src emacs-lisp
-(use-package deadgrep
-  :ensure t
-  :commands deadgrep
-  :bind
-  (
-   :map deadgrep-mode-map
-   ("C-c C-e" . deadgrep-edit-mode)))
-#+end_src
+;;; dired
+;(defhydra hydra-dired (:hint nil :color pink)
+;  "
+;_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+;_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+;_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+;_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
+;_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
+;_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
+;_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+;_z_ compress-file  _A_ find regexp
+;_Z_ compress       _Q_ repl regexp
+;
+;T - tag prefix
+;"
+;  ("\\" dired-do-ispell)
+;  ("(" dired-hide-details-mode)
+;  (")" dired-omit-mode)
+;  ("+" dired-create-directory)
+;  ("=" diredp-ediff)         ;; smart diff
+;  ("?" dired-summary)
+;  ("$" diredp-hide-subdir-nomove)
+;  ("A" dired-do-find-regexp)
+;  ("C" dired-do-copy)        ;; Copy all marked files
+;  ("D" dired-do-delete)
+;  ("E" dired-mark-extension)
+;  ("e" dired-ediff-files)
+;  ("F" dired-do-find-marked-files)
+;  ("G" dired-do-chgrp)
+;  ("g" revert-buffer)        ;; read all directories again (refresh)
+;  ("i" dired-maybe-insert-subdir)
+;  ("l" dired-do-redisplay)   ;; relist the marked or singel directory
+;  ("M" dired-do-chmod)
+;  ("m" dired-mark)
+;  ("O" dired-display-file)
+;  ("o" dired-find-file-other-window)
+;  ("Q" dired-do-find-regexp-and-replace)
+;  ("R" dired-do-rename)
+;  ("r" dired-do-rsynch)
+;  ("S" dired-do-symlink)
+;  ("s" dired-sort-toggle-or-edit)
+;  ("t" dired-toggle-marks)
+;  ("U" dired-unmark-all-marks)
+;  ("u" dired-unmark)
+;  ("v" dired-view-file)      ;; q to exit, s to search, = gets line #
+;  ("w" dired-kill-subdir)
+;  ("Y" dired-do-relsymlink)
+;  ("z" diredp-compress-this-file)
+;  ("Z" dired-do-compress)
+;  ("q" nil)
+;  ("." nil :color blue))
+;
+;(setq dired-dwim-target t)
+;(define-key dired-mode-map (kbd ".") 'hydra-dired/body)
 
-** Avy
-avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
-https://github.com/Wilfred/deadgrep
 
-#+begin_src emacs-lisp
-(use-package avy
-  :ensure t
-  :config
-  (avy-setup-default)
-  :bind
-  (("M-g w" . avy-goto-word-or-subword-1)
-   ("M-g b" . avy-pop-mark))
-)
-#+end_src
-* Treemacs
-** Tremacs
-a tree layout file explorer for Emacs
-https://github.com/Alexander-Miller/treemacs
-
-#+begin_src emacs-lisp
-(use-package treemacs
-  :ensure t
-  :custom
-  (treemacs-width 20)
-  :bind
-  ("M-0" . treemacs-select-window)
-)
-#+end_src
-
-** Treemacs Projectile
-Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
-
-#+begin_src emacs-lisp
-(use-package treemacs-projectile
-  :ensure t
-  :after treemacs projectile
-)
 #+end_src
