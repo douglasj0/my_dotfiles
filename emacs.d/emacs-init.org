@@ -660,7 +660,7 @@ https://github.com/justbur/emacs-which-key
 ))
 #+END_SRC
 
-* gunctions
+* functions
 #+begin_src emacs-lisp
 ;;; ---------------------------------------------------------------------------
 ;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
@@ -1530,4 +1530,108 @@ https://github.com/joaotavora/yasnippet
   (snippet-mode . (lambda () (setq-local require-final-newline nil)))
   :config
   (yas-global-mode))
+#+end_src
+* Navigation and Search
+** Winum
+Window numbers for Emacs: Navigate your windows and frames using numbers
+https://github.com/deb0ch/emacs-winum
+
+#+begin_src emacs-lisp
+(use-package winum
+  :ensure t
+  :bind*
+  (
+   ("C-`" . winum-select-window-by-number)
+   ;("M-0" . winum-select-window-0-or-10)
+   ("M-1" . winum-select-window-1)
+   ("M-2" . winum-select-window-2)
+   ("M-3" . winum-select-window-3)
+   ("M-4" . winum-select-window-4)
+   ("M-5" . winum-select-window-5)
+   ("M-6" . winum-select-window-6)
+   ("M-7" . winum-select-window-7)
+   ("M-8" . winum-select-window-8)
+   ("M-9" . winum-select-window-9))
+  :config
+  (winum-mode))
+#+end_src
+** Mwim (Move Where I Mean)
+This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
+https://github.com/alezost/mwim.el
+
+#+begin_src emacs-lisp
+(use-package mwim
+  :ensure t
+  :bind
+  (("C-a" . mwim-beginning-of-code-or-line)
+   ("C-e" . mwim-end-of-code-or-line)))
+#+end_src
+** Deadgrep
+Deadgrep is the fast, beautiful text search that your Emacs deserves.
+https://github.com/Wilfred/deadgrep
+NOTE: Install ripgrep. You need version 0.8 or later.
+
+Keybindings
+|-------------+----------------------------------------------------------------|
+| Key         | Action                                                         |
+|-------------+----------------------------------------------------------------|
+| RET         | Visit the result, file or push button at point                 |
+| o           | Visit the result in another window                             |
+| n and p     | Move between results or buttons                                |
+| N and P     | Move between search hits                                       |
+| M-n and M-p | Move between file headers                                      |
+| g           | Re-run the search                                              |
+| TAB         | Expand/collapse results for a file                             |
+| C-c C-k     | Stop a running search                                          |
+| C-u         | prefix argument prevents searches from starting automatically. |
+|-------------+----------------------------------------------------------------|
+You can also use M-x imenu to move between files in a results buffer.
+
+#+begin_src emacs-lisp
+(use-package deadgrep
+  :ensure t
+  :commands deadgrep
+  :bind
+  (
+   :map deadgrep-mode-map
+   ("C-c C-e" . deadgrep-edit-mode)))
+#+end_src
+
+** Avy
+avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
+https://github.com/Wilfred/deadgrep
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :config
+  (avy-setup-default)
+  :bind
+  (("M-g w" . avy-goto-word-or-subword-1)
+   ("M-g b" . avy-pop-mark))
+)
+#+end_src
+* Treemacs
+** Tremacs
+a tree layout file explorer for Emacs
+https://github.com/Alexander-Miller/treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :ensure t
+  :custom
+  (treemacs-width 20)
+  :bind
+  ("M-0" . treemacs-select-window)
+)
+#+end_src
+
+** Treemacs Projectile
+Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
+
+#+begin_src emacs-lisp
+(use-package treemacs-projectile
+  :ensure t
+  :after treemacs projectile
+)
 #+end_src
