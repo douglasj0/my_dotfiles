@@ -1962,6 +1962,8 @@ error on lsp-mode start: Error processing message: void-function flycheck-define
 * flyspell (Correct spelling)
 Correcting misspelled words with flyspell using favourite interface.
 https://github.com/d12frosted/flyspell-correct/blob/master/README.org
+https://emacs.stackexchange.com/questions/31300/can-you-turn-on-flyspell-for-comments-but-not-strings
+
 Mac: brew install aspell
 
 #+begin_src emacs-lisp
@@ -1970,7 +1972,7 @@ Mac: brew install aspell
   ;(progn
   ;  (flyspell-mode 1))
   :hook ((prog-mode . flyspell-prog-mode)
-         ;(org-mode  . flyspell-mode)
+         (org-mode  . turn-off-flyspell)
          (text-mode . flyspell-mode))
   :config
   (progn
