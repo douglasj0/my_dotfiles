@@ -459,10 +459,11 @@ A small number of better defaults for Emacs
 ;(global-set-key (kbd "C-x C-b") 'ibuffer) ; set elsewhere in file
 ;(global-set-key (kbd "M-z") 'zap-up-to-char) ; doesn't exist?
 
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
+;; Replace by Ivy and Swiper
+;(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+;(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+;(global-set-key (kbd "C-M-s") 'isearch-forward)
+;(global-set-key (kbd "C-M-r") 'isearch-backward)
 
 (show-paren-mode 1)
 (setq save-interprogram-paste-before-kill t
@@ -672,18 +673,27 @@ https://github.com/Wilfred/deadgrep
 #+begin_src emacs-lisp
 (cond ((eq system-type 'darwin)
 ;	(setq mac-command-modifier 'meta
-;	      mac-option-modifier 'alt≈
+;	      mac-option-modifier 'alt
 ;	      mac-right-option-modifier 'super)
-	(bind-key "M-+" 'text-scale-increase)
-	(bind-key "M-=" 'text-scale-increase)
-	(bind-key "M--" 'text-scale-decrease)
-;	;; This is copied from
-;	;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-	(defun my/text-scale-reset ()
-	  "Reset text-scale to 0."
-	  (interactive)
-	  (text-scale-set 0))
-	(bind-key "M-g 0" 'my/text-scale-reset)
+
+;; set keys for Apple keyboard, for emacs in OS X
+(setq mac-command-modifier 'meta) ; make cmd key do Meta
+(setq mac-option-modifier 'super) ; make opt key do Super
+(setq mac-control-modifier 'control) ; make Control key do Control
+;(setq ns-function-modifier 'hyper)  ; make Fn key do Hyper
+
+;; Use meta +/- to change text size
+(bind-key "M-+" 'text-scale-increase)
+(bind-key "M-=" 'text-scale-increase)
+(bind-key "M--" 'text-scale-decrease)
+
+;; This is copied from
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+(defun my/text-scale-reset ()
+  "Reset text-scale to 0."
+  (interactive)
+  (text-scale-set 0))
+(bind-key "M-g 0" 'my/text-scale-reset)
 
 ;; Osx-trash
 ;; Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
@@ -2165,8 +2175,8 @@ Installing python lsp in venv:
 
 #+begin_src emacs-lisp
 ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-;(setq lsp-keymap-prefix "s-l")
-(setq lsp-keymap-prefix "C-c v")
+;; check with: C-h v lsp-keymap-prefi
+(setq lsp-keymap-prefix "s-l")  ; super-l
 
 ;; How to disable lsp as flycheck's default checker #1413
 ;(setq lsp-diagnostic-package :none)
