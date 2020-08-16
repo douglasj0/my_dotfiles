@@ -30,7 +30,8 @@ Transfered from ~/.emacs.d/init.el
 ))
 (package-initialize)
 
-;; install use-package - https://github.com/jwiegley/use-package
+;; install use-package
+;; https://github.com/jwiegley/use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -88,14 +89,6 @@ Transfered from ~/.emacs.d/init.el
 (load "server")
 (setq server-socket-dir "~/.emacs.d/tmp")
 (unless (server-running-p) (server-start))
-
-;;; Define booleans based on system type
-(defconst *is-darwin*
-  (eq system-type 'darwin)
-  "Is this running on OS X?")
-(defconst *is-linux*
-  (eq system-type 'gnu/linux)
-  "Is this running on Linux?")
 #+end_src
 
 * Performance Optimization
@@ -163,26 +156,40 @@ A small number of better defaults for Emacs
                                                "backups"))))
 #+END_SRC
 ** Helpful
-A better, more detailed help buffer.
+Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
+https://github.com/Wilfred/helpful
 
 #+begin_src emacs-lisp
 (use-package helpful
   :ensure t
-  ;; TODO: setup shackle
-  ;; :init
-  ;; (defalias 'describe-function 'helpful-callable)
-  ;; (defalias 'describe-variable 'helpful-variable)
-  ;; (defalias 'describe-key 'helpful-key)
   :bind
-  (([remap describe-function] . helpful-callable)
-   ([remap describe-variable] . helpful-variable)
-   ([remap describe-key] . helpful-key)
-   :map emacs-lisp-mode-map
-   ("C-c C-d" . helpful-at-point)))
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+  ;;
+  ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+  ;; for this in lisp modes.
+  ;("C-c C-d" . helpful-at-point)  # keys already bound to Cal Deadline
+
+  ;; Look up *F*unctions (excludes macros).
+  ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
+  ;; already links to the manual, if a function is referenced there.
+  ("C-h F" . helpful-function)
+
+  ;; Look up *C*ommands.
+  ;;
+  ;; By default, C-h C is bound to describe `describe-coding-system'. I
+  ;; don't find this very useful, but it's frequently useful to only
+  ;; look at interactive functions.
+  ("C-h C" . helpful-command)
+))
 #+end_src
+
 ** Su/Sudo
 read-only files will be writable but if you attempt to save your modifications, emacs will ask root user’s password if needed. Can save pw to ~/.authinfo.
 https://github.com/PythonNut/su.el
+
+Installed in elisp, no package
 
 #+begin_src emacs-lisp
 (use-package su
@@ -191,8 +198,7 @@ https://github.com/PythonNut/su.el
 #+end_src
 
 * Appearance
-** Themes
-*** Disable all themes before loading a theme
+** Disable all themes before loading a theme
 
 #+begin_src emacs-lisp
 (defadvice load-theme (before disable-themes-first activate)
@@ -205,7 +211,7 @@ https://github.com/PythonNut/su.el
     (disable-theme theme)))
 #+end_src
 
-*** load-theme without annoying confirmation
+** load-theme without annoying confirmation
 #+begin_src emacs-lisp
 (advice-add 'load-theme
             :around
@@ -213,7 +219,7 @@ https://github.com/PythonNut/su.el
               (funcall fn theme t)))
 #+end_src
 
-*** all-the-icons
+** all-the-icons
 Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
 "M-x all-the-icons-install-fonts" to install fonts at the first time.
 https://github.com/domtronn/all-the-icons.el
@@ -223,7 +229,7 @@ https://github.com/domtronn/all-the-icons.el
   :ensure t)
 #+end_src
 
-*** Dracula Theme
+** Dracula Theme
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
@@ -261,7 +267,7 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 )
 #+end_src
 
-*** Telephone line modeline
+** Telephone line modeline
 https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
 https://github.com/dbordak/telephone-line
 
@@ -271,437 +277,6 @@ https://github.com/dbordak/telephone-line
   :init
   (telephone-line-mode 1)
 )
-#+end_src
-
-* enable disabled functions
-#+BEGIN_SRC emacs-lisp
-;; Upcase and downcase regions
-;(put 'upcase-region 'disabled nil)  ;C-x C-u
-;(put 'downcase-region 'disabled nil)  ;C-x C-l
-
-;; Sets the current horizontal position for C-n and C-p
-(put 'set-goal-column 'disabled nil)
-
-;; Restrict buffer editing to a region
-;; Text Narrowing commands:
-;;   Region: C-x n n, Page: C-x n p
-;;   Funct: C-x n p, Widen: C-x n w
-;;   Subtree in Org-Mode:   C-x n s
-(put 'narrow-to-region 'disabled nil)
-
-;; Dired functions (find-alternate 'a' reuses dired buffer)
-(put 'dired-find-alternate-file 'disabled nil)
-
-;; Goal Column, enter C-x C-n, at point to set column that C-n should go to
-;; to clear enter C-u C-x C-n
-(put 'set-goal-column 'disabled nil)
-
-;; Enable mini-buffer history save feature
-(setq savehist-additional-variables    ;; also save...
-  '(search-ring regexp-search-ring)    ;; ... my search entries
-  savehist-file "~/.emacs.d/cache/history") ;; keep my .emacs.d clean
-(savehist-mode t)                      ;; do customization before activate
-
-;; https://www.emacswiki.org/emacs/ZapUpToChar
-(autoload 'zap-up-to-char "misc"
-  "Kill up to, but not including ARGth occurrence of CHAR.")
-(global-set-key (kbd "M-z") 'zap-up-to-char)
-
-;; And disable electric-indent if active, added in Emacs 24.4
-(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
-#+END_SRC
-
-* global key bindings
-#+BEGIN_SRC emacs-lisp
-;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
-;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
-;(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
-
-;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
-; Re-enable swap frames with M-`
-(global-set-key "\M-`" 'other-frame)
-
-;; Open an Emacs eshell, shell, or term
-(global-set-key (kbd "C-c e") 'eshell)
-(global-set-key (kbd "C-c s") 'shell)
-;(global-set-key (kbd "C-c t") 'term)
-(global-set-key (kbd "C-c t") 'ansi-term)
-
-;; Show a summery of all registers with content
-(global-set-key (kbd "C-x r v") 'list-registers)
-
-;; Move through windows in reverse order of (other-window), C-x o
-(global-set-key (kbd "C-x O") 'previous-multiframe-window)
-
-;; Invoke M-x without the Alt key (from Steve Yegge's blog)
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
-#+END_SRC
-
-* global settings
-#+begin_src emacs-lisp
-
-;; disable company-mode completions in shells
-(add-hook 'shell-mode-hook (lambda () (company-mode -1)) 'append)
-(add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
-
-;; set default shell to zsh
-(setq explicit-shell-file-name "/bin/zsh")
-(setq shell-file-name "zsh")
-(setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
-(setenv "SHELL" shell-file-name)
-
-;; Remove trailing whitespace on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; automatically follow symlinks to files under version control without prompting
-(setq vc-follow-symlinks t)
-
-;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
-;; Warning (bytecomp): ‘focus-out-hook’ is an obsolete variable (as of 27.1); after-focus-change-function
-;(add-hook 'focus-out-hook #'garbage-collect)
-;(add-hook 'after-focus-change-function #'garbage-collect)
-
-;;; Kill line backwards
-;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
-(global-set-key (kbd "C-<backspace>") (lambda ()
-                                        (interactive)
-                                        (kill-line 0)
-                                        (indent-according-to-mode)))
-
-;;; Ping settings (from net-util.el)
-;;; http://www.masteringemacs.org/articles/2011/03/02/network-utilities-emacs/
-(defvar ping-program-options)
-(setq ping-program-options '("-c" "4"))
-
-;;; Enable whitespace-mode for diff buffers
-;;; http://stackoverflow.com/questions/11805584/automatically-enable-whitespace-mode-in-diff-mode
-(add-hook 'diff-mode-hook
-          '(lambda ()
-            (whitespace-mode 1)))
-
-;;; Mouse wheel and keyboard scroll settings
-;;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
-(setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
-(setq scroll-step 1                    ;keyboard scroll one line at a time
-      scroll-preserve-screen-position t
-      scroll-conservatively 10000)     ;smooth scrolling
-
-;;; Enable holidays in Calendar
-(setq mark-holidays-in-calendar t)
-
-;;; Address the issue of Emacs's lack of a vi-like "O" command
-;;; http://stackoverflow.com/questions/2173324/emacs-equivalents-of-vims-dd-o-o
-;;; Open line above: C-o  Open line below: C-n C-o  Kill whole line: C-S-Bcksp
-
-;(defadvice open-line (around vi-style-open-line activate)
-;  "Make open-line behave more like vi."
-;  (beginning-of-line)
-;  ad-do-it
-;  (indent-according-to-mode))
-
-;; w/o-man mode (elisp man page formater for systems without 'man')
-(defvar woman-show-log)
-(defvar woman-cache-filename)
-(setq woman-show-log nil)
-(autoload 'woman "woman"
-  "Decode and browse a Unix man page." t)
-(setq woman-cache-filename "~/.emacs.d/cache/woman_cache.el")
-
-;;; Make tooltips appear in the echo area (checks if function exists)
-(tooltip-mode nil)
-
-;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
-;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
-(setq cua-enable-cua-keys nil)  ;; only for rectangles, keeps (C-c, C-v, C-x).
-(cua-mode t)
-;; Emacs 24.4 introduces rectangle-mark-mode, C-x SPC, but not quite as useful
-;(cua-mode t)
-;(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-;(transient-mark-mode 1) ;; No region when it is not highlighted
-;(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
-
-;;; Don't show the startup screen
-(setq inhibit-startup-message t)
-
-;;; Disable startup message in scratch buffer
-(setq-default initial-scratch-message nil)
-;;; And set scratch buffer initial mode to text instead of lisp eval
-;(setq-default initial-major-mode 'text-mode)
-;;; Don't create new lines when pressing 'arrow-down key' at end of the buffer
-(setq next-line-add-newlines nil)
-
-;;; Fix delete key working as backspace and not forward deleting
-;;; (This only worked in window mode, not terminal. C-d works in both)
-(when window-system (normal-erase-is-backspace-mode 1))
-
-;;; Alias to change apropos to ap
-(defalias 'ap 'apropos)
-
-;;; hl-line: highlight the current line
-(when (fboundp 'global-hl-line-mode)
-  (global-hl-line-mode t)) ;; turn it on for all modes by default
-
-;;; Make text mode default major mode with auto-fill enabled
-(setq default-major-mode 'text-mode)
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode) ;replaces longlines in 23
-
-;;; Auto-scroll in *Compilation* buffer
-(setq compilation-scroll-output t)
-
-;;; make Emacs always indent using SPC characters and never TABs
-;;; i.e. use spaces instead of tabs
-;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
-(setq-default indent-tabs-mode nil)
-
-;;; "y or n" instead of "yes or no"
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;;; Highlight regions and add special behaviors to regions.
-;;; "C-h d transient" for more info.  transient-mark-mode is a toggle.
-;;; also in Emacs 22 and greater, C-SPC twice to temp enable transient mark
-;(setq transient-mark-mode nil)
-(setq transient-mark-mode t)
-
-;;; Display line and column numbers in the mode line
-(setq line-number-mode    t
-      column-number-mode  t)
-
-;;; Stop blinking cursor
-(blink-cursor-mode 0)
-
-;;; Explicitly show the end of a buffer (indicated on left fringe of window)
-(set-default 'indicate-empty-lines t)
-
-;;; Line-wrapping
-(set-default 'fill-column 78)
-
-;; Don't truncate lines
-(setq truncate-lines t
-      truncate-partial-width-windows nil)
-
-;; Create new scratch buffer if needed
-(run-with-idle-timer 1 t
-    '(lambda () (get-buffer-create "*scratch*")))
-
-;; allow scroll-down/up-command to move point to buffer end/beginning
-(setq scroll-error-top-bottom 'true)
-
-;; New json-mode
-(setq auto-mode-alist (cons '("\\.json\\'" . js-mode) auto-mode-alist))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; bookmarks
-;;    ‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
-;;    ‘C-x r b’ – jump to a bookmark
-;;    ‘C-x r l’ – list your bookmarks
-;;    ‘M-x bookmark-delete’ – delete a bookmark by name
-(setq
-  bookmark-default-file "~/.bookmarks"    ;; .emacs.d/bookmarks by default
-  bookmark-save-flag 1)                   ;; autosave each change)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+end_src
-
-* os specific settings
-** Darwin settings
-#+BEGIN_SRC emacs-lisp
-(if *is-darwin*
-   (progn
-
-;; Disable railwaycat's tab bar
-;; https://github.com/railwaycat/homebrew-emacsmacport/issues/123
-(defvar mac-frame-tabbing)
-(setq mac-frame-tabbing nil)
-
-;; Don't open up new frames for files dropped on icon, use active frame
-(defvar ns-pop-up-frames)
-(setq ns-pop-up-frames nil)
-
-;;; Drag and drop on the emacs window opens the file in a new buffer instead of appending it to the current buffer
-;;; http://stackoverflow.com/questions/3805658/how-to-configure-emacs-drag-and-drop-to-open-instead-of-append-on-osx
-(if (fboundp 'ns-find-file)
-    (global-set-key [ns-drag-file] 'ns-find-file))
-
-;;; Move deleted files to the System's trash can
-;;; set trash-directory otherwise uses freedesktop.org-style
-(setq trash-directory "~/.Trash")
-(setq delete-by-moving-to-trash t)
-
-;; For Macbook Pro, which has no insert key.
-;; http://lists.gnu.org/archive/html/help-gnu-emacs/2006-07/msg00220.html
-(global-set-key (kbd "C-c I") (function overwrite-mode))
-
-;;; Open up URLs in mac browser
-(setq browse-url-browser-function 'browse-url-default-macosx-browser)
-; (setq browse-url-browser-function 'browse-url-default-windows-browser)
-
-;;; Copy and paste into Emacs Terminal
-;;; stack overflow, pasting text into emacs on Macintosh
-;;; Copy - C-x M-w
-;;; Paste - C-x C-y
-(defun pt-pbpaste ()
-  "Paste data from pasteboard."
-  (interactive)
-  (shell-command-on-region
-    (point)
-    (if mark-active (mark) (point))
-    "pbpaste" nil t))
-
-(defun pt-pbcopy ()
-  "Copy region to pasteboard."
-  (interactive)
-  (print (mark))
-  (when mark-active
-    (shell-command-on-region
-      (point) (mark) "pbcopy")
-    (kill-buffer "*Shell Command Output*")))
-
-(global-set-key [?\C-x ?\C-y] 'pt-pbpaste)
-(global-set-key [?\C-x ?\M-w] 'pt-pbcopy)
-
-
-;; On a Mac: make Emacs detect if you have light or dark mode enabled system wide.
-;;If you have two themes, a light one and a dark one, and you want the dark theme by default unless you have light mode enabled, add this to your init.el:
-
-;; If we're on a Mac and the file "~/bin/get_dark.osascript" exists
-;; and it outputs "false", activate light mode. Otherwise activate
-;; dark mode.
-;(cond ((and (file-exists-p "~/bin/get_dark.osascript")
-;            (string> (shell-command-to-string "command -v osascript") "")
-;            (equal "false\n"
-;                   (shell-command-to-string "osascript ~/bin/get_dark.osascript")))
-;       (mcj/theme-set-light))
-;      (t (mcj/theme-set-dark)))
-
-;; (mcj/theme-set-light and mcj/theme-set-light are functions that enable the light and the dark theme, respectively).
-
-;;~/bin/get_dark.osascript contains the following:
-;;
-;;tell application "System Events"
-;;        tell appearance preferences
-;;        	get dark mode
-;;        end tell
-;;end tell
-))
-#+END_SRC
-
-** Linux settings
-#+BEGIN_SRC emacs-lisp
-;;; -=Linux specific settings
-(if *is-linux*
-   (progn
-
-(defvar browse-url-browser-function)
-(defvar browse-url-browser-program)
-;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
-;(setq pop-up-frames 'graphic-only)
-(setq pop-up-frames nil)
-
-;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
-;;; Open up URLs in browser using gnome-open (errors on bytecompile)
-;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
-(setq browse-url-browser-function 'browse-url-firefox)
-
-;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
-;;; List fonts with M-x descript-font
-;(set-default-font "Monospace-10")
-))
-#+END_SRC
-
-* functions
-#+begin_src emacs-lisp
-;;; ---------------------------------------------------------------------------
-;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
-;;; Open link at point in new frame
-(defun zin/org-open-other-frame ()
-  "Jump to bookmark in another frame. See `bookmark-jump' for more."
-  (interactive)
-  (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
-    (org-open-at-point)))
-(global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
-
-;;; ---------------------------------------------------------------------------
-;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
-;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-(defun narrow-or-widen-dwim ()
-  "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
-  (interactive)
-  (cond ((buffer-narrowed-p) (widen))
-        ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
-        ((equal major-mode 'org-mode) (org-narrow-to-subtree))
-        (t (error "Please select a region to narrow to"))))
-(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
-
-;; I bind this key to C-c n, using the bind-key function that comes with use-package.
-;(bind-key "C-c n" 'narrow-or-widen-dwim)
-
-;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
-;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
-
-;;; ---------------------------------------------------------------------------
-;;; Move lines up or down (can't easily use C-S on MacOS)
-;;; http://whattheemacsd.com//editing-defuns.el-02.html
-(defun move-line-down ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines 1))
-    (forward-line)
-    (move-to-column col)))
-
-(defun move-line-up ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines -1))
-    (move-to-column col)))
-
-;(global-set-key (kbd "<C-S-down>") 'move-line-down)
-;(global-set-key (kbd "<C-S-up>") 'move-line-up)
-(global-set-key (kbd "<M-S-down>") 'move-line-down)
-(global-set-key (kbd "<M-S-up>") 'move-line-up)
-
-;;; ---------------------------------------------------------------------------
-;;; Match Paren / based on the vim command using %
-;;; http://grok2.tripod.com/
-(defun match-paren (arg)
-      "Go to the matching paren if on a paren; otherwise insert %."
-      (interactive "p")
-      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-            ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-            (t (self-insert-command (or arg 1)))))
-(global-set-key "%" 'match-paren)
-
-;;; ---------------------------------------------------------------------------
-(defun intelligent-close ()
-  "quit a frame the same way no matter what kind of frame you are on.
-
-This method, when bound to C-x C-c, allows you to close an emacs frame the
-same way, whether it's the sole window you have open, or whether it's
-a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
-a windowing environment, you probably have lots of frames open at any given
-time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
-frame, and to remember to do C-x C-x to close the main frame (and if you're
-not careful, doing so will take all the child frames away with it).  This
-is my solution to that: an intelligent close-frame operation that works in
-all cases (even in an emacs -nw session).
-
-Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
-  (interactive)
-  (if (eq (car (visible-frame-list)) (selected-frame))
-      ;;for parent/master frame...
-      (if (> (length (visible-frame-list)) 1)
-          ;;close a parent with children present
-          (delete-frame (selected-frame))
-        ;;close a parent with no children present
-        (save-buffers-kill-emacs))
-    ;;close a child frame
-    (delete-frame (selected-frame))))
-(global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
 #+end_src
 
 * daily log
@@ -763,288 +338,171 @@ last sentence."
 ;; Please call if you have any questions.
 #+END_SRC
 
-* Navigation and Search
-** Winum
-Window numbers for Emacs: Navigate your windows and frames using numbers
-https://github.com/deb0ch/emacs-winum
+* OS specific
+** MacOS
+#+begin_src emacs-lisp
+(cond ((eq system-type 'darwin)
+;	(setq mac-command-modifier 'meta
+;	      mac-option-modifier 'alt≈
+;	      mac-right-option-modifier 'super)
+	(bind-key "M-+" 'text-scale-increase)
+	(bind-key "M-=" 'text-scale-increase)
+	(bind-key "M--" 'text-scale-decrease)
+;	;; This is copied from
+;	;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+	(defun my/text-scale-reset ()
+	  "Reset text-scale to 0."
+	  (interactive)
+	  (text-scale-set 0))
+	(bind-key "M-g 0" 'my/text-scale-reset)
+
+;; Osx-trash
+;; Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
+;; https://github.com/lunaryorn/osx-trash.el
+;(use-package osx-trash
+;   :ensure t
+;   :config
+;   (setq delete-by-moving-to-trash t)
+;   (osx-trash-setup)
+;)
+
+;; Disable railwaycat's tab bar
+;; https://github.com/railwaycat/homebrew-emacsmacport/issues/123
+(defvar mac-frame-tabbing)
+(setq mac-frame-tabbing nil)
+
+;; Don't open up new frames for files dropped on icon, use active frame
+(defvar ns-pop-up-frames)
+(setq ns-pop-up-frames nil)
+
+;; Drag and drop on the emacs window opens the file in a new buffer instead of
+;; appending it to the current buffer
+;; http://stackoverflow.com/questions/3805658/how-to-configure-emacs-drag-and-drop-to-open-instead-of-append-on-osx
+(if (fboundp 'ns-find-file)
+    (global-set-key [ns-drag-file] 'ns-find-file))
+
+;; Move deleted files to the System's trash can
+;; set trash-directory otherwise uses freedesktop.org-style
+(setq trash-directory "~/.Trash")
+(setq delete-by-moving-to-trash t)
+
+;; Macbook Pro has no insert key.
+;; http://lists.gnu.org/archive/html/help-gnu-emacs/2006-07/msg00220.html
+(global-set-key (kbd "C-c I") (function overwrite-mode))
+
+;;; Open up URLs in mac browser
+(setq browse-url-browser-function 'browse-url-default-macosx-browser)
+; (setq browse-url-browser-function 'browse-url-default-windows-browser)
+
+;;; Copy and paste into Emacs Terminal
+;;; stack overflow, pasting text into emacs on Macintosh
+;;; Copy - C-x M-w
+;;; Paste - C-x C-y
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+    (point)
+    (if mark-active (mark) (point))
+    "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+      (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
+(global-set-key [C-x C-y] 'pt-pbpaste)
+(global-set-key [C-x M-w] 'pt-pbcopy)
+
+;; On a Mac: make Emacs detect if you have light or dark mode enabled system wide.
+;;If you have two themes, a light one and a dark one, and you want the dark theme by default unless you have light mode enabled, add this to your init.el:
+
+;; If we're on a Mac and the file "~/bin/get_dark.osascript" exists
+;; and it outputs "false", activate light mode. Otherwise activate
+;; dark mode.
+;(cond ((and (file-exists-p "~/bin/get_dark.osascript")
+;	     (string> (shell-command-to-string "command -v osascript") "")
+;	     (equal "false\n"
+;		    (shell-command-to-string "osascript ~/bin/get_dark.osascript")))
+;	(mcj/theme-set-light))
+;      (t (mcj/theme-set-dark)))
+
+;; (mcj/theme-set-light and mcj/theme-set-light are functions that enable the light and the dark theme, respectively).
+
+;;~/bin/get_dark.osascript contains the following:
+;;
+;;tell application "System Events"
+;;	  tell appearance preferences
+;;		get dark mode
+;;	  end tell
+;;end tell
+))
+#+end_src
+
+** Linux
+#+begin_src emacs-lisp
+;; -=Linux specific settings
+(cond ((eq system-type 'gnu/linux)
+(defvar browse-url-browser-function)
+(defvar browse-url-browser-program)
+;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
+;(setq pop-up-frames 'graphic-only)
+(setq pop-up-frames nil)
+
+;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
+;;; Open up URLs in browser using gnome-open (errors on bytecompile)
+;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+(setq browse-url-browser-function 'browse-url-firefox)
+
+;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
+;;; List fonts with M-x descript-font
+;(set-default-font "Monospace-10")
+))
+#+end_src
+
+* -- To sort and cleanup --
+* exec-path-from-shell
+setup Emacs path from our ~/.zshenv
 
 #+begin_src emacs-lisp
-(use-package winum
+(use-package exec-path-from-shell
   :ensure t
-  :bind*
-  (
-   ("C-`" . winum-select-window-by-number)
-   ;("M-0" . winum-select-window-0-or-10)
-   ("M-1" . winum-select-window-1)
-   ("M-2" . winum-select-window-2)
-   ("M-3" . winum-select-window-3)
-   ("M-4" . winum-select-window-4)
-   ("M-5" . winum-select-window-5)
-   ("M-6" . winum-select-window-6)
-   ("M-7" . winum-select-window-7)
-   ("M-8" . winum-select-window-8)
-   ("M-9" . winum-select-window-9))
   :config
-  (winum-mode))
-#+end_src
-** Mwim (Move Where I Mean)
-This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
-https://github.com/alezost/mwim.el
-
-#+begin_src emacs-lisp
-(use-package mwim
-  :ensure t
-  :bind
-  (("C-a" . mwim-beginning-of-code-or-line)
-   ("C-e" . mwim-end-of-code-or-line)))
-#+end_src
-** Deadgrep
-Deadgrep is the fast, beautiful text search that your Emacs deserves.
-https://github.com/Wilfred/deadgrep
-NOTE: Install ripgrep. You need version 0.8 or later.
-
-Keybindings
-|-------------+----------------------------------------------------------------|
-| Key         | Action                                                         |
-|-------------+----------------------------------------------------------------|
-| RET         | Visit the result, file or push button at point                 |
-| o           | Visit the result in another window                             |
-| n and p     | Move between results or buttons                                |
-| N and P     | Move between search hits                                       |
-| M-n and M-p | Move between file headers                                      |
-| g           | Re-run the search                                              |
-| TAB         | Expand/collapse results for a file                             |
-| C-c C-k     | Stop a running search                                          |
-| C-u         | prefix argument prevents searches from starting automatically. |
-|-------------+----------------------------------------------------------------|
-You can also use M-x imenu to move between files in a results buffer.
-
-#+begin_src emacs-lisp
-(use-package deadgrep
-  :ensure t
-  :commands deadgrep
-  :bind
-  (
-   :map deadgrep-mode-map
-   ("C-c C-e" . deadgrep-edit-mode)))
-#+end_src
-
-** Avy
-avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
-https://github.com/Wilfred/deadgrep
-
-#+begin_src emacs-lisp
-(use-package avy
-  :ensure t
-  :config
-  (avy-setup-default)
-  :bind
-  (("M-g w" . avy-goto-word-or-subword-1)
-   ("M-g b" . avy-pop-mark))
-)
-#+end_src
-* Package configuration
-** Ibuffer
-https://www.emacswiki.org/emacs/IbufferMode
-ibuffer - *Nice* buffer switching
-
-Search all marked buffers
-  ‘M-s a C-s’ - Do incremental search in the marked buffers.
-  ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
-  ‘U’ - Replace by regexp in each of the marked buffers.
-  ‘Q’ - Query replace in each of the marked buffers.
-  ‘I’ - As above, with a regular expression.
-
-#+begin_src emacs-lisp
-(use-package ibuffer
-  :ensure nil
-  :bind ("C-x C-b" . ibuffer)
-  :config
-    ;; Don't show empty buffer groups
-    (setq ibuffer-show-empty-filter-groups nil)
-
-    ;; work groups for ibuffer
-    (setq ibuffer-saved-filter-groups
-          '(("default"
-             ("version control" (or (mode . svn-status-mode)
-                       (mode . svn-log-edit-mode)
-                       (name . "^\\*svn-")
-                       (name . "^\\*vc\\*$")
-                       (name . "^\\*Annotate")
-                       (name . "^\\*vc-")
-                       (name . "^\\*git-")
-                       (name . "^\\*magit")))
-             ("emacs" (or (name . "^\\*scratch\\*$")
-                          (name . "^\\*Messages\\*$")
-                          (name . "^TAGS\\(<[0-9]+>\\)?$")
-                          (name . "^\\*info\\*$")
-                          (name . "^\\*Occur\\*$")
-                          (name . "^\\*grep\\*$")
-                          (name . "^\\*Compile-Log\\*$")
-                          (name . "^\\*Backtrace\\*$")
-                          (name . "^\\*Process List\\*$")
-                          (name . "^\\*gud\\*$")
-                          (name . "^\\*Man")
-                          (name . "^\\*WoMan")
-                          (name . "^\\*Kill Ring\\*$")
-                          (name . "^\\*Completions\\*$")
-                          (name . "^\\*tramp")
-                          (name . "^\\*shell\\*$")
-                          (name . "^\\*compilation\\*$")))
-             ("Helm" (or (name . "\*helm\*")))
-             ("Help" (or (name . "\*Help\*")
-                         (name . "\*Apropos\*")
-                         (name . "\*info\*")))
-             ("emacs-source" (or (mode . emacs-lisp-mode)
-                                 (filename . "/Applications/Emacs.app")
-                                 (filename . "/bin/emacs")))
-             ("emacs-config" (or (filename . ".emacs.d")
-                                 (filename . "emacs-config")))
-            ("org" (or (name . "^\\*org-")
-                        (name . "^\\*Org")
-                        (mode . org-mode)
-                        (mode . muse-mode)
-                        (name . "^\\*Calendar\\*$")
-                        (name . "^+current$")
-                        (name . "^diary$")
-                        (name . "^\\*Agenda")))
-             ("latex" (or (mode . latex-mode)
-                          (mode . LaTeX-mode)
-                          (mode . bibtex-mode)
-                          (mode . reftex-mode)))
-             ("dired" (or (mode . dired-mode)))
-             ("perl" (mode . cperl-mode))
-             ("erc" (mode . erc-mode))
-             ("shell" (or (mode . shell-mode)
-                            (name . "^\\*terminal\\*$")
-                            (name . "^\\*ansi-term\\*$")
-                            (name . "^\\*shell\\*$")
-                            (name . "^\\*eshell\\*$")))
-             ("gnus" (or (name . "^\\*gnus trace\\*$")
-                            (mode . message-mode)
-                            (mode . bbdb-mode)
-                            (mode . mail-mode)
-                            (mode . gnus-group-mode)
-                            (mode . gnus-summary-mode)
-                            (mode . gnus-article-mode)
-                            (name . "^\\.bbdb$")
-                            (name . "^\\.newsrc-dribble"))))))
-
-    ;; Order the groups so the order is : [Default], [agenda], [emacs]
-    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-                                                     activate)
-      (setq ad-return-value (nreverse ad-return-value)))
-
-    ;; Hide the following buffers
-    ;;(setq ibuffer-never-show-predicates
-    ;;      (list "\\*Completions\\*"
-    ;;            "\\*vc\\*"))
-
-    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
-    (setq ibuffer-expert t)
-
-    ;; Load the 'work' group, can set to load groups by location
-    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
-    ;; list up to date. I turn it on in my ibuffer-mode-hook:
-    (add-hook 'ibuffer-mode-hook
-              '(lambda ()
-                 (ibuffer-auto-mode 1)
-                 (ibuffer-switch-to-saved-filter-groups "default")))
+  (exec-path-from-shell-initialize)
 )
 #+end_src
 
-** Flx
-https://github.com/lewang/flx
-Fuzzy matching for Emacs ... a la Sublime Text.
-can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
-
-#+BEGIN_SRC emacs-lisp
-(use-package flx
-  :ensure t
-)
-#+END_SRC
-
-** Ivy
-ivy-mode - a generic completion mechanism for Emacs
-swiper - an alternative to isearch uses ivy to show overview of all matches
-https://github.com/abo-abo/swiper
-changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
-https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
-https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+* org-mode
+** Hightlight TODOs
+Highlight TODO and similar keywords in comments and strings
+https://github.com/tarsius/hl-todo
 
 #+begin_src emacs-lisp
-(use-package ivy
+(use-package hl-todo
   :ensure t
-  :defer 0.5
-  :init (ivy-mode 1)
-  :commands ivy
-  :bind (("C-s"     . counsel-grep-or-swiper) ;; swiper for small files, counsel-grep for larger
-         ;("C-x C-r" . counsel-recentf)
-         ("<f6>"    . ivy-resume)
-         ("M-x"     . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("<f1> f"  . counsel-describe-function)
-         ("<f1> v"  . counsel-describe-variable)
-         ("<f1> l"  . counsel-find-library)
-         ("<f1> i"  . counsel-info-lookup-symbol)
-         ("<f1> u"  . counsel-unicode-char)
-         ("C-c G"   . counsel-git) ;;; Ivy-based interface to shell and system tools
-         ("C-c j"   . counsel-git-grep)
-         ("C-c k"   . counsel-ag)
-         ("C-x l"   . counsel-locate)
-         ("C-S-o"   . counsel-rhythmbox)
-         ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
   :custom
-    (ivy-count-format "(%d/%d) ")
-    (ivy-display-style 'fancy)
-    (ivy-use-virtual-buffers t)
-    (enable-recursive-minibuffers t)
-    (ivy-virtual-abbreviate 'full)
-    (ivy-dynamic-exhibit-delay-ms 250)
-    (ivy-re-builders-alist
-      '((swiper . ivy--regex-plus)    ;disable fuzzy matching for swiper
-        (t      . ivy--regex-fuzzy))) ;but enable for ivy
-    (ivy-initial-inputs-alist nil)
-)
-#+end_src
-
-** Swiper
-https://github.com/abo-abo/swiper
-http://cestlaz.github.io/posts/using-emacs-6-swiper/
-
-#+begin_src emacs-lisp
-(use-package swiper
-  :ensure t
-  :after ivy)
-
-; https://emacs.stackexchange.com/questions/40556/swiper-get-last-search-term
-; https://emacs.stackexchange.com/questions/55775/how-can-i-resume-swiper-isearch-with-the-next-line-selected
-;(defun my-swiper-isearch-again ()
-;  "Start swiper-isearch with the last thing searched for."
-;  (interactive)
-;  (swiper-isearch (car swiper-history)))
-;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
-#+end_src
-
-** Counsel
-NOTE: if smex is installed, counsel will use it to sort by most recently used
-
-#+begin_src emacs-lisp
-(use-package counsel
-  :ensure t
+  ;; Better hl-todo colors, taken from spacemacs
+  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
+                           ("NEXT" . "#dc752f")
+                           ("THEM" . "#2d9574")
+                           ("PROG" . "#4f97d7")
+                           ("OKAY" . "#4f97d7")
+                           ("DONT" . "#f2241f")
+                           ("FAIL" . "#f2241f")
+                           ("DONE" . "#86dc2f")
+                           ("NOTE" . "#b1951d")
+                           ("KLUDGE" . "#b1951d")
+                           ("HACK" . "#b1951d")
+                           ("TEMP" . "#b1951d")
+                           ("QUESTION" . "#b1951d")
+                           ("HOLD" . "#dc752f")
+                           ("FIXME" . "#dc752f")
+                           ("XXX+" . "#dc752f")))
   :config
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (global-set-key (kbd "C-c a") 'counsel-ag)
-  (global-set-key (kbd "C-x l") 'counsel-locate)
-  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+  (global-hl-todo-mode))
 #+end_src
 
 ** Org
@@ -1144,12 +602,28 @@ NOTE: if smex is installed, counsel will use it to sort by most recently used
           (tags-todo "DVD")
           (tags-todo "READING")))
 
-("D" "Daily Action List"
-     ((agenda "" ((org-agenda-ndays 1)
-                     (org-agenda-sorting-strategy
-                        (quote ((agenda time-up priority-down tag-up))))
-                     (org-deadline-warning-days 0)
-                     ))))))
+;("D" "Daily Action List"
+;     ((agenda "" ((org-agenda-ndays 1)
+;                     (org-agenda-sorting-strategy
+;                        (quote ((agenda time-up priority-down tag-up))))
+;                     (org-deadline-warning-days 0)
+;                     ))))
+
+("d" "Do today"
+   ;; Show all todos and everything due today.
+   ((agenda "" (
+                ;; Limits the agenda to a single day
+                (org-agenda-span 1)
+                ))
+    (todo "TODO")))
+
+("D" "Deadline due"
+     ((tags-todo "+TODO=\"TODO\"+DEADLINE<=\"<today>\""
+                 ((org-agenda-overriding-header "Deadline today")))
+      (tags-todo "+TODO=\"TODO\"+DEADLINE=\"\""
+                 ((org-agenda-overriding-header "No deadline")))))
+
+))
 
 
 ;;; Capture
@@ -1336,8 +810,7 @@ SCHEDULED: %^t
 )))
 #+END_SRC
 
-** Org-roam
-# deft
+** Deft
 deft - an Emacs mode for quickly browsing, filtering, and editing
 directories of plain text notes.  http://jblevins.org/projects/deft/
 http://jblevins.org/git/deft.git
@@ -1369,7 +842,16 @@ Modified for org-roam 20200601
 )
 #+end_src
 
-# org-journal
+** Org-journal
+Functions to maintain a simple personal diary / journal using in Emacs.
+https://github.com/bastibe/org-journal
+
+Bindings available in org-journal-mode:
+    C-c C-f - go to the next journal file.
+    C-c C-b - go to the previous journal file.
+    C-c C-j - insert a new entry into the current journal file (creates the file if not present).
+    C-c C-s - search the journal for a string.
+
 #+begin_src emacs-lisp
 (use-package org-journal
   :ensure t
@@ -1385,16 +867,22 @@ Modified for org-roam 20200601
 )
 #+end_src
 
-# org-roam
-Rudimentary Roam replica with Org-mode
-https://github.com/org-roam/org-roam
-https://org-roam.readthedocs.io/en/master/
+** Org-company-roam
+company-org-roam is a company backend for use with org-roam. In Org-roam buffers, it provides completion for Org-roam files using its title.
+https://github.com/org-roam/company-org-roam
 
 #+begin_src emacs-lisp
 (use-package company-org-roam
   :ensure t
   :after (company org-roam))
+#+end_src
 
+** Org-roam
+Rudimentary Roam replica with Org-mode
+https://github.com/org-roam/org-roam
+https://org-roam.readthedocs.io/en/master/
+
+#+begin_src emacs-lisp
 (use-package org-roam
   :ensure t
   :after org
@@ -1465,61 +953,595 @@ https://org-roam.readthedocs.io/en/master/
 ;)
 
 #+end_src
-** Osx-trash
-https://github.com/lunaryorn/osx-trash.el
-Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
+* enable disabled functions
+#+BEGIN_SRC emacs-lisp
+;; Upcase and downcase regions
+;(put 'upcase-region 'disabled nil)  ;C-x C-u
+;(put 'downcase-region 'disabled nil)  ;C-x C-l
+
+;; Sets the current horizontal position for C-n and C-p
+(put 'set-goal-column 'disabled nil)
+
+;; Restrict buffer editing to a region
+;; Text Narrowing commands:
+;;   Region: C-x n n, Page: C-x n p
+;;   Funct: C-x n p, Widen: C-x n w
+;;   Subtree in Org-Mode:   C-x n s
+(put 'narrow-to-region 'disabled nil)
+
+;; Dired functions (find-alternate 'a' reuses dired buffer)
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; Goal Column, enter C-x C-n, at point to set column that C-n should go to
+;; to clear enter C-u C-x C-n
+(put 'set-goal-column 'disabled nil)
+
+;; https://www.emacswiki.org/emacs/ZapUpToChar
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
+;; And disable electric-indent if active, added in Emacs 24.4
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+#+END_SRC
+
+* global key bindings
+#+BEGIN_SRC emacs-lisp
+;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
+;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
+;(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+
+;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
+; Re-enable swap frames with M-`
+(global-set-key "\M-`" 'other-frame)
+
+;; Open an Emacs eshell, shell, or term
+(global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c s") 'shell)
+;(global-set-key (kbd "C-c t") 'term)
+(global-set-key (kbd "C-c t") 'ansi-term)
+
+;; Show a summery of all registers with content
+(global-set-key (kbd "C-x r v") 'list-registers)
+
+;; Move through windows in reverse order of (other-window), C-x o
+(global-set-key (kbd "C-x O") 'previous-multiframe-window)
+
+;; Invoke M-x without the Alt key (from Steve Yegge's blog)
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-c\C-m" 'execute-extended-command)
+#+END_SRC
+
+* global settings
+#+begin_src emacs-lisp
+
+;; disable company-mode completions in shells
+(add-hook 'shell-mode-hook (lambda () (company-mode -1)) 'append)
+(add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
+
+;; set default shell to zsh
+(setq explicit-shell-file-name "/bin/zsh")
+(setq shell-file-name "zsh")
+(setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
+(setenv "SHELL" shell-file-name)
+
+;; Remove trailing whitespace on save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; automatically follow symlinks to files under version control without prompting
+(setq vc-follow-symlinks t)
+
+;; Garbage-collect on focus-out, Emacs /should/ feel snappier.
+;; Warning (bytecomp): ‘focus-out-hook’ is an obsolete variable (as of 27.1); after-focus-change-function
+;(add-hook 'focus-out-hook #'garbage-collect)
+;(add-hook 'after-focus-change-function #'garbage-collect)
+
+;;; Kill line backwards
+;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)
+                                        (indent-according-to-mode)))
+
+;;; Ping settings (from net-util.el)
+;;; http://www.masteringemacs.org/articles/2011/03/02/network-utilities-emacs/
+(defvar ping-program-options)
+(setq ping-program-options '("-c" "4"))
+
+;;; Enable whitespace-mode for diff buffers
+;;; http://stackoverflow.com/questions/11805584/automatically-enable-whitespace-mode-in-diff-mode
+(add-hook 'diff-mode-hook
+          '(lambda ()
+            (whitespace-mode 1)))
+
+;;; Mouse wheel and keyboard scroll settings
+;;; scroll one line at a time (less "jumpy" than defaults)
+;(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
+;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
+;(setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
+;(setq scroll-step 1                    ;keyboard scroll one line at a time
+;      scroll-preserve-screen-position t
+;      scroll-conservatively 10000)     ;smooth scrolling
+
+;;; Enable holidays in Calendar
+(setq mark-holidays-in-calendar t)
+
+;;; Address the issue of Emacs's lack of a vi-like "O" command
+;;; http://stackoverflow.com/questions/2173324/emacs-equivalents-of-vims-dd-o-o
+;;; Open line above: C-o  Open line below: C-n C-o  Kill whole line: C-S-Bcksp
+
+;(defadvice open-line (around vi-style-open-line activate)
+;  "Make open-line behave more like vi."
+;  (beginning-of-line)
+;  ad-do-it
+;  (indent-according-to-mode))
+
+;; w/o-man mode (elisp man page formater for systems without 'man')
+(defvar woman-show-log)
+(defvar woman-cache-filename)
+(setq woman-show-log nil)
+(autoload 'woman "woman"
+  "Decode and browse a Unix man page." t)
+(setq woman-cache-filename "~/.emacs.d/cache/woman_cache.el")
+
+;;; Make tooltips appear in the echo area (checks if function exists)
+(tooltip-mode nil)
+
+;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
+;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
+(setq cua-enable-cua-keys nil)  ;; only for rectangles, keeps (C-c, C-v, C-x).
+(cua-mode t)
+;; Emacs 24.4 introduces rectangle-mark-mode, C-x SPC, but not quite as useful
+;(cua-mode t)
+;(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+;(transient-mark-mode 1) ;; No region when it is not highlighted
+;(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+
+;;; Don't show the startup screen
+(setq inhibit-startup-message t)
+
+;;; Disable startup message in scratch buffer
+(setq-default initial-scratch-message nil)
+;;; And set scratch buffer initial mode to text instead of lisp eval
+;(setq-default initial-major-mode 'text-mode)
+;;; Don't create new lines when pressing 'arrow-down key' at end of the buffer
+(setq next-line-add-newlines nil)
+
+;;; Fix delete key working as backspace and not forward deleting
+;;; (This only worked in window mode, not terminal. C-d works in both)
+(when window-system (normal-erase-is-backspace-mode 1))
+
+;;; Alias to change apropos to ap
+(defalias 'ap 'apropos)
+
+;;; hl-line: highlight the current line
+(when (fboundp 'global-hl-line-mode)
+  (global-hl-line-mode t)) ;; turn it on for all modes by default
+
+;;; Make text mode default major mode with auto-fill enabled
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode) ;replaces longlines in 23
+
+;;; Auto-scroll in *Compilation* buffer
+(setq compilation-scroll-output t)
+
+;;; make Emacs always indent using SPC characters and never TABs
+;;; i.e. use spaces instead of tabs
+;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
+(setq-default indent-tabs-mode nil)
+
+;;; "y or n" instead of "yes or no"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;;; Highlight regions and add special behaviors to regions.
+;;; "C-h d transient" for more info.  transient-mark-mode is a toggle.
+;;; also in Emacs 22 and greater, C-SPC twice to temp enable transient mark
+;(setq transient-mark-mode nil)
+(setq transient-mark-mode t)
+
+;;; Display line and column numbers in the mode line
+(setq line-number-mode    t
+      column-number-mode  t)
+
+;;; Stop blinking cursor
+(blink-cursor-mode 0)
+
+;;; Explicitly show the end of a buffer (indicated on left fringe of window)
+(set-default 'indicate-empty-lines t)
+
+;;; Line-wrapping
+(set-default 'fill-column 78)
+
+;; Don't truncate lines
+(setq truncate-lines t
+      truncate-partial-width-windows nil)
+
+;; Create new scratch buffer if needed
+(run-with-idle-timer 1 t
+    '(lambda () (get-buffer-create "*scratch*")))
+
+;; allow scroll-down/up-command to move point to buffer end/beginning
+;(setq scroll-error-top-bottom 'true)
+
+;; New json-mode
+(setq auto-mode-alist (cons '("\\.json\\'" . js-mode) auto-mode-alist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; bookmarks
+;;    ‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
+;;    ‘C-x r b’ – jump to a bookmark
+;;    ‘C-x r l’ – list your bookmarks
+;;    ‘M-x bookmark-delete’ – delete a bookmark by name
+(setq
+  bookmark-default-file "~/.bookmarks"    ;; .emacs.d/bookmarks by default
+  bookmark-save-flag 1)                   ;; autosave each change)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+* functions
+#+begin_src emacs-lisp
+;;; ---------------------------------------------------------------------------
+;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
+;;; Open link at point in new frame
+(defun zin/org-open-other-frame ()
+  "Jump to bookmark in another frame. See `bookmark-jump' for more."
+  (interactive)
+  (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
+    (org-open-at-point)))
+(global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
+
+;;; ---------------------------------------------------------------------------
+;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
+;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun narrow-or-widen-dwim ()
+  "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+  (interactive)
+  (cond ((buffer-narrowed-p) (widen))
+        ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+        ((equal major-mode 'org-mode) (org-narrow-to-subtree))
+        (t (error "Please select a region to narrow to"))))
+(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
+
+;; I bind this key to C-c n, using the bind-key function that comes with use-package.
+;(bind-key "C-c n" 'narrow-or-widen-dwim)
+
+;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
+;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
+
+;;; ---------------------------------------------------------------------------
+;;; Move lines up or down (can't easily use C-S on MacOS)
+;;; http://whattheemacsd.com//editing-defuns.el-02.html
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines 1))
+    (forward-line)
+    (move-to-column col)))
+
+(defun move-line-up ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines -1))
+    (move-to-column col)))
+
+;(global-set-key (kbd "<C-S-down>") 'move-line-down)
+;(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "<M-S-down>") 'move-line-down)
+(global-set-key (kbd "<M-S-up>") 'move-line-up)
+
+;;; ---------------------------------------------------------------------------
+;;; Match Paren / based on the vim command using %
+;;; http://grok2.tripod.com/
+(defun match-paren (arg)
+      "Go to the matching paren if on a paren; otherwise insert %."
+      (interactive "p")
+      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+            ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+            (t (self-insert-command (or arg 1)))))
+(global-set-key "%" 'match-paren)
+
+;;; ---------------------------------------------------------------------------
+(defun intelligent-close ()
+  "quit a frame the same way no matter what kind of frame you are on.
+
+This method, when bound to C-x C-c, allows you to close an emacs frame the
+same way, whether it's the sole window you have open, or whether it's
+a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
+a windowing environment, you probably have lots of frames open at any given
+time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
+frame, and to remember to do C-x C-x to close the main frame (and if you're
+not careful, doing so will take all the child frames away with it).  This
+is my solution to that: an intelligent close-frame operation that works in
+all cases (even in an emacs -nw session).
+
+Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
+  (interactive)
+  (if (eq (car (visible-frame-list)) (selected-frame))
+      ;;for parent/master frame...
+      (if (> (length (visible-frame-list)) 1)
+          ;;close a parent with children present
+          (delete-frame (selected-frame))
+        ;;close a parent with no children present
+        (save-buffers-kill-emacs))
+    ;;close a child frame
+    (delete-frame (selected-frame))))
+(global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
+#+end_src
+* Ibuffer
+https://www.emacswiki.org/emacs/IbufferMode
+ibuffer - *Nice* buffer switching
+
+Search all marked buffers
+  ‘M-s a C-s’ - Do incremental search in the marked buffers.
+  ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+  ‘U’ - Replace by regexp in each of the marked buffers.
+  ‘Q’ - Query replace in each of the marked buffers.
+  ‘I’ - As above, with a regular expression.
 
 #+begin_src emacs-lisp
-(use-package osx-trash
-   :ensure t
-   :config
-   (when (eq system-type 'darwin)
-     (osx-trash-setup))
-   (setq delete-by-moving-to-trash t)
+(use-package ibuffer
+  :ensure nil
+  :bind ("C-x C-b" . ibuffer)
+  :config
+    ;; Don't show empty buffer groups
+    (setq ibuffer-show-empty-filter-groups nil)
+
+    ;; work groups for ibuffer
+    (setq ibuffer-saved-filter-groups
+          '(("default"
+             ("version control" (or (mode . svn-status-mode)
+                       (mode . svn-log-edit-mode)
+                       (name . "^\\*svn-")
+                       (name . "^\\*vc\\*$")
+                       (name . "^\\*Annotate")
+                       (name . "^\\*vc-")
+                       (name . "^\\*git-")
+                       (name . "^\\*magit")))
+             ("emacs" (or (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")
+                          (name . "^TAGS\\(<[0-9]+>\\)?$")
+                          (name . "^\\*info\\*$")
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*grep\\*$")
+                          (name . "^\\*Compile-Log\\*$")
+                          (name . "^\\*Backtrace\\*$")
+                          (name . "^\\*Process List\\*$")
+                          (name . "^\\*gud\\*$")
+                          (name . "^\\*Man")
+                          (name . "^\\*WoMan")
+                          (name . "^\\*Kill Ring\\*$")
+                          (name . "^\\*Completions\\*$")
+                          (name . "^\\*tramp")
+                          (name . "^\\*shell\\*$")
+                          (name . "^\\*compilation\\*$")))
+             ("Helm" (or (name . "\*helm\*")))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))
+             ("emacs-source" (or (mode . emacs-lisp-mode)
+                                 (filename . "/Applications/Emacs.app")
+                                 (filename . "/bin/emacs")))
+             ("emacs-config" (or (filename . ".emacs.d")
+                                 (filename . "emacs-config")))
+            ("org" (or (name . "^\\*org-")
+                        (name . "^\\*Org")
+                        (mode . org-mode)
+                        (mode . muse-mode)
+                        (name . "^\\*Calendar\\*$")
+                        (name . "^+current$")
+                        (name . "^diary$")
+                        (name . "^\\*Agenda")))
+             ("latex" (or (mode . latex-mode)
+                          (mode . LaTeX-mode)
+                          (mode . bibtex-mode)
+                          (mode . reftex-mode)))
+             ("dired" (or (mode . dired-mode)))
+             ("perl" (mode . cperl-mode))
+             ("erc" (mode . erc-mode))
+             ("shell" (or (mode . shell-mode)
+                            (name . "^\\*terminal\\*$")
+                            (name . "^\\*ansi-term\\*$")
+                            (name . "^\\*shell\\*$")
+                            (name . "^\\*eshell\\*$")))
+             ("gnus" (or (name . "^\\*gnus trace\\*$")
+                            (mode . message-mode)
+                            (mode . bbdb-mode)
+                            (mode . mail-mode)
+                            (mode . gnus-group-mode)
+                            (mode . gnus-summary-mode)
+                            (mode . gnus-article-mode)
+                            (name . "^\\.bbdb$")
+                            (name . "^\\.newsrc-dribble"))))))
+
+    ;; Order the groups so the order is : [Default], [agenda], [emacs]
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+    ;; Hide the following buffers
+    ;;(setq ibuffer-never-show-predicates
+    ;;      (list "\\*Completions\\*"
+    ;;            "\\*vc\\*"))
+
+    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
+    (setq ibuffer-expert t)
+
+    ;; Load the 'work' group, can set to load groups by location
+    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+    ;; list up to date. I turn it on in my ibuffer-mode-hook:
+    (add-hook 'ibuffer-mode-hook
+              '(lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
 )
 #+end_src
 
-** Savehist
+* Flx
+https://github.com/lewang/flx
+Fuzzy matching for Emacs ... a la Sublime Text.
+can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
+
+#+BEGIN_SRC emacs-lisp
+(use-package flx
+  :ensure t
+)
+#+END_SRC
+
+* Ivy
+ivy-mode - a generic completion mechanism for Emacs
+swiper - an alternative to isearch uses ivy to show overview of all matches
+https://github.com/abo-abo/swiper
+changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
+https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+
+#+begin_src emacs-lisp
+(use-package ivy
+  :ensure t
+  :defer 0.5
+  :init (ivy-mode 1)
+  :commands ivy
+  :bind (("C-s"     . counsel-grep-or-swiper) ;; swiper for small files, counsel-grep for larger
+         ;("C-x C-r" . counsel-recentf)
+         ("<f6>"    . ivy-resume)
+         ("M-x"     . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("<f1> f"  . counsel-describe-function)
+         ("<f1> v"  . counsel-describe-variable)
+         ("<f1> l"  . counsel-find-library)
+         ("<f1> i"  . counsel-info-lookup-symbol)
+         ("<f1> u"  . counsel-unicode-char)
+         ("C-c G"   . counsel-git) ;;; Ivy-based interface to shell and system tools
+         ("C-c j"   . counsel-git-grep)
+         ("C-c k"   . counsel-ag)
+         ("C-x l"   . counsel-locate)
+         ("C-S-o"   . counsel-rhythmbox)
+         ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
+  :custom
+    (ivy-count-format "(%d/%d) ")
+    (ivy-display-style 'fancy)
+    (ivy-use-virtual-buffers t)
+    (enable-recursive-minibuffers t)
+    (ivy-virtual-abbreviate 'full)
+    (ivy-dynamic-exhibit-delay-ms 250)
+    (ivy-re-builders-alist
+      '((swiper . ivy--regex-plus)    ;disable fuzzy matching for swiper
+        (t      . ivy--regex-fuzzy))) ;but enable for ivy
+    (ivy-initial-inputs-alist nil)
+)
+#+end_src
+
+* Swiper
+https://github.com/abo-abo/swiper
+http://cestlaz.github.io/posts/using-emacs-6-swiper/
+
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :after ivy)
+
+; https://emacs.stackexchange.com/questions/40556/swiper-get-last-search-term
+; https://emacs.stackexchange.com/questions/55775/how-can-i-resume-swiper-isearch-with-the-next-line-selected
+;(defun my-swiper-isearch-again ()
+;  "Start swiper-isearch with the last thing searched for."
+;  (interactive)
+;  (swiper-isearch (car swiper-history)))
+;(global-set-key (kbd "s-g") 'my-swiper-isearch-again)
+#+end_src
+
+* Counsel
+NOTE: if smex is installed, counsel will use it to sort by most recently used
+
+#+begin_src emacs-lisp
+(use-package counsel
+  ;:disabled
+  :ensure t
+  :config
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  ;(global-set-key (kbd "C-c a") 'counsel-ag) ; conflicts with org-agenda
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+#+end_src
+
+* counsel-projectile
+projectile ivy integration
+
+#+BEGIN_SRC emacs-lisp
+(use-package counsel-projectile
+  :ensure t
+  :commands counsel-projectile)
+#+END_SRC
+* Savehist
 https://www.reddit.com/r/emacs/comments/gqsz8u/weekly_tipstricketc_thread/
 prawnandcocktail
 
 I was trying to make a nice setup for recentf but then I realized I could just enable savehist-mode and search the minibuffer history, by doing C-x C-f C-r. So what it the benefit of recentf-mode? Is it just for people who open files outside of find-file?
 
 #+begin_src emacs-lisp
-(setq savehist-file "~/.emacs.d/cache/savehist")
-; persistent commit message history
-;(add-to-list 'savehist-additional-variables 'log-edit-comment-ring)
-(setq savehist-additional-variables    ;; also save...
-  '(kill-ring search-ring regexp-search-ring log-edit-comment-ring))
-
+;; Enable mini-buffer history save feature
+;; Also added for recentf replacement
+(setq savehist-file "~/.emacs.d/cache/savehist"
+  history-length 1000
+  history-delete-duplicates t
+  savehist-save-minibuffer-history t
+  savehist-additional-variables    ;; also save...
+    '(kill-ring search-ring regexp-search-ring log-edit-comment-ring))
 (savehist-mode 1)
-#+end_src
-** Tremacs
-a tree layout file explorer for Emacs
-https://github.com/Alexander-Miller/treemacs
 
-#+begin_src emacs-lisp
-(use-package treemacs
-  :ensure t
-  :custom
-  (treemacs-width 20)
-  :bind
-  ("M-0" . treemacs-select-window)
-)
-#+end_src
 
-** Treemacs Projectile
-Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
-
-#+begin_src emacs-lisp
-(use-package treemacs-projectile
-  :ensure t
-  :after treemacs projectile
-)
+;;Savehist growing too large:
+;;https://www.reddit.com/r/emacs/comments/i961nn/emacs_dragged_down_by_massive_history_file/
+;(setq savehist-file "~/.config/emacs/savehist"
+;  history-length 1000
+;  history-delete-duplicates t
+;  savehist-save-minibuffer-history t
+;  savehist-additional-variables    ;; also save...
+;    '(kill-ring search-ring regexp-search-ring log-edit-comment-ring))
+; (savehist-mode 1)
+;
+; ;; Found my savehist was HUGE and locking up emacs every 5 min
+; (put 'savehist-minibuffer-history-variables 'history-length 50)
+; (put 'org-read-date-history                 'history-length 50)
+; (put 'read-expression-history               'history-length 50)
+; (put 'org-table-formula-history             'history-length 50)
+; (put 'extended-command-history              'history-length 50)
+; (put 'ido-file-history                      'history-length 50)
+; (put 'helm-M-x-input-history                'history-length 50)
+; (put 'minibuffer-history                    'history-length 50)
+; (put 'ido-buffer-history                    'history-length 50)
+; (put 'buffer-name-history                   'history-length 50)
+; (put 'file-name-history                     'history-length 50)
 #+end_src
-** Which Key (Keybinding Completion)
+* s
+https://github.com/magnars/s.el
+The long lost Emacs string manipulation library
+
+#+BEGIN_SRC emacs-lisp
+(use-package s
+  :ensure t)
+#+END_SRC
+
+* Which Key (Keybinding Completion)
 Emacs package that displays available keybindings in popup
 https://github.com/justbur/emacs-which-key
+
+Paging: C-h
+    Cycle through the pages forward with n (or C-n)
+    Cycle backwards with p (or C-p)
+    Undo the last entered key (!) with u (or C-u)
+    Call the default command bound to C-h, usually describe-prefix-bindings, with h (or C-h)
 
 #+begin_src emacs-lisp
 (use-package which-key
@@ -1535,208 +1557,185 @@ https://github.com/justbur/emacs-which-key
      (which-key-mode))
 )
 #+end_src
-** Hightlight TODOs (move to org?)
+* Navigation and Search
+** Winum
+Window numbers for Emacs: Navigate your windows and frames using numbers
+https://github.com/deb0ch/emacs-winum
+
 #+begin_src emacs-lisp
-(use-package hl-todo
+(use-package winum
   :ensure t
-  :custom
-  ;; Better hl-todo colors, taken from spacemacs
-  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
-                           ("NEXT" . "#dc752f")
-                           ("THEM" . "#2d9574")
-                           ("PROG" . "#4f97d7")
-                           ("OKAY" . "#4f97d7")
-                           ("DONT" . "#f2241f")
-                           ("FAIL" . "#f2241f")
-                           ("DONE" . "#86dc2f")
-                           ("NOTE" . "#b1951d")
-                           ("KLUDGE" . "#b1951d")
-                           ("HACK" . "#b1951d")
-                           ("TEMP" . "#b1951d")
-                           ("QUESTION" . "#b1951d")
-                           ("HOLD" . "#dc752f")
-                           ("FIXME" . "#dc752f")
-                           ("XXX+" . "#dc752f")))
+  :bind*
+  (
+   ("C-`" . winum-select-window-by-number)
+   ;("M-0" . winum-select-window-0-or-10)
+   ("M-1" . winum-select-window-1)
+   ("M-2" . winum-select-window-2)
+   ("M-3" . winum-select-window-3)
+   ("M-4" . winum-select-window-4)
+   ("M-5" . winum-select-window-5)
+   ("M-6" . winum-select-window-6)
+   ("M-7" . winum-select-window-7)
+   ("M-8" . winum-select-window-8)
+   ("M-9" . winum-select-window-9))
   :config
-  (global-hl-todo-mode))
+  (winum-mode))
+#+end_src
+** Mwim (Move Where I Mean)
+This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
+https://github.com/alezost/mwim.el
+
+#+begin_src emacs-lisp
+(use-package mwim
+  :ensure t
+  :bind
+  (("C-a" . mwim-beginning-of-code-or-line)
+   ("C-e" . mwim-end-of-code-or-line)))
+#+end_src
+** Deadgrep
+Deadgrep is the fast, beautiful text search that your Emacs deserves.
+https://github.com/Wilfred/deadgrep
+NOTE: Install ripgrep. You need version 0.8 or later.
+
+Keybindings
+|-------------+----------------------------------------------------------------|
+| Key         | Action                                                         |
+|-------------+----------------------------------------------------------------|
+| RET         | Visit the result, file or push button at point                 |
+| o           | Visit the result in another window                             |
+| n and p     | Move between results or buttons                                |
+| N and P     | Move between search hits                                       |
+| M-n and M-p | Move between file headers                                      |
+| g           | Re-run the search                                              |
+| TAB         | Expand/collapse results for a file                             |
+| C-c C-k     | Stop a running search                                          |
+| C-u         | prefix argument prevents searches from starting automatically. |
+|-------------+----------------------------------------------------------------|
+You can also use M-x imenu to move between files in a results buffer.
+
+#+begin_src emacs-lisp
+(use-package deadgrep
+  :ensure t
+  :commands deadgrep
+  :bind
+  (
+   :map deadgrep-mode-map
+   ("C-c C-e" . deadgrep-edit-mode)))
 #+end_src
 
-** Company (Code & Text Completion)
-*** Company
-Company is a text completion framework for Emacs. The name stands for "complete anything". It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
-https://github.com/company-mode/company-mode
-http://company-mode.github.io/
+** rg - ripgrep
+Emacs search tool based on ripgrep https://rgel.readthedocs.io
+https://github.com/dajva/rg.el
 
 #+begin_src emacs-lisp
-(use-package company
+(use-package rg
   :ensure t
+  :defer t
+  :bind ("M-s" . rg-dwim)
+  ;      ;("C-x s" . rg-project)
+        ("M-S" . rg-project)
+  :config
+  (rg-enable-default-bindings)
+  ;(add-hook 'rg-mode-hook 'wgrep-ag-setup)
+  ;(setq rg-show-columns t
+  ;      rg-show-header t
+  ;      rg-command-line-flags (list "-uuu")
+  ;)
+  ;(bind-keys :map rg-mode-map
+  ;           ("W" . wgrep-change-to-wgrep-mode))
+)
+#+end_src
+** Avy
+avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
+https://github.com/Wilfred/deadgrep
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :config
+  (avy-setup-default)
+  :bind
+  (("M-g w" . avy-goto-word-or-subword-1)
+   ("M-g b" . avy-pop-mark))
+)
+#+end_src
+* Tremacs
+a tree layout file explorer for Emacs
+https://github.com/Alexander-Miller/treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :ensure t
+  :custom
+  (treemacs-width 20)
+  :bind
+  ("M-0" . treemacs-select-window)
 )
 #+end_src
 
-*** Company Box
-A company front-end with icons.
-
-https://github.com/sebastiencs/company-box
+* Treemacs Projectile
+Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
 
 #+begin_src emacs-lisp
-(use-package company-box
+(use-package treemacs-projectile
   :ensure t
-  ;:straight (:host github :repo "gcentauri/company-box")
-  :custom
-  (company-box-show-single-candidate t)
-  (company-box-backends-colors nil) ;; Same colors for all backends
-  :custom-face
-  (company-box-selection ((t (:inherit company-tooltip-selection :extend t))))
-  :hook (company-mode . company-box-mode))
+  :after treemacs projectile
+)
 #+end_src
+* Projectile
+https://github.com/bbatsov/projectile
+http://batsov.com/projectile/
+projectile - project managent (works with helm)
+Project navigation and management library for Emacs
+Keybindings: https://projectile.readthedocs.io/en/latest/usage/
 
-*** Company Statistics
-Company-statistics is a global minor mode built on top of the in-buffer completion system company-mode. The idea is to keep a log of a certain number of completions you choose, along with some context information, and use that to rank candidates the next time you have to choose — hopefully showing you likelier candidates at the top of the list.
-https://github.com/company-mode/company-statistics
-
-#+begin_src emacs-lisp
-(use-package company-statistics
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
   :ensure t
-  :hook (company-mode . company-statistics-mode))
-#+end_src
-
-** YASnippet (Snippet Completion)
-YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
-https://github.com/joaotavora/yasnippet
-
-#+begin_src emacs-lisp
-(use-package yasnippet
-  ;; Expand snippets with `C-j', not with `TAB'. Use `TAB' to always
-  ;; jump to next field, even when company window is active. If there
-  ;; is need to complete company's selection, use `C-s'
-  ;; (`company-complete-selection').
-  :ensure t
-  :defer nil
-  :custom
-  (yas-indent-line nil)
-  :custom-face
-  (yas-field-highlight-face ((t (:inherit region))))
-  :bind*
-  (("C-j" . yas-expand)
-   :map yas-minor-mode-map
-   ("TAB" . nil)
-   ("<tab>" . nil)
-   :map yas-keymap
-   ("TAB" . (lambda () (interactive) (company-abort) (yas-next-field)))
-   ("<tab>" . (lambda () (interactive) (company-abort) (yas-next-field))))
-  :hook
-  (snippet-mode . (lambda () (setq-local require-final-newline nil)))
+  :defer 5
   :config
-  (yas-global-mode))
-#+end_src
-** Open alternative from Xah Lee
-#+begin_src emacs-lisp
-(defun xah-open-in-external-app (&optional @fname)
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
-
-When called in emacs lisp, if @fname is given, open that.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
-  (interactive)
-  (let* (
-         ($file-list
-          (if @fname
-              (progn (list @fname))
-            (if (string-equal major-mode "dired-mode")
-                (dired-get-marked-files)
-              (list (buffer-file-name)))))
-         ($do-it-p (if (<= (length $file-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when $do-it-p
-      (cond
-       ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda ($fpath)
-           (w32-shell-execute "open" $fpath)) $file-list))
-       ((string-equal system-type "darwin")
-        (mapc
-         (lambda ($fpath)
-           (shell-command
-            (concat "open " (shell-quote-argument $fpath))))  $file-list))
-       ((string-equal system-type "gnu/linux")
-        (mapc
-         (lambda ($fpath) (let ((process-connection-type nil))
-                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
-
-(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
-#+end_src
-** notmuch
-Emacs major mode for interacting with Notmuch
-https://notmuchmail.org/notmuch-emacs/
-
-To open html files in a browser, ex. firefox, on a Mac with ". v"
-Add the following to ~/.mailcap:
-text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.html
+    (projectile-mode +1)
+    ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ; super-p
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    ;(define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map) ; conflicts with lsp-mode python
+    (setq projectile-completion-system 'ivy) ; use ivy for completion
+    (setq projectile-enable-caching t) ; enable caching
+    (setq projectile-indexing-method 'alien) ; external cmd for indexing
+    ;; put bookmark and cache in cache directory
+    (setq projectile-known-projects-file (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
+    (setq projectile-cache-file (concat user-emacs-directory "cache/projectile.cache"))
+)
+#+END_SRC
+* Smartparens
+Smartparens is a minor mode for dealing with pairs in Emacs.
+https://github.com/Fuco1/smartparens
 
 #+begin_src emacs-lisp
-  ;;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-notmuch.el
-  ;;; error: not available
-  ;use-package org-notmuch
-  ; ;:ensure t
-  ; ;:demand t
-  ; :after (org notmuch)
-  ; ;:after (:any org-plus-contrib notmuch)
-  ;
-
-  (use-package notmuch
-    :ensure t
-    :defer t
-    :config
-    (setq notmuch-search-oldest-first nil
-          notmuch-show-logo nil
-          mm-text-html-renderer 'shr
-          shr-inhibit-images nil
-          mime-view-text/html-previewer 'shr
-          mm-inline-text-html-with-images t
-          notmuch-multipart/alternative-discouraged '("text/html"))
-    (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
-  )
-
-  (use-package counsel-notmuch
-    :ensure t
-    :defer t
-    :after notmuch
-  )
-#+end_src
-* Language Configuration
-* Testing
-https://gitlab.com/shilling.jake/emacsd/-/blob/master/config.org
-
-#+begin_src emacs-lisp
-;;Smartparens
 (use-package smartparens
   :ensure t
   :hook (after-init . smartparens-global-mode)
   :config (require 'smartparens-config))
+#+end_src
+* Smoothscrolling
+The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
+This is a nice alternative to all the native scroll-* custom variables, which unfortunately cannot provide this functionality perfectly.
+https://github.com/aspiers/smooth-scrolling
 
-;; smoothscrolling
-;;https://github.com/aspiers/smooth-scrolling
-;;The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
+#+begin_src emacs-lisp
 (use-package smooth-scrolling
   :ensure t
   :config
   (smooth-scrolling-mode 1))
+#+end_src
 
-;Helpful
-;; https://github.com/Wilfred/helpful
-;Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
-(use-package helpful
-  :ensure t
-  :bind (("C-h f" . helpful-callable)
-         ("C-h v" . helpful-variable)
-         ("C-h k" . helpful-key)))
+* Hydra
+Tie related commands into a family of short bindings with a common prefix - a Hydra
+https://github.com/abo-abo/hydra
 
-;Hydra
+#+begin_src emacs-lisp
 (use-package hydra
-  :ensure t)
+  :ensure t
+)
 
 ;;; dired
 ;(defhydra hydra-dired (:hint nil :color pink)
@@ -1792,6 +1791,877 @@ https://gitlab.com/shilling.jake/emacsd/-/blob/master/config.org
 ;
 ;(setq dired-dwim-target t)
 ;(define-key dired-mode-map (kbd ".") 'hydra-dired/body)
+#+end_src
+
+* YASnippet (Snippet Completion)
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
+https://github.com/joaotavora/yasnippet
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-reload-all)
+  :hook
+  (prog-mode . yas-minor-mode)
+  )
+(use-package yasnippet-snippets
+  :ensure t)
+
+;(use-package yasnippet
+;  :ensure t
+;  :custom
+;  (yas-indent-line nil)
+;  :config
+;  (yas-global-mode)
+;)
+
+  ;;; Expand snippets with `C-j', not with `TAB'. Use `TAB' to always
+  ;;; jump to next field, even when company window is active. If there
+  ;;; is need to complete company's selection, use `C-s'
+  ;;; (`company-complete-selection').
+  ;:ensure t
+  ;:defer nil
+  ;:custom
+  ;(yas-indent-line nil)
+  ;:custom-face
+  ;(yas-field-highlight-face ((t (:inherit region))))
+  ;:bind*
+  ;(("C-j" . yas-expand)
+  ; :map yas-minor-mode-map
+  ; ("TAB" . nil)
+  ; ("<tab>" . nil)
+  ; :map yas-keymap
+  ; ("TAB" . (lambda () (interactive) (company-abort) (yas-next-field)))
+  ; ("<tab>" . (lambda () (interactive) (company-abort) (yas-next-field))))
+  ;:hook
+  ;(snippet-mode . (lambda () (setq-local require-final-newline nil)))
+  ;:config
+  ;(yas-global-mode))
+#+end_src
+
+* Company (Code & Text Completion)
+** Company
+Company is a text completion framework for Emacs. The name stands for "complete anything". It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
+https://github.com/company-mode/company-mode
+Homepage: http://company-mode.github.io/
+
+#+begin_src emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (setq company-global-modes '(not org-mode eshell-mode shell-mode lisp-interaction-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+)
+#+end_src
+
+** Company Box
+A company front-end with icons.
+https://github.com/sebastiencs/company-box
+
+#+begin_src emacs-lisp
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+** Company Statistics
+Company-statistics is a global minor mode built on top of the in-buffer completion system company-mode. The idea is to keep a log of a certain number of completions you choose, along with some context information, and use that to rank candidates the next time you have to choose — hopefully showing you likelier candidates at the top of the list.
+https://github.com/company-mode/company-statistics
+
+#+begin_src emacs-lisp
+(use-package company-statistics
+  :ensure t
+  :hook (company-mode . company-statistics-mode)
+  :config
+  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
+)
+#+end_src
+* Open alternative from Xah Lee
+#+begin_src emacs-lisp
+(defun xah-open-in-external-app (&optional @fname)
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
+
+When called in emacs lisp, if @fname is given, open that.
+
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2019-11-04"
+  (interactive)
+  (let* (
+         ($file-list
+          (if @fname
+              (progn (list @fname))
+            (if (string-equal major-mode "dired-mode")
+                (dired-get-marked-files)
+              (list (buffer-file-name)))))
+         ($do-it-p (if (<= (length $file-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+    (when $do-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda ($fpath)
+           (w32-shell-execute "open" $fpath)) $file-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda ($fpath)
+           (shell-command
+            (concat "open " (shell-quote-argument $fpath))))  $file-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda ($fpath) (let ((process-connection-type nil))
+                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
+
+;(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
+#+end_src
+* pyvenv
+Python virtual environment interface for Emacs
+https://github.com/jorgenschaefer/pyvenv
+
+# Example .dir_locals.el for python to select version
+# ((python-mode . ((pyvenv-workon . "~/.pyenv/versions/emacs")
+#                 (subdirs . nil))))
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :init
+  (add-to-list 'exec-path "~/.pyenv/shims")
+  (setenv "WORKON_HOME" "~/.pyenv/versions/")
+  :config
+  (pyvenv-mode 1)
+  ;(pyvenv-activate "~/.pyenv/versions/3.8.3/")
+  ;:bind
+  ;("C-x p e" . pyenv-activate-current-project) ; not defined
+)
+#+end_src
+* flycheck (Check program syntax)
+Modern on-the-fly syntax checking extension for GNU Emacs
+https://github.com/flycheck/flycheck
+Homepage: https://www.flycheck.org/en/latest/
+
+Install syntax checker for languages
+python: pip install pylint
+
+error on lsp-mode start: Error processing message: void-function flycheck-define-generic-checker
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  ;:init (global-flycheck-mode)
+  :init (add-hook 'after-init-hook #'global-flycheck-mode)
+  :config
+  (setq-default flycheck-global-modes '(not org-mode))
+)
+#+end_src
+
+* flyspell (Correct spelling)
+Correcting misspelled words with flyspell using favourite interface.
+https://github.com/d12frosted/flyspell-correct/blob/master/README.org
+Mac: brew install aspell
+
+#+begin_src emacs-lisp
+(use-package flyspell
+  :init
+  ;(progn
+  ;  (flyspell-mode 1))
+  :hook ((prog-mode . flyspell-prog-mode)
+         ;(org-mode  . flyspell-mode)
+         (text-mode . flyspell-mode))
+  :config
+  (progn
+    (setq ispell-program-name "aspell")
+    (setq ispell-list-command "--list")
+    (setq ispell-extra-args '("--sug-mode=fast" "--lang=en_US"))
+) ;; run flyspell with aspell, not ispell
+)
+
+;; Correcting misspelled words with flyspell using favourite interface.
+;; https://github.com/d12frosted/flyspell-correct
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell
+)
+
+(use-package flyspell-correct-ivy
+  :ensure t
+  :after flyspell-correct
+  :bind ("C-M-;" . flyspell-correct-wrapper)
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+#+end_src
+* lsp-mode
+Client for Language Server Protocol (v3.14). lsp-mode aims to provide IDE-like experience by providing optional integration with the most popular Emacs packages like company, flycheck and projectile.
+https://github.com/emacs-lsp/lsp-mode
+Homepage: https://emacs-lsp.github.io/lsp-mode/
+Installation: https://emacs-lsp.github.io/lsp-mode/page/installation/
+
+Installing python lsp in venv:
+  pyenv virtualenv 2.7.18 emacs27
+  pyenv virtualenv 3.8.3 emacs
+  pyenv versions
+  pyenv global emacs
+  pyenv version
+  pip install --upgrade pip
+  pip install 'python-language-server[all]'
+  pip list
+  pyenv global 3.8.3. # revert back
+  pip list
+
+#+begin_src emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;(setq lsp-keymap-prefix "s-l")
+(setq lsp-keymap-prefix "C-c p")
+
+;; How to disable lsp as flycheck's default checker #1413
+;(setq lsp-diagnostic-package :none)
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  (pyvenv-activate "~/.pyenv/versions/emacs/")
+  (setq lsp-prefer-flymake nil)
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+          (python-mode . lsp-deferred)
+          ;; if you want which-key integration
+          (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred)
+
+;; optionally
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :config
+  (add-hook 'python-mode-hook 'flycheck-mode)
+)
+
+;;Recommended settings for lsp-mode related packages
+;;company
+(setq company-minimum-prefix-length 1
+      company-idle-delay 0.0) ;; default is 0.2
+
+;; https://github.com/tigersoldier/company-lsp
+;; Company completion backend for lsp-mode
+(use-package company-lsp
+  :ensure t
+  :after (:all lsp-mode)
+  :config
+  (push 'company-lsp company-backends)
+)
 
 
+;; if you are helm user
+;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy
+  :ensure t
+  :after (lsp-mode lsp-ui)
+  :commands lsp-ivy-workspace-symbol)
+
+;; https://github.com/emacs-lsp/lsp-treemacs
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+;(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; Emacs client/library for Debug Adapter Protocol is a wire protocol for communication between client and Debug Server. It’s similar to the LSP but provides integration with debug server.
+;; https://github.com/emacs-lsp/dap-mode
+;; https://emacs-lsp.github.io/dap-mode/page/configuration/
+
+;; in venv: pip install "ptvsd>=4.2"
+
+;(use-package dap-mode
+;  :ensure t)
+
+;(use-package dap-mode
+;  :ensure t
+;  :requires (lsp-mode)
+;  :hook ((lsp-mode . dap-mode)
+;         (lsp-mode . dap-ui-mode))
+;  :bind (:map dap-mode-map
+;         ("C-c d d" . dap-debug)
+;         ("C-c d h" . dap-hydra)
+;         ("C-c d b" . dap-ui-breakpoints)
+;         ("C-c d l" . dap-ui-locals)
+;         ("C-c d r" . dap-ui-repl))
+;)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+;(use-package dap-python)
+#+end_src
+* shell
+#+begin_src emacs-lisp
+(use-package sh-script
+  :mode (("zshecl" . sh-mode)
+         ("\\.zsh\\'" . sh-mode)
+         ("\\.sh\\'" . sh-mode))
+  :custom
+  ;; zsh
+  (system-uses-terminfo nil))
+
+(use-package executable
+  :hook
+  (after-save . executable-make-buffer-file-executable-if-script-p))
+#+end_src
+* web
+
+#+begin_src emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode (("\\.erb\\'" . web-mode)
+         ("\\.mustache\\'" . web-mode)
+         ("\\.html?\\'" . web-mode)
+         ("\\.php\\'" . web-mode)
+         ("\\.jsp\\'" . web-mode)
+         ;; ("\\.jsx?$" . web-mode)
+         ("\\.es6\\'" . web-mode)
+         ("\\.ejs\\'" . web-mode)
+         ("\\.phtml\\'" . web-mode)
+         ("\\.tpl\\.php\\'" . web-mode)
+         ("\\.[agj]sp\\'" . web-mode)
+         ("\\.as[cp]x\\'" . web-mode)
+         ("\\.djhtml\\'" . web-mode)))
+#+end_src
+* source control
+** magit
+https://github.com/magit/magit
+It's Magit! A Git porcelain inside Emacs. https://magit.vc
+
+#+begin_src emacs-lisp
+;; Fixes for emacs 27
+;; Magit Error: Warning (with-editor): Cannot determine a suitable Emacsclient
+(setq-default with-editor-emacsclient-executable "emacsclient")
+
+(use-package magit
+  :ensure t
+  :defer 5
+  :commands magit
+  :bind
+    (("C-x g" . magit-status)
+     ("C-x G" . magit-status-with-prefix)
+     ("C-x M-g" . magit-dispatch)
+     ("C-c M-g" . global-magit-file-mode))
+  :config
+    (setq magit-completing-read-function 'ivy-completing-read)
+)
+#+end_src
+
+** git gutter
+https://github.com/syohex/emacs-git-gutter
+Emacs port of GitGutter which is Sublime Text Plugin
+Show icon in gutter area indicating if ins, mod or del
+
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter
+  :ensure t
+  :defer 10
+  :config
+    (global-git-gutter-mode t)
+)
+#+END_SRC
+
+** git-timemachine
+https://github.com/emacsmirror/git-timemachine
+Walk through git revisions of a file https://gitlab.com/pidu/git-timemachine
+
+toggle the time machine you can use M-x git-timemachine-toggle.
+
+Use the following keys to navigate historic version of the file
+
+    p Visit previous historic version
+    n Visit next historic version
+    w Copy the abbreviated hash of the current historic version
+    W Copy the full hash of the current historic version
+    g Goto nth revision
+    t Goto revision by selected commit message
+    q Exit the time machine.
+    b Run magit-blame on the currently visited revision (if magit available).
+    c Show current commit using magit (if magit available).
+
+#+begin_src emacs-lisp
+(use-package git-timemachine
+  :ensure t
+  :bind (("s-g" . git-timemachine)))
+#+end_src
+* eshell
+From zamandsky
+https://github.com/zamansky/dot-emacs
+
+#+begin_src emacs-lisp
+;; Run commands from eterm in an emacs term session
+;; https://www.reddit.com/r/emacs/comments/gksqhl/emacs_eshell_demo/
+;; ex:  in-term uptime
+(defun eshell/in-term (prog &rest args)
+  (switch-to-buffer
+    (apply #'make-term (format "in-term %s %s" prog args) prog nil args))
+  (term-mode)
+  (term-char-mode))
+
+;; save pwd to kill ring for later use
+(setq eshell-pwd-convert-function #'kill-new)
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize)
+)
+
+(use-package eshell-git-prompt
+  :ensure t
+  :config
+  (eshell-git-prompt-use-theme 'git-radar)
+)
+#+end_src
+
+* ansible-vault
+Minor mode for manipulating ansible-vault files
+https://github.com/zellio/ansible-vault-mode
+
+#+begin_src emacs-lisp
+(defun ansible-vault-mode-maybe ()
+  (when (ansible-vault--is-vault-file)
+    (ansible-vault-mode 1)))
+
+(use-package ansible-vault
+  :ensure t
+  :init (add-hook 'yaml-mode-hook 'ansible-vault-mode-maybe)
+  :config (setq ansible-vault-password-file "~/.vault_core_pass.txt")
+)
+#+end_src
+* delsel
+C-c C-g always quits minubuffer
+
+#+begin_src emacs-lisp
+(use-package delsel
+  :bind
+  (:map mode-specific-map
+        ("C-g" . minibuffer-keyboard-quit)))
+#+end_src
+* dired
+https://www.gnu.org/software/emacs/manual/dired-x.html
+https://www.emacswiki.org/emacs/DiredExtra#Dired_X
+provides extra functionality for Dired Mode.
+
+Hide file detail toggle `(`
+
+#+begin_src emacs-lisp
+(use-package dired-x
+  :ensure nil
+  :demand t
+  :bind ("C-x C-j"   . dired-jump)
+        ("C-x 4 C-j" . dired-jump-other-window)
+  :config
+     (setq-default dired-omit-files-p t)
+     (setq dired-listing-switches "-alhv")
+     (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
+     ;(define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy) ; requires dired-hacks
+     (define-key dired-mode-map (kbd "h") #'dired-omit-mode)
+     (define-key dired-mode-map (kbd "e") #'read-only-mode)
+
+     ;; Auto-refresh dired on file change
+     (add-hook 'dired-mode-hook 'auto-revert-mode)
+
+     ;; disable line wrapping in dired mode
+     (add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
+
+     ;; enable side-by-side dired buffer targets
+     ;; Split your window, split-window-vertically & go to another dired directory.
+     ;; When you will press C to copy, the other dir in the split pane will be
+     ;; default destination.
+     (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
+)
+#+end_src
+
+dired-launchc
+https://github.com/thomp/dired-launch
+#+begin_src emacs-lisp
+;(use-package dired-launch
+;  :ensure t
+;  :config
+;  ;; use xdg-open as the default launcher
+;  (setq dired-launch-default-launcher '("xdg-open"))
+;  bind the 'l' key to dired-launch-command
+;  (define-key dired-launch-mode-map (kbd "l") 'dired-launch-command)
+;)
+
+(use-package dired-launch
+  :ensure t
+  :hook
+  (dired-mode . dired-launch-mode)
+)
+#+end_src
+
+* restclient
+HTTP REST client tool for emacs
+https://github.com/pashky/restclient.el
+
+
+C-c C-c: runs the query under the cursor, tries to pretty-print the response (if possible)
+C-c C-r: same, but doesn't do anything with the response, just shows the buffer
+C-c C-v: same as C-c C-c, but doesn't switch focus to other window
+C-c C-p: jump to the previous query
+C-c C-n: jump to the next query
+C-c C-.: mark the query under the cursor
+C-c C-u: copy query under the cursor as a curl command
+C-c C-g: start a helm session with sources for variables and requests (if helm is available, of course)
+C-c n n: narrow to region of current request (including headers)
+TAB: hide/show current request body, only if
+C-c C-a: show all collapsed regions
+C-c C-i: show information on resclient variables at point
+
+
+#+begin_src emacs-lisp
+(use-package restclient
+  :ensure t)
+
+(use-package company-restclient
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-restclient))
+#+end_src
+* --
+* Testing
+** notmuch email
+Emacs major mode for interacting with Notmuch
+https://notmuchmail.org/notmuch-emacs/
+
+To open html files in a browser, ex. firefox, on a Mac with ". v"
+Add the following to ~/.mailcap:
+text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.html
+
+#+begin_src emacs-lisp
+  ;;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-notmuch.el
+  ;;; error: not available
+  ;use-package org-notmuch
+  ; ;:ensure t
+  ; ;:demand t
+  ; :after (org notmuch)
+  ; ;:after (:any org-plus-contrib notmuch)
+  ;
+
+(use-package notmuch
+  :ensure t
+  :defer t
+  :config
+  (setq notmuch-search-oldest-first nil
+        notmuch-show-logo nil
+        mm-text-html-renderer 'shr
+        shr-inhibit-images nil
+        mime-view-text/html-previewer 'shr
+        mm-inline-text-html-with-images t
+        notmuch-multipart/alternative-discouraged '("text/html"))
+  (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
+)
+
+(use-package counsel-notmuch
+  :disabled
+  ;:ensure t
+  :defer t
+  :after notmuch
+)
+#+end_src
+** python
+# https://github.com/pyenv/pyenv-virtualenvwrapper
+# brew install pyenv-virtualenvwrapper
+# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+#
+# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
+# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+# or, for python3:  python3 -m venv ~/.virtualenvs/p3
+# enable: workon p3
+# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
+# stop:   deactivate p3
+# or, for python3:  deactivate
+
+# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
+pyenv virtualenv 3.8.1 emacs-python3
+pyenv local emacs-python3
+pyenv version
+
+pip install --upgrade pip
+#pip install virtualenv
+pip install 'python-language-server[all]'
+pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
+
+--
+
+To run code in emacs:
+M-x python-mode
+C-c C-p : run-python
+C-c C-c : python-shell-send-buffer
+
+C-c C-z : open a python shell
+C-c C-c : run the content of the buffer in the opened python shell
+C-c C-r : run the selected region in the python shell
+
+C-c C-c       python-shell-send-buffer
+C-c C-d       python-describe-at-point
+C-c C-f       python-eldoc-at-point
+C-c C-j       imenu
+C-c C-l       python-shell-send-file
+C-c C-p       run-python
+C-c C-r       python-shell-send-region
+C-c C-s       python-shell-send-string
+C-c C-t       Prefix Command
+C-c C-v       python-check
+C-c C-z       python-shell-switch-to-shell
+C-c <     python-indent-shift-left
+C-c >     python-indent-shift-right
+
+C-c C-t c python-skeleton-class
+C-c C-t d python-skeleton-def
+C-c C-t f python-skeleton-for
+C-c C-t i python-skeleton-if
+C-c C-t m python-skeleton-import
+C-c C-t t python-skeleton-try
+C-c C-t w python-skeleton-while
+
+*** live-py-plugin
+https://www.youtube.com/watch?v=bYy90EUAh98
+
+https://github.com/donkirkby/live-py-plugin
+Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
+
+#+begin_src emacs-lisp
+;(use-package live-py-mode
+;  :ensure t
+;  :defer t
+;)
+#+end_src
+** treemacs
+https://github.com/Alexander-Miller/treemacs
+A tree layout file explorer for Emacs
+
+#+begin_src emacs-lisp
+;(use-package treemacs
+;  :ensure t
+;  :defer t
+;  :init
+;  (with-eval-after-load 'winum
+;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;  :config
+;  (progn
+;    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+;          treemacs-deferred-git-apply-delay      0.5
+;          treemacs-directory-name-transformer    #'identity
+;          treemacs-display-in-side-window        t
+;          treemacs-eldoc-display                 t
+;          treemacs-file-event-delay              5000
+;          treemacs-file-extension-regex          treemacs-last-period-regex-value
+;          treemacs-file-follow-delay             0.2
+;          treemacs-file-name-transformer         #'identity
+;          treemacs-follow-after-init             t
+;          treemacs-git-command-pipe              ""
+;          treemacs-goto-tag-strategy             'refetch-index
+;          treemacs-indentation                   2
+;          treemacs-indentation-string            " "
+;          treemacs-is-never-other-window         nil
+;          treemacs-max-git-entries               5000
+;          treemacs-missing-project-action        'ask
+;          treemacs-move-forward-on-expand        nil
+;          treemacs-no-png-images                 nil
+;          treemacs-no-delete-other-windows       t
+;          treemacs-project-follow-cleanup        nil
+;          treemacs-persist-file                  (expand-file-name "~/.emacs.d/cache/treemacs-persist" user-emacs-directory)
+;          treemacs-position                      'left
+;          treemacs-recenter-distance             0.1
+;          treemacs-recenter-after-file-follow    nil
+;          treemacs-recenter-after-tag-follow     nil
+;          treemacs-recenter-after-project-jump   'always
+;          treemacs-recenter-after-project-expand 'on-distance
+;          treemacs-show-cursor                   nil
+;          treemacs-show-hidden-files             t
+;          treemacs-silent-filewatch              nil
+;          treemacs-silent-refresh                nil
+;          treemacs-sorting                       'alphabetic-asc
+;          treemacs-space-between-root-nodes      t
+;          treemacs-tag-follow-cleanup            t
+;          treemacs-tag-follow-delay              1.5
+;          treemacs-user-mode-line-format         nil
+;          treemacs-user-header-line-format       nil
+;          treemacs-width                         35)
+;
+;    ;; The default width and height of the icons is 22 pixels. If you are
+;    ;; using a Hi-DPI display, uncomment this to double the icon size.
+;    ;;(treemacs-resize-icons 44)
+;
+;    (treemacs-follow-mode t)
+;    (treemacs-filewatch-mode t)
+;    (treemacs-fringe-indicator-mode t)
+;    (pcase (cons (not (null (executable-find "git")))
+;                 (not (null treemacs-python-executable)))
+;      (`(t . t)
+;       (treemacs-git-mode 'deferred))
+;      (`(t . _)
+;       (treemacs-git-mode 'simple))))
+;  :bind
+;  (:map global-map
+;        ("M-0"       . treemacs-select-window)
+;        ("C-x t 1"   . treemacs-delete-other-windows)
+;        ("C-x t t"   . treemacs)
+;        ("C-x t B"   . treemacs-bookmark)
+;        ("C-x t C-t" . treemacs-find-file)
+;        ("C-x t M-t" . treemacs-find-tag)))
+;
+;;(use-package treemacs-evil
+;;  :after treemacs evil
+;;  :ensure t)
+;
+;(use-package treemacs-projectile
+;  :after treemacs projectile
+;  :ensure t)
+;
+;(use-package treemacs-icons-dired
+;  :after treemacs dired
+;  :ensure t
+;  :config (treemacs-icons-dired-mode))
+;
+;(use-package treemacs-magit
+;  :after treemacs magit
+;  :ensure t)
+;
+;(use-package treemacs-persp
+;  :after treemacs persp-mode
+;  :ensure t
+;  :config (treemacs-set-scope-type 'Perspectives))
+#+end_src
+** gcmh
+https://gitlab.com/koral/gcmh
+The GNU Emacs Garbage Collector Magic Hack
+
+#+begin_src emacs-lisp
+;(use-package gcmh
+;  :ensure t
+;  :init
+;  (gcmh-mode 1))
+#+end_src
+** move-text
+https://github.com/emacsfodder/move-text
+move current line or region up or down
+
+#+begin_src emacs-lisp
+;(use-package move-text
+;  :ensure t
+;  :bind
+;  (([(meta shift up)] . move-text-up)
+;   ([(meta shift down)] . move-text-down)))
+#+end_src
+** neotree
+https://github.com/jaypei/emacs-neotree
+A emacs tree plugin like NerdTree for Vim.
+
+#  :bind ("C-;" . neotree-toggle)
+#  :config
+#  (setq neo-theme (if window-system 'icons 'arrows)))
+#   :bind ("<f5>" . neotree-toggle)
+#  ("M-p" . neotree-toggle)
+
+#+begin_src emacs-lisp
+;(use-package neotree
+;  :ensure t
+;  :bind
+;  ([f8] . neotree-toggle)
+;)
+#+end_src
+** recentf
+https://www.emacswiki.org/emacs/RecentFiles
+a minor mode that builds a list of recently opened files
+http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
+(autoload 'recentf "recentf" "List recent files" t)
+
+#(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+#(global-set-key (kbd "C-x C-r") 'helm-recentf)
+#:ensure nil
+#:init (recentf-mode 1) ;; turn it on
+
+#+begin_src emacs-lisp
+;(use-package recentf
+;  :config
+;  (setq recentf-save-file "~/.emacs.d/cache/recentf"
+;        recentf-max-saved-items 500
+;        recentf-max-menu-items 15
+;        ;; disable recentf-cleanup on Emacs start, because it can cause
+;        ;; problems with remote files
+;        recentf-auto-cleanup 'never)
+;  (recentf-mode +1))
+#+end_src
+** uniquify
+#+begin_src emacs-lisp
+;(use-package uniquify
+;  :defer 1
+;  :ensure nil
+;  :custom
+;  (setq uniquify-buffer-name-style 'forward
+;        uniquify-separator "/"
+;        uniquify-after-kill-buffer-p t     ; rename after killing uniquified
+;        uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+  ;(setq uniquify-buffer-name-style 'forward
+  ;      uniquify-separator ":"
+  ;      uniquify-strip-common-suffix nil
+  ;      read-file-name-completion-ignore-case t)
+
+  ;(uniquify-after-kill-buffer-p t)
+  ;(uniquify-buffer-name-style 'post-forward)
+  ;(uniquify-strip-common-suffix t)
+
+  ;(setq uniquify-buffer-name-style 'post-forward-angle-brackets) ;; or "forward"
+  ;(setq uniquify-min-dir-content 3)
+;)
+#+end_src
+** Themes - not using
+zenburn-theme
+https://github.com/bbatsov/zenburn-emacs
+The Zenburn colour theme ported to Emacs
+#+begin_src emacs-lisp
+;(use-package zenburn-theme
+;  :ensure t
+;  :config
+;  (if (display-graphic-p)
+;      (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
+;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+;  )
+;)
+#+end_src
+
+tomorrow-theme (nice blue theme)
+https://github.com/purcell/color-theme-sanityinc-tomorrow
+A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' themes
+#+begin_src emacs-lisp
+;(use-package color-theme-sanityinc-tomorrow
+;  :ensure t
+;  :config
+;  (if (display-graphic-p)
+;      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
+;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+;  )
+;)
+#+end_src
+
+solarized-theme
+#+begin_src emacs-lisp
+;(use-package solarized-theme
+;  :ensure t
+;  :config
+;  (if (display-graphic-p)
+;      (load-theme 'solarized-dark :no-confirm)  ; Emacs in own window (solarized-dark)
+;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+;  )
+;)
+#+end_src
+
+acme
+https://github.com/ianpan870102/acme-emacs-theme
+#+begin_src emacs-lisp
+;(use-package acme-theme
+;  :ensure t
+;  :config
+;  (load-theme 'acme t))
 #+end_src
