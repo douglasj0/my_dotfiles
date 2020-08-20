@@ -1880,8 +1880,8 @@ https://org-roam.readthedocs.io/en/master/
 (use-package org-roam
   :ensure t
   :after org
-  :hook
-  (after-init . org-roam-mode)
+  ;:hook
+  ;(after-init . org-roam-mode) ; error on start stringp, nil
   ;((org-mode . org-roam-mode)
   ; (after-init . org-roam--build-cache-async))
   :custom
