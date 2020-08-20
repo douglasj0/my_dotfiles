@@ -2258,9 +2258,10 @@ Installing python lsp in venv:
 ;(use-package dap-python)
 #+end_src
 * Python
+Commented out, giving a not-found error in messages buffer
 #+begin_src emacs-lisp
-(use-package python-mode
-  :hook ((python-mode . lsp)))
+;(use-package python-mode
+;  :hook ((python-mode . lsp)))
 #+end_src
 * YASnippet (Snippet Completion)
 YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
@@ -2403,12 +2404,12 @@ http://web-mode.org/
          ("\\.djhtml\\'" . web-mode)))
 #+end_src
 * Emacs Lisp
-
+Commented out, giving a not-found error in messages buffer
 #+begin_src emacs-lisp
-  (use-package elisp-format
-    :bind (:map emacs-lisp-mode-map
-               ("C-x w" . elisp-format-buffer))
-    :hook (emacs-lisp-mode . yas-minor-mode))
+;(use-package elisp-format
+;  :bind (:map emacs-lisp-mode-map
+;             ("C-x w" . elisp-format-buffer))
+;  :hook (emacs-lisp-mode . yas-minor-mode))
 #+end_src
 * YAML
 #+begin_src emacs-lisp

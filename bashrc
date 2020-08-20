@@ -318,9 +318,9 @@ export PS1
 ###################
 #  Source workrc  #
 ###################
-if [ -e ${HOME}/.workrc ]; then
-  source ~/.workrc
-fi
+#if [ -e ${HOME}/.workrc ]; then
+#  source ~/.workrc
+#fi
 
 
 ###
