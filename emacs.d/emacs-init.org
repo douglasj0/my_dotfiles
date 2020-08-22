@@ -60,12 +60,6 @@ Transfered from ~/.emacs.d/init.el
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-;;; set font size to 15, overriding default 12
-; M-x describe-font:
-; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
-;(set-face-attribute 'default (selected-frame) :height 150)
-(set-face-attribute 'default nil :height 150)
-
 ;;; Load Customizations if they exist
 (setq custom-file "~/Sync/elisp/custom.el")
 (load custom-file 'noerror)
@@ -694,6 +688,12 @@ https://github.com/Wilfred/deadgrep
   (interactive)
   (text-scale-set 0))
 (bind-key "M-g 0" 'my/text-scale-reset)
+
+;;; set font size to 15, overriding default 12
+; M-x describe-font:
+; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+;(set-face-attribute 'default (selected-frame) :height 150)
+(set-face-attribute 'default nil :height 150)
 
 ;; Osx-trash
 ;; Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
