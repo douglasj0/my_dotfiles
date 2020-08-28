@@ -1070,9 +1070,9 @@ A company front-end with icons.
 https://github.com/sebastiencs/company-box
 
 #+begin_src emacs-lisp
-(use-package company-box
-  :ensure t
-  :hook (company-mode . company-box-mode))
+;(use-package company-box
+;  :ensure t
+;  :hook (company-mode . company-box-mode))
 #+end_src
 
 ** Company Statistics
@@ -1080,12 +1080,12 @@ Company-statistics is a global minor mode built on top of the in-buffer completi
 https://github.com/company-mode/company-statistics
 
 #+begin_src emacs-lisp
-(use-package company-statistics
-  :ensure t
-  :hook (company-mode . company-statistics-mode)
-  :config
-  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
-)
+;(use-package company-statistics
+;  :ensure t
+;  :hook (company-mode . company-statistics-mode)
+;  :config
+;  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
+;)
 #+end_src
 * Daily log
 #+begin_src emacs-lisp
@@ -1461,12 +1461,12 @@ Search all marked buffers
 
 * Multiple Cursors
 #+begin_src emacs-lisp
-(use-package multiple-cursors
-  :ensure t
-  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
-         ("C->" . 'mc/mark-next-like-this)
-         ("C-<" . 'mc/mark-previous-like-this)
-         ("C-c C-<" . 'mc/mark-all-like-this)))
+;(use-package multiple-cursors
+;  :ensure t
+;  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
+;         ("C->" . 'mc/mark-next-like-this)
+;         ("C-<" . 'mc/mark-previous-like-this)
+;         ("C-c C-<" . 'mc/mark-all-like-this)))
 #+end_src
 
 * Org-mode
@@ -1475,28 +1475,28 @@ Highlight TODO and similar keywords in comments and strings
 https://github.com/tarsius/hl-todo
 
 #+begin_src emacs-lisp
-(use-package hl-todo
-  :ensure t
-  :custom
-  ;; Better hl-todo colors, taken from spacemacs
-  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
-                           ("NEXT" . "#dc752f")
-                           ("THEM" . "#2d9574")
-                           ("PROG" . "#4f97d7")
-                           ("OKAY" . "#4f97d7")
-                           ("DONT" . "#f2241f")
-                           ("FAIL" . "#f2241f")
-                           ("DONE" . "#86dc2f")
-                           ("NOTE" . "#b1951d")
-                           ("KLUDGE" . "#b1951d")
-                           ("HACK" . "#b1951d")
-                           ("TEMP" . "#b1951d")
-                           ("QUESTION" . "#b1951d")
-                           ("HOLD" . "#dc752f")
-                           ("FIXME" . "#dc752f")
-                           ("XXX+" . "#dc752f")))
-  :config
-  (global-hl-todo-mode))
+;(use-package hl-todo
+;  :ensure t
+;  :custom
+;  ;; Better hl-todo colors, taken from spacemacs
+;  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
+;                           ("NEXT" . "#dc752f")
+;                           ("THEM" . "#2d9574")
+;                           ("PROG" . "#4f97d7")
+;                           ("OKAY" . "#4f97d7")
+;                           ("DONT" . "#f2241f")
+;                           ("FAIL" . "#f2241f")
+;                           ("DONE" . "#86dc2f")
+;                           ("NOTE" . "#b1951d")
+;                           ("KLUDGE" . "#b1951d")
+;                           ("HACK" . "#b1951d")
+;                           ("TEMP" . "#b1951d")
+;                           ("QUESTION" . "#b1951d")
+;                           ("HOLD" . "#dc752f")
+;                           ("FIXME" . "#dc752f")
+;                           ("XXX+" . "#dc752f")))
+;  :config
+;  (global-hl-todo-mode))
 #+end_src
 
 ** Org
@@ -1880,10 +1880,10 @@ https://org-roam.readthedocs.io/en/master/
 (use-package org-roam
   :ensure t
   :after org
-  ;:hook
-  ;(after-init . org-roam-mode) ; error on start stringp, nil
-  ;((org-mode . org-roam-mode)
-  ; (after-init . org-roam--build-cache-async))
+  :hook
+  (after-init . org-roam-mode) ; error on start stringp, nil
+  ((org-mode . org-roam-mode)
+   (after-init . org-roam--build-cache-async))
   :custom
   (org-roam-link-title-format "R:%s")
   ;(make-directory "~/org-roam")
@@ -1898,53 +1898,53 @@ https://org-roam.readthedocs.io/en/master/
            ("C-c n f" . org-roam-find-file)
            ("C-c n j" . org-roam-jump-to-index)
            ("C-c n b" . org-roam-switch-to-buffer)
-           ;("C-c n g" . org-roam-show-graph))
+           ;("C-c n g" . org-roam-show-graph)
            ("C-c n g" . org-roam-graph)
            ("C-c n c" . org-roam-db-build-cache))
           :map org-mode-map
-          (("C-c n i" . org-roam-insert)))
-  :config
-  (setq org-roam-capture-templates
-    '(("d" "default" plain (function org-roam-capture--get-point)
-       "%?"
-       :file-name "%<%Y%m%d%H%M%S>-${slug}"
-       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
-       :unnarrowed t)
+          (("C-c n i" . org-roam-insert))
+          (("C-c n I" . org-roam-insert-immediate))))
 
-;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
-;      ("a" "daily" plain (function org-roam-capture--get-point)
-;        ""
-;       :immediate-finish t
-;       :file-name "dailies/%<%Y-%m-%d>"
-;       :head "#+TITLE: %<%Y-%m-%d>")
-  ))
 
-)
-
-; --
-
-;; how to modify last_modified tag in file
-;;https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321/9
-;(require 'time-stamp)
-;(add-hook 'write-file-functions 'time-stamp)
-
-;--
-
-;; where no roam has gone before - oldfxiny
-;; https://www.reddit.com/r/emacs/comments/h9zoy9/weekly_tipstricketc_thread/
-
-;(setq my/roam-dir-list '(
-;  "~/org-roam/"
-;  "~/org-roam-wip/"))
+;    :config
+;    (setq org-roam-capture-templates
+;      '(("d" "default" plain (function org-roam-capture--get-point)
+;         "%?"
+;         :file-name "%<%Y%m%d%H%M%S>-${slug}"
+;         :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;         :unnarrowed t)
 ;
-;(defun my/pick-roam-dir ()
-;  "Select directories from a list"
-;  (interactive)
-;  (setq org-roam-directory
-;  (completing-read "Select directory: " my/roam-dir-list))
-;  ;;(deft)
-;  ;;(deft-refresh)
-;)
+;  ;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
+;  ;      ("a" "daily" plain (function org-roam-capture--get-point)
+;  ;        ""
+;  ;       :immediate-finish t
+;  ;       :file-name "dailies/%<%Y-%m-%d>"
+;  ;       :head "#+TITLE: %<%Y-%m-%d>")
+;
+;  ; --
+;
+;  ;; how to modify last_modified tag in file
+;  ;;https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321/9
+;  ;(require 'time-stamp)
+;  ;(add-hook 'write-file-functions 'time-stamp)
+;
+;  ;--
+;
+;  ;; where no roam has gone before - oldfxiny
+;  ;; https://www.reddit.com/r/emacs/comments/h9zoy9/weekly_tipstricketc_thread/
+;
+;  ;(setq my/roam-dir-list '(
+;  ;  "~/org-roam/"
+;  ;  "~/org-roam-wip/"))
+;  ;
+;  ;(defun my/pick-roam-dir ()
+;  ;  "Select directories from a list"
+;  ;  (interactive)
+;  ;  (setq org-roam-directory
+;  ;  (completing-read "Select directory: " my/roam-dir-list))
+;  ;  ;;(deft)
+;  ;  ;;(deft-refresh)
+;  ;)
 
 #+end_src
 * Restclient
@@ -1975,14 +1975,16 @@ C-c C-i: show information on resclient variables at point
 #+end_src
 
 * Smartparens
+Removed for now, I need to restrict where it is enabled
+
 Smartparens is a minor mode for dealing with pairs in Emacs.
 https://github.com/Fuco1/smartparens
 
 #+begin_src emacs-lisp
-(use-package smartparens
-  :ensure t
-  :hook (after-init . smartparens-global-mode)
-  :config (require 'smartparens-config))
+;(use-package smartparens
+;  :ensure t
+;  :hook (after-init . smartparens-global-mode)
+;  :config (require 'smartparens-config))
 #+end_src
 * Smoothscrolling
 The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
@@ -2073,9 +2075,9 @@ Tie related commands into a family of short bindings with a common prefix - a Hy
 https://github.com/abo-abo/hydra
 
 #+begin_src emacs-lisp
-(use-package hydra
-  :ensure t
-)
+;(use-package hydra
+;  :ensure t
+;)
 
 ;;; dired
 ;(defhydra hydra-dired (:hint nil :color pink)
@@ -2225,9 +2227,9 @@ Installing python lsp in venv:
   :commands lsp-ivy-workspace-symbol)
 
 ;; https://github.com/emacs-lsp/lsp-treemacs
-(use-package lsp-treemacs
-  :ensure t
-  :commands lsp-treemacs-errors-list)
+;(use-package lsp-treemacs
+;  :ensure t
+;  :commands lsp-treemacs-errors-list)
 
 ;; optionally if you want to use debugger
 ;(use-package dap-mode)
@@ -2259,6 +2261,7 @@ Installing python lsp in venv:
 #+end_src
 * Python
 Commented out, giving a not-found error in messages buffer
+
 #+begin_src emacs-lisp
 ;(use-package python-mode
 ;  :hook ((python-mode . lsp)))
@@ -2268,21 +2271,21 @@ YASnippet is a template system for Emacs. It allows you to type an abbreviation 
 https://github.com/joaotavora/yasnippet
 
 #+begin_src emacs-lisp
-(use-package yasnippet
-  :ensure t
-  :config
-  (yas-reload-all)
-  :hook
-  (prog-mode . yas-minor-mode))
+;(use-package yasnippet
+;  :ensure t
+;  :config
+;  (yas-reload-all)
+;  :hook
+;  (prog-mode . yas-minor-mode))
 
-(use-package yasnippet-snippets
-  :ensure t)
+;(use-package yasnippet-snippets
+;  :ensure t)
 
-(use-package ivy-yasnippet
-  :ensure t
+;(use-package ivy-yasnippet
+;  :ensure t
   ;:bind (:map yas-minor-mode-map
   ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
-)
+;)
 #+end_src
 
 * Git
@@ -2405,6 +2408,7 @@ http://web-mode.org/
 #+end_src
 * Emacs Lisp
 Commented out, giving a not-found error in messages buffer
+
 #+begin_src emacs-lisp
 ;(use-package elisp-format
 ;  :bind (:map emacs-lisp-mode-map
@@ -2419,6 +2423,7 @@ Commented out, giving a not-found error in messages buffer
   :mode "\\.yaml\\'"
   :hook ((yaml-mode . lsp)
          (yaml-mode . yaml-imenu-enable)))
+
 (use-package yaml-imenu
   :ensure t
   :after yaml-mode)
@@ -2818,4 +2823,12 @@ Integrate java into =lsp-mode= and =dap-mode= with [[https://github.com/emacs-ls
 ;                lsp-java-code-generation-hash-code-equals-use-instanceof t
 ;                lsp-java-code-generation-use-blocks t lsp-java-code-generation-generate-comments t))
 ;(add-hook 'java-mode-hook #'my/setup-java-mode)
+#+end_src
+* Frog jump buffer - doesnt work with Dracula theme
+frog-jump-buffer is the fastest buffer-jumping Emacs lisp package around.
+https://github.com/waymondo/frog-jump-buffer
+
+#+begin_src emacs-lisp
+;(use-package frog-jump-buffer
+;  :ensure t)
 #+end_src
