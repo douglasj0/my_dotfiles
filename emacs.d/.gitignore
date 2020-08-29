@@ -1,0 +1,20 @@
+# emacs ignore certain files and directories
+.org-id-locations
+.*
+*.elc
+.lsp-*
+orig-*
+elpa-*
+emacs-init.org-*
+abbrev_defs
+cache
+eshell/history
+eshell/lastdir
+url
+projectile.cache
+projectile-bookmarks.eld
+nov-places
+emacs-init.el
+smex-items
+transient
+emacs-libvterm

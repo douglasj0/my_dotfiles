@@ -758,6 +758,15 @@ https://github.com/Wilfred/deadgrep
 (global-set-key [C-x C-y] 'pt-pbpaste)
 (global-set-key [C-x M-w] 'pt-pbcopy)
 
+;; add the missing man page path for woman
+;; https://www.reddit.com/r/emacs/comments/ig7zzo/weekly_tipstricketc_thread/
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/share/man")
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/usr/share/man")
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man")
+
 ;; On a Mac: make Emacs detect if you have light or dark mode enabled system wide.
 ;;If you have two themes, a light one and a dark one, and you want the dark theme by default unless you have light mode enabled, add this to your init.el:
 
@@ -2152,6 +2161,8 @@ https://github.com/abo-abo/hydra
 Python virtual environment interface for Emacs
 https://github.com/jorgenschaefer/pyvenv
 
+To look at: https://fredrikmeyer.github.io/2020/08/26/emacs-python-venv.html
+
 # Example .dir_locals.el for python to select version
 # ((python-mode . ((pyvenv-workon . "~/.pyenv/versions/emacs")
 #                 (subdirs . nil))))
@@ -2176,15 +2187,15 @@ Homepage: https://emacs-lsp.github.io/lsp-mode/
 Installation: https://emacs-lsp.github.io/lsp-mode/page/installation/
 
 Installing python lsp in venv:
-  pyenv virtualenv 2.7.18 emacs27
-  pyenv virtualenv 3.8.3 emacs
+  pyenv virtualenv 2.7.18 emacs-py27
+  pyenv virtualenv 3.8.5 emacs-py3
   pyenv versions
-  pyenv global emacs
+  pyenv global emacs-py3
   pyenv version
   pip install --upgrade pip
   pip install 'python-language-server[all]'
   pip list
-  pyenv global 3.8.3. # revert back
+  pyenv global 3.8.5 # revert back
   pip list
 
 #+begin_src emacs-lisp
@@ -2198,7 +2209,7 @@ Installing python lsp in venv:
 (use-package lsp-mode
   :ensure t
   :config
-  (pyvenv-activate "~/.pyenv/versions/emacs/")
+  (pyvenv-activate "~/.pyenv/versions/emacs-py3/")
   (setq lsp-prefer-flymake nil)
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
           (python-mode . lsp-deferred)
