@@ -604,6 +604,8 @@ https://github.com/Alexander-Miller/treemacs
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   ;:bind
   ;("M-0" . treemacs-select-window)
+  :config
+  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
 )
 #+end_src
 
@@ -1070,9 +1072,9 @@ A company front-end with icons.
 https://github.com/sebastiencs/company-box
 
 #+begin_src emacs-lisp
-;(use-package company-box
-;  :ensure t
-;  :hook (company-mode . company-box-mode))
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
 #+end_src
 
 ** Company Statistics
@@ -1080,12 +1082,12 @@ Company-statistics is a global minor mode built on top of the in-buffer completi
 https://github.com/company-mode/company-statistics
 
 #+begin_src emacs-lisp
-;(use-package company-statistics
-;  :ensure t
-;  :hook (company-mode . company-statistics-mode)
-;  :config
-;  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
-;)
+(use-package company-statistics
+  :ensure t
+  :hook (company-mode . company-statistics-mode)
+  :config
+  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
+)
 #+end_src
 * Daily log
 #+begin_src emacs-lisp
@@ -1460,13 +1462,16 @@ Search all marked buffers
 #+end_src
 
 * Multiple Cursors
+Multiple cursors for Emacs
+https://github.com/magnars/multiple-cursors.el
+
 #+begin_src emacs-lisp
-;(use-package multiple-cursors
-;  :ensure t
-;  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
-;         ("C->" . 'mc/mark-next-like-this)
-;         ("C-<" . 'mc/mark-previous-like-this)
-;         ("C-c C-<" . 'mc/mark-all-like-this)))
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
+         ("C->" . 'mc/mark-next-like-this)
+         ("C-<" . 'mc/mark-previous-like-this)
+         ("C-c C-<" . 'mc/mark-all-like-this)))
 #+end_src
 
 * Org-mode
@@ -1475,28 +1480,28 @@ Highlight TODO and similar keywords in comments and strings
 https://github.com/tarsius/hl-todo
 
 #+begin_src emacs-lisp
-;(use-package hl-todo
-;  :ensure t
-;  :custom
-;  ;; Better hl-todo colors, taken from spacemacs
-;  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
-;                           ("NEXT" . "#dc752f")
-;                           ("THEM" . "#2d9574")
-;                           ("PROG" . "#4f97d7")
-;                           ("OKAY" . "#4f97d7")
-;                           ("DONT" . "#f2241f")
-;                           ("FAIL" . "#f2241f")
-;                           ("DONE" . "#86dc2f")
-;                           ("NOTE" . "#b1951d")
-;                           ("KLUDGE" . "#b1951d")
-;                           ("HACK" . "#b1951d")
-;                           ("TEMP" . "#b1951d")
-;                           ("QUESTION" . "#b1951d")
-;                           ("HOLD" . "#dc752f")
-;                           ("FIXME" . "#dc752f")
-;                           ("XXX+" . "#dc752f")))
-;  :config
-;  (global-hl-todo-mode))
+(use-package hl-todo
+  :ensure t
+  :custom
+  ;; Better hl-todo colors, taken from spacemacs
+  (hl-todo-keyword-faces '(("TODO" . "#dc752f")
+                           ("NEXT" . "#dc752f")
+                           ("THEM" . "#2d9574")
+                           ("PROG" . "#4f97d7")
+                           ("OKAY" . "#4f97d7")
+                           ("DONT" . "#f2241f")
+                           ("FAIL" . "#f2241f")
+                           ("DONE" . "#86dc2f")
+                           ("NOTE" . "#b1951d")
+                           ("KLUDGE" . "#b1951d")
+                           ("HACK" . "#b1951d")
+                           ("TEMP" . "#b1951d")
+                           ("QUESTION" . "#b1951d")
+                           ("HOLD" . "#dc752f")
+                           ("FIXME" . "#dc752f")
+                           ("XXX+" . "#dc752f")))
+  :config
+  (global-hl-todo-mode))
 #+end_src
 
 ** Org
@@ -1975,17 +1980,24 @@ C-c C-i: show information on resclient variables at point
 #+end_src
 
 * Smartparens
-Removed for now, I need to restrict where it is enabled
-
 Smartparens is a minor mode for dealing with pairs in Emacs.
 https://github.com/Fuco1/smartparens
 
+NOTE: changed smartparens-global-mode to show-smartparens-global-mode
+https://github.com/Fuco1/smartparens/wiki/Show-smartparens-mode
+
+Cheatsheat
+https://gist.github.com/pvik/8eb5755cc34da0226e3fc23a320a3c95
+
 #+begin_src emacs-lisp
-;(use-package smartparens
-;  :ensure t
-;  :hook (after-init . smartparens-global-mode)
-;  :config (require 'smartparens-config))
+(use-package smartparens
+  :ensure t
+  :hook (after-init . show-smartparens-global-mode)
+  :config (require 'smartparens-config)
+    (add-hook 'python-mode-hook #'smartparens-mode)
+)
 #+end_src
+
 * Smoothscrolling
 The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
 This is a nice alternative to all the native scroll-* custom variables, which unfortunately cannot provide this functionality perfectly.
@@ -2075,9 +2087,9 @@ Tie related commands into a family of short bindings with a common prefix - a Hy
 https://github.com/abo-abo/hydra
 
 #+begin_src emacs-lisp
-;(use-package hydra
-;  :ensure t
-;)
+(use-package hydra
+  :ensure t
+)
 
 ;;; dired
 ;(defhydra hydra-dired (:hint nil :color pink)
@@ -2227,9 +2239,9 @@ Installing python lsp in venv:
   :commands lsp-ivy-workspace-symbol)
 
 ;; https://github.com/emacs-lsp/lsp-treemacs
-;(use-package lsp-treemacs
-;  :ensure t
-;  :commands lsp-treemacs-errors-list)
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
 
 ;; optionally if you want to use debugger
 ;(use-package dap-mode)
@@ -2271,21 +2283,21 @@ YASnippet is a template system for Emacs. It allows you to type an abbreviation 
 https://github.com/joaotavora/yasnippet
 
 #+begin_src emacs-lisp
-;(use-package yasnippet
-;  :ensure t
-;  :config
-;  (yas-reload-all)
-;  :hook
-;  (prog-mode . yas-minor-mode))
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-reload-all)
+  :hook
+  (prog-mode . yas-minor-mode))
 
-;(use-package yasnippet-snippets
-;  :ensure t)
+(use-package yasnippet-snippets
+  :ensure t)
 
-;(use-package ivy-yasnippet
-;  :ensure t
-  ;:bind (:map yas-minor-mode-map
-  ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
-;)
+(use-package ivy-yasnippet
+  :ensure t
+ ;:bind (:map yas-minor-mode-map
+ ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
+)
 #+end_src
 
 * Git
