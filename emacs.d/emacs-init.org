@@ -6,52 +6,13 @@
 
 * Init
 Transfered from ~/.emacs.d/init.el
+Moved use-package and org-plus-contrib back to init.el to fix org-version
 
 #+begin_src emacs-lisp
 ;; whoami?
 (setq
  user-full-name "Douglas Jackson"
  user-mail-address "hpotter@hogworts.edu")
-
-;; set elpa directory name based on emacs major version
-;(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version)) ;elpa-27
-(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version)) ;elpa-27.1
-
-;; To refresh package list, run:  M-x package-refresh-contents
-;; To manually update installed packages:  M-x package-list-packages U x
-(require 'package)
-(setq package-enable-at-startup nil)
-(setq package-archives
-      '(
-        ;("elpy"  . "http://jorgenschaefer.github.io/packages/") ; elpy package archive
-        ("gnu"   . "https://elpa.gnu.org/packages/") ; default package archive
-        ("org"   . "https://orgmode.org/elpa/") ; provides org-plus-contrib
-        ("melpa" . "https://melpa.org/packages/") ; milkypostman's pkg archive
-))
-(package-initialize)
-
-;; install use-package
-;; https://github.com/jwiegley/use-package
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-;; Disable ad-redefinition-action messages on startup
-;; Caused by third party functions redefining defadvice
-;; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
-(setq ad-redefinition-action 'accept)
-
-;;; Ignore byte-compile warning
-;; ex. for Emacs 27: Warning: cl package required at runtime
-(setq byte-compile-warnings '(not nresolved
-                                  free-vars
-                                  callargs
-                                  redefine
-                                  obsolete
-                                  noruntime
-                                  cl-functions
-                                  interactive-only
-                                  ))
 
 ;; more useful frame title, that show either a file or a
 ;; buffer name (if the buffer isn't visiting a file)
@@ -60,7 +21,7 @@ Transfered from ~/.emacs.d/init.el
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-;;; Load Customizations if they exist
+;;;; Load Customizations if they exist
 (setq custom-file "~/Sync/elisp/custom.el")
 (load custom-file 'noerror)
 
@@ -69,7 +30,7 @@ Transfered from ~/.emacs.d/init.el
 ;(when (file-exists-p custom-file)
 ;  (load custom-file))
 
-;;; Add 'info' and 'elisp' to load-path (C-h v load-path RET)
+;;;; Add 'info' and 'elisp' to load-path (C-h v load-path RET)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/info")
 (add-to-list 'load-path "~/.emacs.d/elisp/") ;; elisp packages not in pkg manager
 
@@ -78,7 +39,7 @@ Transfered from ~/.emacs.d/init.el
   (interactive)
   (load "~/.emacs.d/init.el"))
 
-;;; Only start server if it is not currently running
+;;;; Only start server if it is not currently running
 ;(require 'server) ;; Note: (start-server) is now mostly deprecated
 (load "server")
 (setq server-socket-dir "~/.emacs.d/tmp")
@@ -617,10 +578,12 @@ Projectile integration, the treemacs-projectile package lets you quickly add you
   :after treemacs projectile
 )
 
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :ensure t
-  :config (treemacs-icons-dired-mode))
+;; Removing, caused stringp, nul error for Dailylogs
+;; Also, looked neat, but slowed treemacs/dired down
+;(use-package treemacs-icons-dired
+;  :after treemacs dired
+;  :ensure t
+;  :config (treemacs-icons-dired-mode))
 
 (use-package treemacs-magit
   :after treemacs magit
@@ -889,14 +852,14 @@ Docs: https://rgel.readthedocs.io/en/latest/usage.html
               (funcall fn theme t)))
 #+end_src
 
-** all-the-icons
+** all-the-icons - commented out
 Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
 "M-x all-the-icons-install-fonts" to install fonts at the first time.
 https://github.com/domtronn/all-the-icons.el
 
 #+begin_src emacs-lisp
-(use-package all-the-icons
-  :ensure t)
+;(use-package all-the-icons
+;  :ensure t)
 #+end_src
 
 ** Dracula Theme
@@ -937,16 +900,16 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 )
 #+end_src
 
-** Telephone line modeline
+** Telephone line modeline - commented out
 https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
 https://github.com/dbordak/telephone-line
 
 #+begin_src emacs-lisp
-(use-package telephone-line
-  :ensure t
-  :init
-  (telephone-line-mode 1)
-)
+;(use-package telephone-line
+;  :ensure t
+;  :init
+;  (telephone-line-mode 1)
+;)
 #+end_src
 
 * Flx (Fuzzy matching)
@@ -1220,44 +1183,44 @@ https://github.com/thomp/dired-launch
 )
 #+end_src
 
-Open alternative from Xah Lee
+Open alternative to test from Xah Lee
 #+begin_src emacs-lisp
-(defun xah-open-in-external-app (&optional @fname)
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference.
-
-When called in emacs lisp, if @fname is given, open that.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04"
-  (interactive)
-  (let* (
-         ($file-list
-          (if @fname
-              (progn (list @fname))
-            (if (string-equal major-mode "dired-mode")
-                (dired-get-marked-files)
-              (list (buffer-file-name)))))
-         ($do-it-p (if (<= (length $file-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-    (when $do-it-p
-      (cond
-       ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda ($fpath)
-           (w32-shell-execute "open" $fpath)) $file-list))
-       ((string-equal system-type "darwin")
-        (mapc
-         (lambda ($fpath)
-           (shell-command
-            (concat "open " (shell-quote-argument $fpath))))  $file-list))
-       ((string-equal system-type "gnu/linux")
-        (mapc
-         (lambda ($fpath) (let ((process-connection-type nil))
-                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
-
-;(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
+;(defun xah-open-in-external-app (&optional @fname)
+;  "Open the current file or dired marked files in external app.
+;The app is chosen from your OS's preference.
+;
+;When called in emacs lisp, if @fname is given, open that.
+;
+;URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+;Version 2019-11-04"
+;  (interactive)
+;  (let* (
+;         ($file-list
+;          (if @fname
+;              (progn (list @fname))
+;            (if (string-equal major-mode "dired-mode")
+;                (dired-get-marked-files)
+;              (list (buffer-file-name)))))
+;         ($do-it-p (if (<= (length $file-list) 5)
+;                       t
+;                     (y-or-n-p "Open more than 5 files? "))))
+;    (when $do-it-p
+;      (cond
+;       ((string-equal system-type "windows-nt")
+;        (mapc
+;         (lambda ($fpath)
+;           (w32-shell-execute "open" $fpath)) $file-list))
+;       ((string-equal system-type "darwin")
+;        (mapc
+;         (lambda ($fpath)
+;           (shell-command
+;            (concat "open " (shell-quote-argument $fpath))))  $file-list))
+;       ((string-equal system-type "gnu/linux")
+;        (mapc
+;         (lambda ($fpath) (let ((process-connection-type nil))
+;                            (start-process "" nil "xdg-open" $fpath))) $file-list))))))
+;
+;;(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
 #+end_src
 
 * Eshell
@@ -1515,16 +1478,17 @@ https://github.com/tarsius/hl-todo
 
 ** Org
 #+BEGIN_SRC emacs-lisp
-(use-package org
-  :defer t
-  ;; to be sure we have the latest Org version
-  :ensure org-plus-contrib
-  :hook
-  ;(org-mode . variable-pitch-mode)
-  (org-mode . visual-line-mode)
-  ;(org-mode . org-num-mode)
-  :custom
-  (org-src-tab-acts-natively t))
+;; moved to init.el to override built-in org
+;(use-package org
+;  :defer t
+;  ;; to be sure we have the latest Org version
+;  :ensure org-plus-contrib
+;  :hook
+;  ;(org-mode . variable-pitch-mode)
+;  (org-mode . visual-line-mode)
+;  ;(org-mode . org-num-mode)
+;  :custom
+;  (org-src-tab-acts-natively t))
 
 (use-package calendar
   :ensure nil
@@ -1701,7 +1665,7 @@ SCHEDULED: %^t
 
 ;;; Other
 ;; When adding new heading below the current heading, the new heading is
-;; placed after the body instead of before it.  C-<RET>
+;; Placed after the body instead of before it.  C-<RET>
 (setq org-insert-heading-respect-content t)
 
 ;; Set Todo keywords, same as:
