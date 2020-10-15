@@ -60,4 +60,6 @@
 (when (file-exists-p "~/.emacs.d/emacs-init.org")
   (org-babel-load-file (expand-file-name "emacs-init.org"
                        user-emacs-directory))
+  ;(byte-compile-file (concat user-emacs-directory "early-init.el"))
+  ;(byte-compile-file (concat user-emacs-directory "init.el"))
   (byte-compile-file (concat user-emacs-directory "emacs-init.el")))

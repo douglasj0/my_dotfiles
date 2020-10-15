@@ -396,13 +396,15 @@ https://github.com/technomancy/better-defaults
 A small number of better defaults for Emacs
 
 #+BEGIN_SRC emacs-lisp
+
+;; moved to early-init.el
 ;(menu-bar-mode -1) ; was making tabbar tabs on 2nd frame
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
+;(when (fboundp 'tool-bar-mode)
+;  (tool-bar-mode -1))
+;(when (fboundp 'scroll-bar-mode)
+;  (scroll-bar-mode -1))
+;(when (fboundp 'horizontal-scroll-bar-mode)
+;  (horizontal-scroll-bar-mode -1))
 
 (require 'uniquify)
  (setq uniquify-buffer-name-style 'forward)
@@ -874,9 +876,10 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
   (setq dracula-alternate-mode-line-and-minibuffer t)
   :config
   (if (display-graphic-p)
-      (load-theme 'dracula :no-confirm)  ; Emacs in own window (zenburn)
+      (load-theme 'dracula :no-confirm)	 ; Emacs in own window (zenburn)
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
+)
 
  ;; too small
  ;(set-face-attribute 'default nil
@@ -897,7 +900,26 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
  ;        			  :weight 'bold
  ;        			  :slant 'normal))
  ;)
-)
+#+end_src
+
+** Darcula Theme from Jetbrains
+JetBrains Darcula (Default Dark) for Emacs
+https://github.com/ianpan870102/jetbrains-darcula-emacs-theme
+
+Commented out for now, its very dark
+
+#+begin_src emacs-lisp
+;(use-package darcula-theme
+;  :ensure t
+  ;:init
+  ;(setq dracula-enlarge-headings nil)
+  ;(setq dracula-alternate-mode-line-and-minibuffer t)
+  ;:config
+  ;(if (display-graphic-p)
+  ;    (load-theme 'darcula :no-confirm)	 ; Emacs in own window
+  ;  (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+  ;)
+;)
 #+end_src
 
 ** Telephone line modeline - commented out
@@ -1504,19 +1526,31 @@ https://github.com/tarsius/hl-todo
 ;        ("C-c C-p o" . org-passwords-open-url)))
 
 ;;; https://github.com/sabof/org-bullets
-(use-package org-bullets
+;(use-package org-bullets
+;  :ensure t
+;  :custom
+;  ;; org-bullets-bullet-list
+;  ;; default: "◉ ○ ✸ ✿"
+;  ;; large: ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+;  ;; Small: ► • ★ ▸
+;  (org-bullets-bullet-list '("•"))
+;  ;; others: ▼, ↴, ⬎, ⤷,…, and ⋱.
+;  ;; (org-ellipsis "⤵")
+;  (org-ellipsis "…")
+;  :hook
+;  (org-mode . org-bullets-mode))
+
+;;; org-superstar (replacement for org-bullets)
+;;; https://github.com/integral-dw/org-superstar-mode
+(use-package org-superstar
   :ensure t
   :custom
-  ;; org-bullets-bullet-list
-  ;; default: "◉ ○ ✸ ✿"
-  ;; large: ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
-  ;; Small: ► • ★ ▸
-  (org-bullets-bullet-list '("•"))
-  ;; others: ▼, ↴, ⬎, ⤷,…, and ⋱.
-  ;; (org-ellipsis "⤵")
-  (org-ellipsis "…")
+  ;(org-superstar-headline-bullets-list '("◉" "○" "✸" "✿"))
+  ;(org-superstar-bullet-list '("•"))
+  (org-superstar-bullet-list '("■" "◆" "▲" "▶"))
   :hook
-  (org-mode . org-bullets-mode))
+  (org-mode . org-superstar-mode)
+)
 
 ;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
 ;; https://orgmode.org/manual/Easy-templates.html
@@ -2150,16 +2184,19 @@ https://github.com/emacs-lsp/lsp-mode
 Homepage: https://emacs-lsp.github.io/lsp-mode/
 Installation: https://emacs-lsp.github.io/lsp-mode/page/installation/
 
+Install Python with framework
+env PYTHON_CONFIGURE_OPTS="--enable-framework CC=clang" pyenv install 3.8.6
+
 Installing python lsp in venv:
   pyenv virtualenv 2.7.18 emacs-py27
-  pyenv virtualenv 3.8.5 emacs-py3
+  pyenv virtualenv 3.8.6 emacs-py3
   pyenv versions
   pyenv global emacs-py3
   pyenv version
   pip install --upgrade pip
   pip install 'python-language-server[all]'
   pip list
-  pyenv global 3.8.5 # revert back
+  pyenv global 3.8.6 # revert back
   pip list
 
 #+begin_src emacs-lisp
