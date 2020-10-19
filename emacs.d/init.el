@@ -60,6 +60,15 @@
 (when (file-exists-p "~/.emacs.d/emacs-init.org")
   (org-babel-load-file (expand-file-name "emacs-init.org"
                        user-emacs-directory))
-  ;(byte-compile-file (concat user-emacs-directory "early-init.el"))
-  ;(byte-compile-file (concat user-emacs-directory "init.el"))
-  (byte-compile-file (concat user-emacs-directory "emacs-init.el")))
+;  ;(byte-compile-file (concat user-emacs-directory "early-init.el"))
+;  ;(byte-compile-file (concat user-emacs-directory "init.el"))
+;  (byte-compile-file (concat user-emacs-directory "emacs-init.el"))
+)
+
+;; when emacs-init.org is saved, re-generate config.el:
+;(defun my-tangle-config-org-hook-func ()
+;  (when (string= "emacs-init.org" (buffer-name))
+;	(let ((orgfile (concat my-user-emacs-directory "emacs-init.org"))
+;		  (elfile (concat my-user-emacs-directory "emacs-init.el")))
+;	  (my-tangle-config-org))))
+;(add-hook 'after-save-hook 'my-tangle-config-org-hook-func)

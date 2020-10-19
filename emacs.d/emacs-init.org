@@ -558,38 +558,38 @@ a tree layout file explorer for Emacs
 https://github.com/Alexander-Miller/treemacs
 
 #+begin_src emacs-lisp
-(use-package treemacs
-  :ensure t
-  :custom
-  (treemacs-width 20)
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  ;:bind
-  ;("M-0" . treemacs-select-window)
-  :config
-  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
-)
+;(use-package treemacs
+;  :ensure t
+;  :custom
+;  (treemacs-width 20)
+;  :init
+;  (with-eval-after-load 'winum
+;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;  ;:bind
+;  ;("M-0" . treemacs-select-window)
+;  :config
+;  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
+;)
 #+end_src
 
 Treemacs Projectile
 Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
 #+begin_src emacs-lisp
-(use-package treemacs-projectile
-  :ensure t
-  :after treemacs projectile
-)
-
-;; Removing, caused stringp, nul error for Dailylogs
-;; Also, looked neat, but slowed treemacs/dired down
-;(use-package treemacs-icons-dired
-;  :after treemacs dired
+;(use-package treemacs-projectile
 ;  :ensure t
-;  :config (treemacs-icons-dired-mode))
+;  :after treemacs projectile
+;)
 
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
+;;; Removing, caused stringp, nul error for Dailylogs
+;;; Also, looked neat, but slowed treemacs/dired down
+;;(use-package treemacs-icons-dired
+;;  :after treemacs dired
+;;  :ensure t
+;;  :config (treemacs-icons-dired-mode))
+
+;(use-package treemacs-magit
+;  :after treemacs magit
+;  :ensure t)
 #+end_src
 ** Mwim (Move Where I Mean)
 This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
@@ -1785,12 +1785,12 @@ SCHEDULED: %^t
           ;(dot . t)       ;Graphviz
           ;(calc . t)      ; Emacs Calc
           ;(fortran . t)   ;Fortran
-          (gnuplot . t)   ;requires gnuplot installed
+          ;(gnuplot . t)   ;requires gnuplot installed
           ;(haskell . t)   ;Haskell
           (java . t)      ;Java
           (js . t)        ;Javascript
           ;(latex . t)     ;LaTeX
-          (ledger . f)    ;Ledger
+          ;(ledger . f)    ;Ledger
           (lisp . t)      ;Lisp
           ;(lilypond . t)  ;Lilypond
           ;(lua . t)       ;Lua
@@ -1808,7 +1808,7 @@ SCHEDULED: %^t
           (ruby . t)      ;Ruby
           ;(sass . t)      ;Sass
           ;(scheme . t)    ;Scheme
-          (screen . t)    ;GNU Screen
+          ;(screen . t)    ;GNU Screen
           (sed . t)       ;Sed
           (shell . t)     ;shell
           (sql . t)       ; SQL
@@ -1980,10 +1980,10 @@ C-c C-i: show information on resclient variables at point
 (use-package restclient
   :ensure t)
 
-(use-package company-restclient
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-restclient))
+;(use-package company-restclient
+;  :ensure t
+;  :config
+;  (add-to-list 'company-backends 'company-restclient))
 #+end_src
 
 * Smartparens
@@ -2178,6 +2178,79 @@ To look at: https://fredrikmeyer.github.io/2020/08/26/emacs-python-venv.html
   ;("C-x p e" . pyenv-activate-current-project) ; not defined
 )
 #+end_src
+* Python
+# https://github.com/pyenv/pyenv-virtualenvwrapper
+# brew install pyenv-virtualenvwrapper
+# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+#
+# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
+# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+# or, for python3:  python3 -m venv ~/.virtualenvs/p3
+# enable: workon p3
+# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
+# stop:   deactivate p3
+# or, for python3:  deactivate
+
+# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
+pyenv virtualenv 3.8.1 emacs-python3
+pyenv local emacs-python3
+pyenv version
+
+pip install --upgrade pip
+#pip install virtualenv
+pip install 'python-language-server[all]'
+pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
+
+--
+
+To run code in emacs:
+M-x python-mode
+C-c C-p : run-python
+C-c C-c : python-shell-send-buffer
+
+C-c C-z : open a python shell
+C-c C-c : run the content of the buffer in the opened python shell
+C-c C-r : run the selected region in the python shell
+
+C-c C-c       python-shell-send-buffer
+C-c C-d       python-describe-at-point
+C-c C-f       python-eldoc-at-point
+C-c C-j       imenu
+C-c C-l       python-shell-send-file
+C-c C-p       run-python
+C-c C-r       python-shell-send-region
+C-c C-s       python-shell-send-string
+C-c C-t       Prefix Command
+C-c C-v       python-check
+C-c C-z       python-shell-switch-to-shell
+C-c <     python-indent-shift-left
+C-c >     python-indent-shift-right
+
+C-c C-t c python-skeleton-class
+C-c C-t d python-skeleton-def
+C-c C-t f python-skeleton-for
+C-c C-t i python-skeleton-if
+C-c C-t m python-skeleton-import
+C-c C-t t python-skeleton-try
+C-c C-t w python-skeleton-while
+
+live-py-plugin
+https://www.youtube.com/watch?v=bYy90EUAh98
+https://github.com/donkirkby/live-py-plugin
+Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
+#+begin_src emacs-lisp
+;(use-package live-py-mode
+;  :ensure t
+;  :defer t
+;)
+#+end_src
+
+Commented out, giving a not-found error in messages buffer
+#+begin_src emacs-lisp
+;(use-package python-mode
+;  :hook ((python-mode . lsp)))
+#+end_src
+
 * Lsp (Language Server Protocol)
 Client for Language Server Protocol (v3.14). lsp-mode aims to provide IDE-like experience by providing optional integration with the most popular Emacs packages like company, flycheck and projectile.
 https://github.com/emacs-lsp/lsp-mode
@@ -2283,13 +2356,6 @@ Installing python lsp in venv:
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 ;(use-package dap-python)
 #+end_src
-* Python
-Commented out, giving a not-found error in messages buffer
-
-#+begin_src emacs-lisp
-;(use-package python-mode
-;  :hook ((python-mode . lsp)))
-#+end_src
 * YASnippet (Snippet Completion)
 YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
 https://github.com/joaotavora/yasnippet
@@ -2302,14 +2368,14 @@ https://github.com/joaotavora/yasnippet
   :hook
   (prog-mode . yas-minor-mode))
 
-(use-package yasnippet-snippets
-  :ensure t)
+;(use-package yasnippet-snippets
+;  :ensure t)
 
-(use-package ivy-yasnippet
-  :ensure t
- ;:bind (:map yas-minor-mode-map
- ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
-)
+;(use-package ivy-yasnippet
+;  :ensure t
+; ;:bind (:map yas-minor-mode-map
+; ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
+;)
 #+end_src
 
 * Git
@@ -2453,7 +2519,9 @@ Commented out, giving a not-found error in messages buffer
   :after yaml-mode)
 #+end_src
 * -- Testing --
-** notmuch email
+Put packages to test here
+
+* notmuch email
 Emacs major mode for interacting with Notmuch
 https://notmuchmail.org/notmuch-emacs/
 
@@ -2471,214 +2539,29 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
   ; ;:after (:any org-plus-contrib notmuch)
   ;
 
-(use-package notmuch
-  :ensure t
-  :defer t
-  :config
-  (setq notmuch-search-oldest-first nil
-        notmuch-show-logo nil
-        mm-text-html-renderer 'shr
-        shr-inhibit-images nil
-        mime-view-text/html-previewer 'shr
-        mm-inline-text-html-with-images t
-        notmuch-multipart/alternative-discouraged '("text/html"))
-  (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
-)
-
-(use-package counsel-notmuch
-  :disabled
-  ;:ensure t
-  :defer t
-  :after notmuch
-)
-#+end_src
-** python
-# https://github.com/pyenv/pyenv-virtualenvwrapper
-# brew install pyenv-virtualenvwrapper
-# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
-#
-# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
-# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
-# or, for python3:  python3 -m venv ~/.virtualenvs/p3
-# enable: workon p3
-# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
-# stop:   deactivate p3
-# or, for python3:  deactivate
-
-# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
-pyenv virtualenv 3.8.1 emacs-python3
-pyenv local emacs-python3
-pyenv version
-
-pip install --upgrade pip
-#pip install virtualenv
-pip install 'python-language-server[all]'
-pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
-
---
-
-To run code in emacs:
-M-x python-mode
-C-c C-p : run-python
-C-c C-c : python-shell-send-buffer
-
-C-c C-z : open a python shell
-C-c C-c : run the content of the buffer in the opened python shell
-C-c C-r : run the selected region in the python shell
-
-C-c C-c       python-shell-send-buffer
-C-c C-d       python-describe-at-point
-C-c C-f       python-eldoc-at-point
-C-c C-j       imenu
-C-c C-l       python-shell-send-file
-C-c C-p       run-python
-C-c C-r       python-shell-send-region
-C-c C-s       python-shell-send-string
-C-c C-t       Prefix Command
-C-c C-v       python-check
-C-c C-z       python-shell-switch-to-shell
-C-c <     python-indent-shift-left
-C-c >     python-indent-shift-right
-
-C-c C-t c python-skeleton-class
-C-c C-t d python-skeleton-def
-C-c C-t f python-skeleton-for
-C-c C-t i python-skeleton-if
-C-c C-t m python-skeleton-import
-C-c C-t t python-skeleton-try
-C-c C-t w python-skeleton-while
-
-*** live-py-plugin
-https://www.youtube.com/watch?v=bYy90EUAh98
-
-https://github.com/donkirkby/live-py-plugin
-Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
-
-#+begin_src emacs-lisp
-;(use-package live-py-mode
+;(use-package notmuch
 ;  :ensure t
 ;  :defer t
+;  :config
+;  (setq notmuch-search-oldest-first nil
+;        notmuch-show-logo nil
+;        mm-text-html-renderer 'shr
+;        shr-inhibit-images nil
+;        mime-view-text/html-previewer 'shr
+;        mm-inline-text-html-with-images t
+;        notmuch-multipart/alternative-discouraged '("text/html"))
+;  (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
+;)
+;
+;(use-package counsel-notmuch
+;  :disabled
+;  ;:ensure t
+;  :defer t
+;  :after notmuch
 ;)
 #+end_src
-** treemacs
-https://github.com/Alexander-Miller/treemacs
-A tree layout file explorer for Emacs
 
-#+begin_src emacs-lisp
-;(use-package treemacs
-;  :ensure t
-;  :defer t
-;  :init
-;  (with-eval-after-load 'winum
-;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;  :config
-;  (progn
-;    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-;          treemacs-deferred-git-apply-delay      0.5
-;          treemacs-directory-name-transformer    #'identity
-;          treemacs-display-in-side-window        t
-;          treemacs-eldoc-display                 t
-;          treemacs-file-event-delay              5000
-;          treemacs-file-extension-regex          treemacs-last-period-regex-value
-;          treemacs-file-follow-delay             0.2
-;          treemacs-file-name-transformer         #'identity
-;          treemacs-follow-after-init             t
-;          treemacs-git-command-pipe              ""
-;          treemacs-goto-tag-strategy             'refetch-index
-;          treemacs-indentation                   2
-;          treemacs-indentation-string            " "
-;          treemacs-is-never-other-window         nil
-;          treemacs-max-git-entries               5000
-;          treemacs-missing-project-action        'ask
-;          treemacs-move-forward-on-expand        nil
-;          treemacs-no-png-images                 nil
-;          treemacs-no-delete-other-windows       t
-;          treemacs-project-follow-cleanup        nil
-;          treemacs-persist-file                  (expand-file-name "~/.emacs.d/cache/treemacs-persist" user-emacs-directory)
-;          treemacs-position                      'left
-;          treemacs-recenter-distance             0.1
-;          treemacs-recenter-after-file-follow    nil
-;          treemacs-recenter-after-tag-follow     nil
-;          treemacs-recenter-after-project-jump   'always
-;          treemacs-recenter-after-project-expand 'on-distance
-;          treemacs-show-cursor                   nil
-;          treemacs-show-hidden-files             t
-;          treemacs-silent-filewatch              nil
-;          treemacs-silent-refresh                nil
-;          treemacs-sorting                       'alphabetic-asc
-;          treemacs-space-between-root-nodes      t
-;          treemacs-tag-follow-cleanup            t
-;          treemacs-tag-follow-delay              1.5
-;          treemacs-user-mode-line-format         nil
-;          treemacs-user-header-line-format       nil
-;          treemacs-width                         35)
-;
-;    ;; The default width and height of the icons is 22 pixels. If you are
-;    ;; using a Hi-DPI display, uncomment this to double the icon size.
-;    ;;(treemacs-resize-icons 44)
-;
-;    (treemacs-follow-mode t)
-;    (treemacs-filewatch-mode t)
-;    (treemacs-fringe-indicator-mode t)
-;    (pcase (cons (not (null (executable-find "git")))
-;                 (not (null treemacs-python-executable)))
-;      (`(t . t)
-;       (treemacs-git-mode 'deferred))
-;      (`(t . _)
-;       (treemacs-git-mode 'simple))))
-;  :bind
-;  (:map global-map
-;        ("M-0"       . treemacs-select-window)
-;        ("C-x t 1"   . treemacs-delete-other-windows)
-;        ("C-x t t"   . treemacs)
-;        ("C-x t B"   . treemacs-bookmark)
-;        ("C-x t C-t" . treemacs-find-file)
-;        ("C-x t M-t" . treemacs-find-tag)))
-;
-;;(use-package treemacs-evil
-;;  :after treemacs evil
-;;  :ensure t)
-;
-;(use-package treemacs-projectile
-;  :after treemacs projectile
-;  :ensure t)
-;
-;(use-package treemacs-icons-dired
-;  :after treemacs dired
-;  :ensure t
-;  :config (treemacs-icons-dired-mode))
-;
-;(use-package treemacs-magit
-;  :after treemacs magit
-;  :ensure t)
-;
-;(use-package treemacs-persp
-;  :after treemacs persp-mode
-;  :ensure t
-;  :config (treemacs-set-scope-type 'Perspectives))
-#+end_src
-** gcmh
-https://gitlab.com/koral/gcmh
-The GNU Emacs Garbage Collector Magic Hack
-
-#+begin_src emacs-lisp
-;(use-package gcmh
-;  :ensure t
-;  :init
-;  (gcmh-mode 1))
-#+end_src
-** move-text
-https://github.com/emacsfodder/move-text
-move current line or region up or down
-
-#+begin_src emacs-lisp
-;(use-package move-text
-;  :ensure t
-;  :bind
-;  (([(meta shift up)] . move-text-up)
-;   ([(meta shift down)] . move-text-down)))
-#+end_src
-** neotree
+* neotree
 https://github.com/jaypei/emacs-neotree
 A emacs tree plugin like NerdTree for Vim.
 
@@ -2689,179 +2572,9 @@ A emacs tree plugin like NerdTree for Vim.
 #  ("M-p" . neotree-toggle)
 
 #+begin_src emacs-lisp
-;(use-package neotree
-;  :ensure t
-;  :bind
-;  ([f8] . neotree-toggle)
-;)
-#+end_src
-** recentf
-https://www.emacswiki.org/emacs/RecentFiles
-a minor mode that builds a list of recently opened files
-http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
-(autoload 'recentf "recentf" "List recent files" t)
-
-#(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-#(global-set-key (kbd "C-x C-r") 'helm-recentf)
-#:ensure nil
-#:init (recentf-mode 1) ;; turn it on
-
-#+begin_src emacs-lisp
-;(use-package recentf
-;  :config
-;  (setq recentf-save-file "~/.emacs.d/cache/recentf"
-;        recentf-max-saved-items 500
-;        recentf-max-menu-items 15
-;        ;; disable recentf-cleanup on Emacs start, because it can cause
-;        ;; problems with remote files
-;        recentf-auto-cleanup 'never)
-;  (recentf-mode +1))
-#+end_src
-** uniquify
-#+begin_src emacs-lisp
-;(use-package uniquify
-;  :defer 1
-;  :ensure nil
-;  :custom
-;  (setq uniquify-buffer-name-style 'forward
-;        uniquify-separator "/"
-;        uniquify-after-kill-buffer-p t     ; rename after killing uniquified
-;        uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-
-  ;(setq uniquify-buffer-name-style 'forward
-  ;      uniquify-separator ":"
-  ;      uniquify-strip-common-suffix nil
-  ;      read-file-name-completion-ignore-case t)
-
-  ;(uniquify-after-kill-buffer-p t)
-  ;(uniquify-buffer-name-style 'post-forward)
-  ;(uniquify-strip-common-suffix t)
-
-  ;(setq uniquify-buffer-name-style 'post-forward-angle-brackets) ;; or "forward"
-  ;(setq uniquify-min-dir-content 3)
-;)
-#+end_src
-** Themes - not using
-zenburn-theme
-https://github.com/bbatsov/zenburn-emacs
-The Zenburn colour theme ported to Emacs
-#+begin_src emacs-lisp
-;(use-package zenburn-theme
-;  :ensure t
-;  :config
-;  (if (display-graphic-p)
-;      (load-theme 'zenburn :no-confirm)  ; Emacs in own window (zenburn)
-;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-;  )
-;)
-#+end_src
-
-tomorrow-theme (nice blue theme)
-https://github.com/purcell/color-theme-sanityinc-tomorrow
-A set of comprehensive Emacs color themes based on Chris Kempson's 'tomorrow' themes
-#+begin_src emacs-lisp
-;(use-package color-theme-sanityinc-tomorrow
-;  :ensure t
-;  :config
-;  (if (display-graphic-p)
-;      (load-theme 'sanityinc-tomorrow-blue :no-confirm)  ; Emacs in own window (tomorrow-blue)
-;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-;  )
-;)
-#+end_src
-
-solarized-theme
-#+begin_src emacs-lisp
-;(use-package solarized-theme
-;  :ensure t
-;  :config
-;  (if (display-graphic-p)
-;      (load-theme 'solarized-dark :no-confirm)  ; Emacs in own window (solarized-dark)
-;    (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-;  )
-;)
-#+end_src
-
-acme
-https://github.com/ianpan870102/acme-emacs-theme
-#+begin_src emacs-lisp
-;(use-package acme-theme
-;  :ensure t
-;  :config
-;  (load-theme 'acme t))
-#+end_src
-** Tree Sitter
-[[https://ubolonton.github.io/emacs-tree-sitter/][Tree Sitter]] is a tool that provides syntax highlighting in some
-efficient way that I don't understand.
-
-#+begin_src emacs-lisp
-;  (straight-use-package
-;   '(tree-sitter :host github
-;                 :repo "ubolonton/emacs-tree-sitter"
-;                 :files ("lisp/*.el")))
-;
-;  (straight-use-package
-;   '(tree-sitter-langs :host github
-;                       :repo "ubolonton/emacs-tree-sitter"
-;                       :files ("langs/*.el" "langs/queries")))
-;
-;  (require 'tree-sitter-langs)
-;  (global-tree-sitter-mode)
-;  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-#+end_src
-** Powershell
-
-#+begin_src emacs-lisp
-  ;(use-package powershell)
-  ;; (use-package lsp-pwsh
-  ;;   :straight (lsp-pwsh
-  ;;              :host github
-  ;;              :repo "kiennq/lsp-powershell")
-  ;;   :hook (powershell-mode . lsp))
-#+end_src
-** Docker
-#+begin_src emacs-lisp
-;(use-package dockerfile-mode
-;  :ensure t
-;  :mode "Dockerfile\\'")
-#+end_src
-** Java
-Integrate java into =lsp-mode= and =dap-mode= with [[https://github.com/emacs-lsp/lsp-java][lsp-java]]:
-
-#+begin_src emacs-lisp
-;(defun my/setup-java-mode ()
-;  "Load lsp-java and start lsp mode"
-;  (interactive)
-;  (require 'lsp-java)
-;  (lsp)
-;  (when (require 'dap-java nil t)
-;    (dap-mode 1)))
-;(use-package
-;    lsp-java
-;  :requires (lsp)
-;  :defer t
-;  :hook ((java-mode . my/setup-java-mode))
-;  :config (setq lsp-java-format-settings-url (concat "file://" my/java-format-settings-file)
-;                lsp-java-format-comments-enabled t lsp-java-format-on-type-enabled nil
-;                lsp-java-code-generation-hash-code-equals-use-java7objects t
-;                lsp-java-code-generation-hash-code-equals-use-instanceof t
-;                lsp-java-code-generation-use-blocks t lsp-java-code-generation-generate-comments t))
-;(add-hook 'java-mode-hook #'my/setup-java-mode)
-#+end_src
-* Frog jump buffer - doesnt work with Dracula theme
-frog-jump-buffer is the fastest buffer-jumping Emacs lisp package around.
-https://github.com/waymondo/frog-jump-buffer
-
-#+begin_src emacs-lisp
-;(use-package frog-jump-buffer
-;  :ensure t)
-#+end_src
-
-* ztree (dir/diff)
-Ztree is a project dedicated to implementation of several text-tree applications
-https://github.com/fourier/ztree
-
-#+begin_src emacs-lisp
-(use-package ztree
-  :ensure t)
+(use-package neotree
+  :ensure t
+  :bind
+  ([f8] . neotree-toggle)
+)
 #+end_src
