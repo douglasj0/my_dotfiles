@@ -65,10 +65,15 @@
 ;  (byte-compile-file (concat user-emacs-directory "emacs-init.el"))
 )
 
-;; when emacs-init.org is saved, re-generate config.el:
-;(defun my-tangle-config-org-hook-func ()
-;  (when (string= "emacs-init.org" (buffer-name))
-;	(let ((orgfile (concat my-user-emacs-directory "emacs-init.org"))
-;		  (elfile (concat my-user-emacs-directory "emacs-init.el")))
-;	  (my-tangle-config-org))))
-;(add-hook 'after-save-hook 'my-tangle-config-org-hook-func)
+;; tangle and byte compile on emacs-init.org on buffer save or kill
+(defun my--tangle-byte-compile-org ()
+ "Tangles emacs.org and byte compiles ~/.emacs.d/"
+   (interactive)
+   (when (equal (buffer-name)
+                (concat "emacs-init.org"))
+     (org-babel-tangle)
+     ;(byte-recompile-directory (expand-file-name user-emacs-directory) 0)
+     (byte-compile-file (concat user-emacs-directory "emacs-init.el")) ))
+
+(add-hook 'after-save-hook #'my--tangle-byte-compile-org)
+(add-hook 'kill-emacs-hook #'my--tangle-byte-compile-org)

@@ -591,6 +591,24 @@ Projectile integration, the treemacs-projectile package lets you quickly add you
 ;  :after treemacs magit
 ;  :ensure t)
 #+end_src
+** Neotree
+https://github.com/jaypei/emacs-neotree
+A emacs tree plugin like NerdTree for Vim.
+
+#  :bind ("C-;" . neotree-toggle)
+#  :config (setq neo-theme (if window-system 'icons 'arrows))
+#  :bind ("<f5>" . neotree-toggle)
+#  :bind ("M-p" . neotree-toggle)
+
+#+begin_src emacs-lisp
+(use-package neotree
+  :ensure t
+  :bind
+  ("M-0" . neotree-toggle)
+  ;([f8] . neotree-toggle)
+)
+#+end_src
+
 ** Mwim (Move Where I Mean)
 This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
 https://github.com/alezost/mwim.el
@@ -2559,22 +2577,4 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
 ;  :defer t
 ;  :after notmuch
 ;)
-#+end_src
-
-* neotree
-https://github.com/jaypei/emacs-neotree
-A emacs tree plugin like NerdTree for Vim.
-
-#  :bind ("C-;" . neotree-toggle)
-#  :config
-#  (setq neo-theme (if window-system 'icons 'arrows)))
-#   :bind ("<f5>" . neotree-toggle)
-#  ("M-p" . neotree-toggle)
-
-#+begin_src emacs-lisp
-(use-package neotree
-  :ensure t
-  :bind
-  ([f8] . neotree-toggle)
-)
 #+end_src
