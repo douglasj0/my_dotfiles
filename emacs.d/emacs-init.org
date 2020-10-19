@@ -2856,3 +2856,12 @@ https://github.com/waymondo/frog-jump-buffer
 ;(use-package frog-jump-buffer
 ;  :ensure t)
 #+end_src
+
+* ztree (dir/diff)
+Ztree is a project dedicated to implementation of several text-tree applications
+https://github.com/fourier/ztree
+
+#+begin_src emacs-lisp
+(use-package ztree
+  :ensure t)
+#+end_src
