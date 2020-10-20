@@ -1933,7 +1933,15 @@ https://org-roam.readthedocs.io/en/master/
            ("C-c n c" . org-roam-db-build-cache))
           :map org-mode-map
           (("C-c n i" . org-roam-insert))
-          (("C-c n I" . org-roam-insert-immediate))))
+          (("C-c n I" . org-roam-insert-immediate)))
+  :config
+  (setq org-roam-capture-templates
+    '(("d" "default" plain (function org-roam-capture--get-point)
+       "%?"
+       :file-name "%<%Y%m%d>-${slug}"
+       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+       :unnarrowed t)))
+)
 
 
 ;    :config
