@@ -4821,8 +4821,7 @@ https://github.com/fourier/ztree
 ;  :ensure t)
 #+end_src
 
-* -- Testing --
-** notmuch email
+* notmuch email
 Emacs major mode for interacting with Notmuch
 https://notmuchmail.org/notmuch-emacs/
 
@@ -4861,7 +4860,7 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
   :after notmuch
 )
 #+end_src
-** python
+* python-test
 # https://github.com/pyenv/pyenv-virtualenvwrapper
 # brew install pyenv-virtualenvwrapper
 # (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
@@ -4929,7 +4928,7 @@ Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
 ;  :defer t
 ;)
 #+end_src
-** treemacs
+* treemacs
 https://github.com/Alexander-Miller/treemacs
 A tree layout file explorer for Emacs
 
@@ -5026,7 +5025,7 @@ A tree layout file explorer for Emacs
 ;  :ensure t
 ;  :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
-** gcmh
+* gcmh
 https://gitlab.com/koral/gcmh
 The GNU Emacs Garbage Collector Magic Hack
 
@@ -5036,7 +5035,7 @@ The GNU Emacs Garbage Collector Magic Hack
 ;  :init
 ;  (gcmh-mode 1))
 #+end_src
-** move-text
+* move-text
 https://github.com/emacsfodder/move-text
 move current line or region up or down
 
@@ -5047,7 +5046,7 @@ move current line or region up or down
 ;  (([(meta shift up)] . move-text-up)
 ;   ([(meta shift down)] . move-text-down)))
 #+end_src
-** neotree
+* neotree
 https://github.com/jaypei/emacs-neotree
 A emacs tree plugin like NerdTree for Vim.
 
@@ -5064,7 +5063,7 @@ A emacs tree plugin like NerdTree for Vim.
 ;  ([f8] . neotree-toggle)
 ;)
 #+end_src
-** recentf
+* recentf
 https://www.emacswiki.org/emacs/RecentFiles
 a minor mode that builds a list of recently opened files
 http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
@@ -5086,7 +5085,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 ;        recentf-auto-cleanup 'never)
 ;  (recentf-mode +1))
 #+end_src
-** uniquify
+* uniquify
 #+begin_src emacs-lisp
 ;(use-package uniquify
 ;  :defer 1
@@ -5110,7 +5109,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
   ;(setq uniquify-min-dir-content 3)
 ;)
 #+end_src
-** Themes - not using
+* Themes - not using
 zenburn-theme
 https://github.com/bbatsov/zenburn-emacs
 The Zenburn colour theme ported to Emacs
@@ -5159,7 +5158,7 @@ https://github.com/ianpan870102/acme-emacs-theme
 ;  :config
 ;  (load-theme 'acme t))
 #+end_src
-** Tree Sitter
+* Tree Sitter
 [[https://ubolonton.github.io/emacs-tree-sitter/][Tree Sitter]] is a tool that provides syntax highlighting in some
 efficient way that I don't understand.
 
@@ -5178,7 +5177,7 @@ efficient way that I don't understand.
 ;  (global-tree-sitter-mode)
 ;  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 #+end_src
-** Powershell
+* Powershell
 
 #+begin_src emacs-lisp
   ;(use-package powershell)
@@ -5188,13 +5187,13 @@ efficient way that I don't understand.
   ;;              :repo "kiennq/lsp-powershell")
   ;;   :hook (powershell-mode . lsp))
 #+end_src
-** Docker
+* Docker
 #+begin_src emacs-lisp
 ;(use-package dockerfile-mode
 ;  :ensure t
 ;  :mode "Dockerfile\\'")
 #+end_src
-** Java
+* Java
 Integrate java into =lsp-mode= and =dap-mode= with [[https://github.com/emacs-lsp/lsp-java][lsp-java]]:
 
 #+begin_src emacs-lisp
@@ -5216,4 +5215,22 @@ Integrate java into =lsp-mode= and =dap-mode= with [[https://github.com/emacs-ls
 ;                lsp-java-code-generation-hash-code-equals-use-instanceof t
 ;                lsp-java-code-generation-use-blocks t lsp-java-code-generation-generate-comments t))
 ;(add-hook 'java-mode-hook #'my/setup-java-mode)
+#+end_src
+
+* Neotree
+https://github.com/jaypei/emacs-neotree
+A emacs tree plugin like NerdTree for Vim.
+
+#  :bind ("C-;" . neotree-toggle)
+#  :config (setq neo-theme (if window-system 'icons 'arrows))
+#  :bind ("<f5>" . neotree-toggle)
+#  :bind ("M-p" . neotree-toggle)
+
+#+begin_src emacs-lisp
+;(use-package neotree
+;  :ensure t
+;  :bind
+;  ("M-0" . neotree-toggle)
+;  ;([f8] . neotree-toggle)
+;)
 #+end_src

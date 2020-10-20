@@ -8,7 +8,7 @@ alias -- po='popd'
 alias -- t1='TERM=vt100; export TERM; stty rows 24; DISPLAY=kludge:0.0; export DISPLAY'
 
 alias keepalive='while true; do date; sleep 120; done'
-alias git_repo_name='git remote show -n origin | grep Fetch | cut -d: -f2-'
+
 alias ping4='ping -c4'
 alias weather='curl wttr.in/chicago'
 alias speedtest='wget -O /dev/null http://speedtest.wdc01.softlayer.com/downloads/test100.zip'
@@ -23,5 +23,15 @@ alias terraform_graph='terraform graph | dot -Tpng > graph.png'
 
 # git aliases
 alias gg="git grep"
+alias git_repo_name='git remote show -n origin | grep Fetch | cut -d: -f2-'
 alias git-unfuck="git reset --hard HEAD"
 alias gitGraph='git log --graph --oneline --all --decorate --color'
+
+# helpful git rebase for PR function from Jody
+git_repo_remaster () {
+  BRANCH=$(git status | awk '{print $3}' | head -n 1)
+  git checkout master
+  git pull --prune
+  git checkout ${BRANCH}
+  git rebase $1 master
+}

@@ -558,55 +558,38 @@ a tree layout file explorer for Emacs
 https://github.com/Alexander-Miller/treemacs
 
 #+begin_src emacs-lisp
-;(use-package treemacs
-;  :ensure t
-;  :custom
-;  (treemacs-width 20)
-;  :init
-;  (with-eval-after-load 'winum
-;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;  ;:bind
-;  ;("M-0" . treemacs-select-window)
-;  :config
-;  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
-;)
+(use-package treemacs
+  :ensure t
+  :custom
+  (treemacs-width 20)
+  ;:init
+  ;(with-eval-after-load 'winum
+  ;  (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :bind
+  ("M-0" . treemacs-select-window)
+  :config
+  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
+)
 #+end_src
 
 Treemacs Projectile
 Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
 #+begin_src emacs-lisp
-;(use-package treemacs-projectile
-;  :ensure t
-;  :after treemacs projectile
-;)
+(use-package treemacs-projectile
+  :ensure t
+  :after treemacs projectile
+)
 
-;;; Removing, caused stringp, nul error for Dailylogs
+;;; Removing, caused stringp, null error for Dailylogs
 ;;; Also, looked neat, but slowed treemacs/dired down
 ;;(use-package treemacs-icons-dired
 ;;  :after treemacs dired
 ;;  :ensure t
 ;;  :config (treemacs-icons-dired-mode))
 
-;(use-package treemacs-magit
-;  :after treemacs magit
-;  :ensure t)
-#+end_src
-** Neotree
-https://github.com/jaypei/emacs-neotree
-A emacs tree plugin like NerdTree for Vim.
-
-#  :bind ("C-;" . neotree-toggle)
-#  :config (setq neo-theme (if window-system 'icons 'arrows))
-#  :bind ("<f5>" . neotree-toggle)
-#  :bind ("M-p" . neotree-toggle)
-
-#+begin_src emacs-lisp
-(use-package neotree
-  :ensure t
-  :bind
-  ("M-0" . neotree-toggle)
-  ;([f8] . neotree-toggle)
-)
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
 #+end_src
 
 ** Mwim (Move Where I Mean)
