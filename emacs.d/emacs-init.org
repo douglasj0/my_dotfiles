@@ -9,6 +9,9 @@ Transfered from ~/.emacs.d/init.el
 Moved use-package and org-plus-contrib back to init.el to fix org-version
 
 #+begin_src emacs-lisp
+;;; emacs-init.el --- -*- lexical-binding: t -*-
+;;; https://nullprogram.com/blog/2016/12/22/
+
 ;; whoami?
 (setq
  user-full-name "Douglas Jackson"
@@ -564,7 +567,7 @@ https://github.com/Alexander-Miller/treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :ensure t
-  :disabled t ;disables customizations, but still load package
+  :disabled t ;disables use-package customizations only
   :defer t
   ;:custom
   ;(treemacs-width 20)

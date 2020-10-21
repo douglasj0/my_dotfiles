@@ -1,4 +1,4 @@
-;
+;;; early-init.el --- -*- lexical-binding: t -*-
 ;
 ; disabling those in your init file, but elements were loaded before your init file, so you HAVE to call scroll-bar-mode and tool-bar-mode, which can take quite a lot of time (more than 100ms on my laptop)
 

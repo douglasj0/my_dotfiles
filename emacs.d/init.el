@@ -1,3 +1,6 @@
+;;; init.el --- -*- lexical-binding: t -*-
+;;; https://nullprogram.com/blog/2016/12/22/
+
 ; -*- mode: emacs-lisp -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Doug's GNU Emacs startup file                                           ;;;
