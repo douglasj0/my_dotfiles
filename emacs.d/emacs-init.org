@@ -567,7 +567,7 @@ https://github.com/Alexander-Miller/treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :ensure t
-  :disabled t ;disables use-package customizations only
+  ;:disabled t ;disables use-package customizations only
   :defer t
   ;:custom
   ;(treemacs-width 20)
