@@ -1958,6 +1958,31 @@ https://org-roam.readthedocs.io/en/master/
        :unnarrowed t)))
 )
 
+;  (setq org-roam-capture-templates
+;    '(("n" "Note" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Note-%<%Y%m%d>-${slug}"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("p" "paper" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Paper-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:paper.org][R:Paper]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("j" "project" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Proj-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:project.org][R:Project]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("s" "proposal" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Proposal-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:proposal.org][R:Proposal]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("d" "Default" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "%<%Y%m%d>-${slug}"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;       ))
 
 ;    :config
 ;    (setq org-roam-capture-templates
