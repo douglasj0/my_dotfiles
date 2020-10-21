@@ -22,8 +22,12 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version
                  "%b"))))
 
 ;;;; Load Customizations if they exist
+;; https://lupan.pl/dotemacs/
+;(setq custom-file "~/Sync/elisp/custom.el")
+;(load custom-file 'noerror)
 (setq custom-file "~/Sync/elisp/custom.el")
-(load custom-file 'noerror)
+(if (file-exists-p custom-file)
+    (load custom-file))
 
 ;; keep customize settings in their own file
 ;(setq custom-file "~/.emacs.d/custom.el")
@@ -560,6 +564,7 @@ https://github.com/Alexander-Miller/treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :ensure t
+  :disabled t ;disables customizations, but still load package
   :defer t
   ;:custom
   ;(treemacs-width 20)
@@ -588,9 +593,9 @@ https://github.com/Alexander-Miller/treemacs
   :bind
   (:map global-map
         ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
+        ;("C-x t 1"   . treemacs-delete-other-windows) ;delete all other tabs
         ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
+        ;("C-x t B"   . treemacs-bookmark) ;switch to buffer in other tab
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag))
 )
