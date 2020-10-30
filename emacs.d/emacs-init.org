@@ -1,4 +1,4 @@
-#-*- mode: org; fill-column: 78 -*-
+-*- mode: org; fill-column: 78 -*-
 #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 
@@ -1585,10 +1585,11 @@ https://github.com/tarsius/hl-todo
   (org-mode . org-superstar-mode)
 )
 
-;; Enable easy templates (separated out in org-mode 9.2?), menu of template choices:  C-c C-,
+;; Enable easy templates (separated out in org-mode 9.2?)
+;; or use the menu of template choices:  C-c C-,
 ;; https://orgmode.org/manual/Easy-templates.html
 ;; https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L65
-(use-package org-tempo)
+;(use-package org-tempo)
 
 ;; Prevent inadvertently edits an the invisible part of the buffer
 (setq-default org-catch-invisible-edits 'smart)
@@ -2572,17 +2573,19 @@ Commented out, giving a not-found error in messages buffer
 ;  :hook (emacs-lisp-mode . yas-minor-mode))
 #+end_src
 * YAML
-#+begin_src emacs-lisp
-(use-package yaml-mode
-  :ensure t
-  :mode "\\.yml\\'"
-  :mode "\\.yaml\\'"
-  :hook ((yaml-mode . lsp)
-         (yaml-mode . yaml-imenu-enable)))
+Disabled for now as this loads it into an LSP
 
-(use-package yaml-imenu
-  :ensure t
-  :after yaml-mode)
+#+begin_src emacs-lisp
+;(use-package yaml-mode
+;  :ensure t
+;  :mode "\\.yml\\'"
+;  :mode "\\.yaml\\'"
+;  :hook ((yaml-mode . lsp)
+;         (yaml-mode . yaml-imenu-enable)))
+;
+;(use-package yaml-imenu
+;  :ensure t
+;  :after yaml-mode)
 #+end_src
 * -- Testing --
 Put packages to test here
