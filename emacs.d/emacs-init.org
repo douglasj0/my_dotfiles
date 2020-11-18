@@ -1200,6 +1200,8 @@ Hide file detail toggle `(`
   :config
      (setq-default dired-omit-files-p t)
      (setq dired-listing-switches "-alhv")
+     ;(setq dired-use-ls-dired nil)
+     ;(setq dired-listing-switches "-agho --group-directories-first") ; errors
      (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
      ;(define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy) ; requires dired-hacks
      (define-key dired-mode-map (kbd "h") #'dired-omit-mode)
