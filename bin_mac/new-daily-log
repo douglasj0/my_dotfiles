@@ -87,6 +87,7 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
 \n* Friday
+\n8:30-9:30 email/slack catch-up
 \n9:30-10:30 [Meeting] SRE's Unite
 \n12:30-1 [Meeting] Kill Chi2 Biweekly Sync
 \n1-1:30 [Meeting] Virtual coffee talk
