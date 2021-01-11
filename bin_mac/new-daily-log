@@ -64,32 +64,30 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n.
 \n9-3 ghprod AMI Creation day reminder
 \n10:30-11 Log into GH4W to keep account active
-\n11-11:30 [Meeting] Douglas / Randy 1:1
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
+\n3-3:30 [Meeting] Doug / Johnny 1:1
 \n* Tuesday
 \n8:30-9:30 email/slack catch-up
-\n9:30-10 [Meeting] AMI QA Sync
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
 \n* Wednesday
 \n8:30-9:30 email/slack catch-up
-\n11:30-12 [Meeting] Tech Bi-weekly All Hands
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-3 [Meeting] Work Social Hangout
 \n3-4 [Meeting] Postmortems Weekly
 \n* Thursday
 \n8:30-9:30 email/slack catch-up
-\n9:30-10 [Meeting] AMI QA Sync
+\n11-11:30 [Meeting] Tech Bi-weekly All Hands
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
+\n1-2 [Meeting] CHI2 Shutdown Discussion
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
 \n* Friday
 \n8:30-9:30 email/slack catch-up
 \n9:30-10:30 [Meeting] SRE's Unite
-\n12:30-1 [Meeting] Kill Chi2 Biweekly Sync
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 Learning Friday Time
 \n2-3 [Meeting] Security Engineering Team: Weekly Status and Project Review
