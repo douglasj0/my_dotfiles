@@ -139,6 +139,18 @@ source $HOME/.dotfiles/shell_aliases
 # Functions
 # setenv for csh junkies (including tset)
 seten() { export $1=$2 }
+
+# decode base64 from stdin
+decode64 () {
+  echo "$1" | base64 -d | pbcopy
+}
+dbldecode64 () {
+  echo "$1" | base64 -d | base64 -d | pbcopy
+}
+encode64 () {
+  echo "$1" | base64 ; echo
+}
+
 # repeat last command with sudo
 fucking() {
      LAST_CMD=`fc -nl -1`

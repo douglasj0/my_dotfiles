@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Cleanup
-rm snapshots.txt snapshot_dates.txt
+rm -f /tmp/snapshots.txt /tmp/snapshot_dates.txt
 
 # generage snapshot list
-tmutil listlocalsnapshots / > snapshots.txt
+tmutil listlocalsnapshots / > /tmp/snapshots.txt
 
-awk -F. '/com.apple/ {print $4}' snapshots.txt > snapshot_dates.txt
+awk -F. '/com.apple/ {print $4}' /tmp/snapshots.txt > /tmp/snapshot_dates.txt
 
 while read DATES; do
   echo "Deleting ${DATES}"
   sudo tmutil deletelocalsnapshots ${DATES}
-done < snapshot_dates.txt
+done < /tmp/snapshot_dates.txt

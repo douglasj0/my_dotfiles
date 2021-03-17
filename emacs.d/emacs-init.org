@@ -2631,3 +2631,182 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
 ;  :after notmuch
 ;)
 #+end_src
+
+* mu4e email
+
+#+begin_src emacs-lisp
+(use-package org-mime
+  :ensure t
+)
+
+(use-package mu4e
+  :ensure nil
+  :defer f
+  :commands (mu4e)
+  :bind (("C-c m" . mu4e))
+  :load-path "/usr/local/Cellar/mu/1.4.15/share/emacs/site-lisp/mu/mu4e"
+  :config
+  (setq mu4e-maildir (expand-file-name "~/Mail/"))
+
+;; to view selected message in the browser, no signin, just html mail
+(add-to-list 'mu4e-view-actions
+  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+;; enable inline images
+(setq mu4e-view-show-images t)
+;; every new email composition gets its own frame!
+(setq mu4e-compose-in-new-frame t)
+;; don't save message to Sent Messages, IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+(add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
+;; <tab> to navigate to links, <RET> to open them in browser
+(add-hook 'mu4e-view-mode-hook
+  (lambda()
+;; try to emulate some of the eww key-bindings
+(local-set-key (kbd "<RET>") 'mu4e~view-browse-url-from-binding)
+(local-set-key (kbd "<tab>") 'shr-next-link)
+(local-set-key (kbd "<backtab>") 'shr-previous-link)))
+
+;; from https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/elgoumx
+(add-hook 'mu4e-headers-mode-hook
+      (defun my/mu4e-change-headers ()
+	(interactive)
+	(setq mu4e-headers-fields
+	      `((:human-date . 25) ;; alternatively, use :date
+		(:flags . 6)
+		(:from . 22)
+		(:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
+		(:size . 7)))))
+
+;; if you use date instead of human-date in the above, use this setting
+;; give me ISO(ish) format date-time stamps in the header list
+;(setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
+
+;; spell check
+(add-hook 'mu4e-compose-mode-hook
+    (defun my-do-compose-stuff ()
+       "My settings for message composition."
+       (visual-line-mode)
+       (org-mu4e-compose-org-mode)
+           (use-hard-newlines -1)
+       (flyspell-mode)))
+
+;;set up queue for offline email
+;;use mu mkdir  ~/Maildir/acc/queue to set up first
+(setq smtpmail-queue-mail nil)  ;; start in normal mode
+
+;;from the info manual
+(setq mu4e-attachment-dir  "~/Downloads")
+
+(setq message-kill-buffer-on-exit t)
+(setq mu4e-compose-dont-reply-to-self t)
+
+;; Refresh email using isync every 10 minutes
+(setq mu4e-update-interval (* 10 60))
+(setq mu4e-get-mail-command "mbsync -a")
+;; This i s set to 't' to avoid mail syncing issues with mbsync
+(setq mu4e-change-filenames-when-moving t)
+
+;; mu4e-context
+(setq mu4e-context-policy 'pick-first)
+(setq mu4e-compose-context-policy 'always-ask)
+
+(setq mu4e-contexts
+  (list
+   (make-mu4e-context
+    :name "adbjackson-gmail" ;; gmail.com
+    :enter-func (lambda () (mu4e-message "Entering context dbjackson-gmail"))
+    :leave-func (lambda () (mu4e-message  "Leaving context dbjackson-gmail"))
+    :match-func (lambda (msg)
+                  (when msg
+                (mu4e-message-contact-field-matches
+                 msg '(:from :to :cc :bcc) "dbjackson@gmail.com")))
+    :vars '((user-mail-address  . "dbjackson@gmail.com")
+            (user-full-name     . "Douglas Jackson")
+            (mu4e-sent-folder   . "/dbjackson-gmail-com/sent")
+            (mu4e-drafts-folder . "/dbjackson-gmail-com/drafts")
+            (mu4e-trash-folder  . "/dbjackson-gmail-com/trash")
+            (mu4e-refile-folder . "/dbjackson-gmail-com/all-mail")
+            (mu4e-compose-signature . (concat "Doug Jackson\n" "dbjackson@gmail.com\n"))
+            (mu4e-compose-format-flowed . t)
+            ;(smtpmail-queue-dir . "/dbjackson-gmail-com/queue/cur")
+            (message-send-mail-function . smtpmail-send-it)
+            ;(smtpmail-smtp-user . "dbjackson@gmail.com")
+            ;(smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
+            ;(smtpmail-auth-credentials . (expand-file-name "~/.authinfo.gpg"))
+            ;(smtpmail-default-smtp-server . "smtp.gmail.com")
+            ;(smtpmail-smtp-server . "smtp.gmail.com")
+            ;(smtpmail-smtp-service . 587)
+            ;(smtpmail-debug-info . t)
+            ;(smtpmail-debug-verbose . t)
+            (mu4e-maildir-shortcuts . ( ("/dbjackson-gmail-com/inbox"    . ?i)
+                                        ("/dbjackson-gmail-com/sent"     . ?s)
+                                        ("/dbjackson-gmail-com/trash"    . ?t)
+                                        ("/dbjackson-gmail-com/all-mail" . ?a)
+                                        ("/dbjackson-gmail-com/starred"  . ?r)
+                                        ("/dbjackson-gmail-com/drafts"   . ?d)
+                                        ))))
+   (make-mu4e-context
+    :name "bdjackson0-yahoo" ;; yahoo
+    :enter-func (lambda () (mu4e-message "Entering context djackson0-yahoo"))
+    :leave-func (lambda () (mu4e-message  "Leaving context djackson0-yahoo"))
+    :match-func (lambda (msg)
+                  (when msg
+                (mu4e-message-contact-field-matches
+                 msg '(:from :to :cc :bcc) "djackson0@yahoo.comm")))
+    :vars '((user-mail-address  . "djackson0@yahoo.com")
+            (user-full-name     . "Douglas Jackson")
+            (mu4e-sent-folder   . "/djackson0-yahoo-com/sent")
+            (mu4e-drafts-folder . "/djackson0-yahoo-com/drafts")
+            (mu4e-trash-folder  . "/djackson0-yahoo-com/trash")
+            (mu4e-compose-signature . (concat "Formal Signature\n" "Emacs 25, org-mode 9, mu4e 1.0\n"))
+            (mu4e-compose-format-flowed . t)
+            ;(smtpmail-queue-dir . "/dbjackson-gmail-com/queue/cur")
+            (message-send-mail-function . smtpmail-send-it)
+            ;(smtpmail-smtp-user . "djackson0@yahoo.com")
+            ;(smtpmail-starttls-credentials . (("smtp.gmail.com" 587 nil nil)))
+            ;(smtpmail-auth-credentials . (expand-file-name "~/.authinfo.gpg"))
+            ;(smtpmail-default-smtp-server . "smtp.gmail.com")
+            ;(smtpmail-smtp-server . "smtp.gmail.com")
+            ;(smtpmail-smtp-service . 587)
+            ;(smtpmail-debug-info . t)
+            ;(smtpmail-debug-verbose . t)
+            (mu4e-maildir-shortcuts . ( ("/djackson0-yahoo-com/inbox"    . ?i)
+                                        ("/djackson0-yahoo-com/sent"     . ?s)
+                                        ("/djackson0-yahoo-com/trash"    . ?t)
+                                        ("/djackson0-yahoo-com/all-mail" . ?a)
+                                        ("/djackson0-yahoo-com/starred"  . ?r)
+                                        ("/djackson0-yahoo-com/drafts"   . ?d)
+                                        ))))
+   (make-mu4e-context
+    :name "ggrubhub" ;; Grubhub converted from mbox
+    :enter-func (lambda () (mu4e-message "Entering context grubhub"))
+    :leave-func (lambda () (mu4e-message  "Leaving context grubhub"))
+    :match-func (lambda (msg)
+                  (when msg
+                (mu4e-message-contact-field-matches
+                 msg '(:from :to :cc :bcc) "djackson@grubhub.com")))
+    :vars '((user-mail-address  . "djackson@grubhub.com")
+            (user-full-name     . "Douglas Jackson")
+            (mu4e-sent-folder   . "/grubhub/sent")
+            (mu4e-drafts-folder . "/grubhub/drafts")
+            (mu4e-trash-folder  . "/grubhub/trash")
+            (mu4e-compose-signature . (concat "Formal Signature\n" "Emacs 25, org-mode 9, mu4e 1.0\n"))
+            (mu4e-compose-format-flowed . t)
+            (mu4e-maildir-shortcuts . ( ("/grubhub/inbox"    . ?i)
+                                        ("/grubhub/all-mail" . ?a)
+                                        ))))
+
+))
+
+)
+
+;(use-package mu4e-alert
+;  :ensure t
+;  :after mu4e
+;  :hook ((after-init . mu4e-alert-enable-mode-line-display)
+;         (after-init . mu4e-alert-enable-notifications))
+;  :config (mu4e-alert-set-default-style 'libnotify)
+;)
+#+end_src
