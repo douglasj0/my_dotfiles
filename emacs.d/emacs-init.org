@@ -136,6 +136,11 @@ Configuring built in packages
 ;; Invoke M-x without the Alt key (from Steve Yegge's blog)
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-c\C-m" 'execute-extended-command)
+
+;; yank menu
+ (global-set-key "\C-cy" '(lambda ()
+                                 (interactive)
+                                 (popup-menu 'yank-menu)))
 #+END_SRC
 
 ** global settings
@@ -1957,7 +1962,7 @@ https://org-roam.readthedocs.io/en/master/
     '(("d" "default" plain (function org-roam-capture--get-point)
        "%?"
        :file-name "%<%Y%m%d>-${slug}"
-       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n#+STARTUP: overview\n\n- tags :: \n\n"
        :unnarrowed t)))
 )
 
