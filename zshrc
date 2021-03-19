@@ -141,11 +141,13 @@ source $HOME/.dotfiles/shell_aliases
 seten() { export $1=$2 }
 
 # decode base64 from stdin
+# decode base64 from stdin copy to clipboard and stdout
+# note its using process substitution, not posix compliant
 decode64 () {
-  echo "$1" | base64 -d | pbcopy
+  echo "$1" | base64 -d | tee >(pbcopy)
 }
 dbldecode64 () {
-  echo "$1" | base64 -d | base64 -d | pbcopy
+  echo "$1" | base64 -d | base64 -d | tee >(pbcopy)
 }
 encode64 () {
   echo "$1" | base64 ; echo
