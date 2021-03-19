@@ -22,8 +22,9 @@ Darwin)  # Darwin Environment
 
 path=( ~ ~/bin /Applications/Emacs.app/Contents/MacOS
   /Applications/Emacs.app/Contents/MacOS/bin
-  /Applications/Xcode.app/Contents/Developer/Tools /usr/local/bin
-  /usr/local/sbin /usr/local/opt/openssl/bin /usr/local/opt/ruby/bin
+  /Applications/Xcode.app/Contents/Developer/Tools
+  /usr/local/lib/ruby/gems/3.0.0/bin /usr/local/opt/ruby/bin
+  /usr/local/bin /usr/local/sbin /usr/local/opt/openssl/bin
   /usr/bin /bin /usr/sbin /sbin /opt/X11/bin /usr/local/opt/qt/bin )
 
 manpath=( /usr/local/share/man /usr/local/man /usr/share/man /usr/X11/man )
@@ -34,7 +35,7 @@ export TMPDIR=/tmp
 Linux)  # Based off of Ubuntu
 [ ! -z "$PS1" ] && echo ".linux zshenv loaded"
 
-path=(~ ~/bin ~/scripts ~/.local/bin /usr/local/sbin /usr/local/bin
+path=( ~ ~/bin ~/scripts ~/.local/bin /usr/local/sbin /usr/local/bin
   /usr/sbin /usr/bin /sbin /bin /usr/games /opt/jdk /opt/jdk/bin
   /usr/java/bin /usr/local/java/bin )
 

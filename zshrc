@@ -310,11 +310,11 @@ if [[ -f ~/Library/mysql/com.mysql.mysqld.plist ]]; then
     alias stop_mysql="sudo launchctl unload ~/Library/mysql/com.mysql.mysqld.plist"
 fi
 
-# pyenv local git install
+# pyenv local git install (multiple python versions)
 if file ~/.pyenv/bin/pyenv > /dev/null; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; fi
 if file ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
-# jenv darwin
+# jenv darwin (multiple java versions)
 if which jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jenv init -)"; fi
 ;; # end Darwin
 
