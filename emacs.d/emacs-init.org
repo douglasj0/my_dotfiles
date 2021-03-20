@@ -1964,6 +1964,18 @@ https://org-roam.readthedocs.io/en/master/
        :file-name "%<%Y%m%d>-${slug}"
        :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n#+STARTUP: overview\n\n- tags :: \n\n"
        :unnarrowed t)))
+
+  ;; Update a field (#+LAST_MODIFIED: ) at save using bulit in time-stamp
+  ;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
+  (add-hook 'org-mode-hook (lambda ()
+                           (setq-local time-stamp-active t
+                                       time-stamp-line-limit 18
+                                       time-stamp-start "^#\\+LAST_MODIFIED: [ \t]*"
+                                       time-stamp-end "$"
+                                       time-stamp-format "\[%Y-%m-%d %a %H:%M\]")
+                           (add-hook 'before-save-hook 'time-stamp nil 'local)))
+
+
 )
 
 ;  (setq org-roam-capture-templates

@@ -12,3 +12,16 @@
   (scroll-bar-mode -1))
 (when (fboundp 'horizontal-scroll-bar-mode)
   (horizontal-scroll-bar-mode -1))
+
+;; Startup time
+;; https://www.reddit.com/r/emacs/comments/m8d55l/what_is_your_startup_time
+(defun efs/display-startup-time ()
+  (message
+   "Emacs loaded in %s with %d garbage collections."
+   (format
+    "%.2f seconds"
+    (float-time
+     (time-subtract after-init-time before-init-time)))
+   gcs-done))
+
+(add-hook 'emacs-startup-hook #'efs/display-startup-time)
