@@ -13,7 +13,16 @@
 (when (fboundp 'horizontal-scroll-bar-mode)
   (horizontal-scroll-bar-mode -1))
 
-;; Startup time
+
+;;Garbage Collection
+;;Make startup faster by reducing the frequency of garbage collection. Set gc-cons-threshold (the default is 800 kilobytes) to maximum value available, to prevent any garbage collection from happening during load time.
+(setq gc-cons-threshold most-positive-fixnum) ;; was 100000000
+;; Restore it to reasonable value after init.
+;; was after-init-hook and 800000, but emacs-startup-hook runs later, catching more commands
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
+
+
+;; Show startup time
 ;; https://www.reddit.com/r/emacs/comments/m8d55l/what_is_your_startup_time
 (defun efs/display-startup-time ()
   (message

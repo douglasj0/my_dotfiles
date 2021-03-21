@@ -54,19 +54,6 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version
 #+end_src
 
 * Performance Optimization
-** Garbage Collection
-Make startup faster by reducing the frequency of garbage collection. Set gc-cons-threshold (the default is 800 kilobytes) to maximum value available, to prevent any garbage collection from happening during load time.
-
-Note: tangle to early-init.el to make startup even faster?
-#+Begin_src emacs-lisp
-(setq gc-cons-threshold most-positive-fixnum)
-#+end_src
-
-Restore it to reasonable value after init.
-#+begin_src emacs-lisp
-(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
-#+end_src
-
 ** Emacs Start Up Profiler
 Benchmark Emacs startup time.
 
