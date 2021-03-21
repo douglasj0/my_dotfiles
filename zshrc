@@ -9,8 +9,8 @@
 # where to look for function definitions
 # fpath=(~/func)
 
-# Setup zprofiling
-zmodload zsh/zprof
+# Setup zprofiling (leave disabled when not using
+#zmodload zsh/zprof
 
 # use hard limits, except for a smaller stack and no core dumps
 unlimit
@@ -370,5 +370,5 @@ echo "uname not reporing Darwin or Linux.  Where are we?"
 
 esac  # End System Specific case statement
 
-# check status of zprofiling
-zprof
+# check status of zprofiling (leave disabled when not using)
+#zprof
