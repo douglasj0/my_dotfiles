@@ -52,7 +52,7 @@ zle_highlight+=(paste:none)
 
 # functions to autoload
 # autoload cx acx mere yu yp randline proto namedir ilogin
-autoload -Uz compinit && compinit #autocompletion on hosts and usernames
+#autoload -Uz compinit && compinit -i #autocompletion on hosts and usernames
 # small letters will match small and capital letters. (i.e. capital letters match only capital letters.)
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 # capital letters also match small letters use instead:
@@ -105,8 +105,7 @@ setopt notify cdablevars autolist \
 unsetopt bgnice
 
 # Turn on auto completetion (ssh, ssh with user, etc)
-autoload -U compinit
-compinit
+autoload -Uz compinit && compinit -i
 
 # some nice bindings
 #bindkey '^X^Z' universal-argument ' ' magic-space
@@ -372,4 +371,4 @@ echo "uname not reporing Darwin or Linux.  Where are we?"
 esac  # End System Specific case statement
 
 # check status of zprofiling
-#zprof
+zprof
