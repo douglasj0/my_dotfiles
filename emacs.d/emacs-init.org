@@ -2639,4 +2639,5 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
 * mu4e email
 
 #+begin_src emacs-lisp
+ (load "~/.emacs.d/mu4e.el")
 #+end_src
