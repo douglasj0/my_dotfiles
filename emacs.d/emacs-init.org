@@ -53,9 +53,10 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version
 (unless (server-running-p) (server-start))
 #+end_src
 
-* Performance Optimization
-** Emacs Start Up Profiler
+* Esup
+Emacs Start Up Profiler
 Benchmark Emacs startup time.
+NOTE: seems fixated on vc-git.elc
 
 #+begin_src emacs-lisp
 ;(use-package esup
