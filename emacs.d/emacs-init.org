@@ -2652,7 +2652,12 @@ text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.
 #+end_src
 
 * mu4e email
+If mu4e.el exists, load it
 
 #+begin_src emacs-lisp
- (load "~/.emacs.d/mu4e.el")
+;(load "~/.emacs.d/mu4e.el" t)
+;; vs
+(setq mu4e-config "~/.emacs.d/mu4e.el")
+(if (file-exists-p mu4e-config)
+    (load mu4e-config))
 #+end_src
