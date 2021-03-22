@@ -53,15 +53,29 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version
 (unless (server-running-p) (server-start))
 #+end_src
 
-* Esup
-Emacs Start Up Profiler
-Benchmark Emacs startup time.
+* Profiling
+** esup
+Emacs Start Up Profiler, benchmark Emacs startup time.
 NOTE: seems fixated on vc-git.elc
 
 #+begin_src emacs-lisp
 ;(use-package esup
 ;  :ensure t
 ;  :commands esup)
+#+end_src
+
+** benchmark-init
+https://github.com/dholm/benchmark-init-el
+Usage:
+Show table: benchmark-init/show-durations-tabulated
+Show tree:  benchmark-init/show-durations-tree
+
+#+begin_src emacs-lisp
+;(use-package benchmark-init
+;  :ensure t
+;  :config
+;  ;; To disable collection of benchmark data after init is done.
+;  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 #+end_src
 
 * Emacs Core
