@@ -12,8 +12,9 @@
 # Setup zprofiling (leave disabled when not using
 #zmodload zsh/zprof
 
-# If not running interactively, don't do anything and return early, fix for sftp?
+## If not running interactively, don't do anything and return early
 #[[ $- == *i* ]] || return
+#[[ -o interactive ]] || exit 0  # zsh
 
 # use hard limits, except for a smaller stack and no core dumps
 unlimit
