@@ -12,6 +12,9 @@
 # Setup zprofiling (leave disabled when not using
 #zmodload zsh/zprof
 
+# If not running interactively, don't do anything and return early, fix for sftp?
+#[[ $- == *i* ]] || return
+
 # use hard limits, except for a smaller stack and no core dumps
 unlimit
 limit stack 8192

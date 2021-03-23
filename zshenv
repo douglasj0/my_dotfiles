@@ -39,8 +39,8 @@ manpath=( /usr/local/share/man /usr/local/man /usr/share/man /usr/X11/man )
 export PATH MANPATH TMPDIR=/tmp
 
 # pyenv local git install (manage multiple python versions)
-if command -v ~/.pyenv/bin/pyenv 1>/dev/null 2>&1; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; echo "..pyenv loaded"; fi
-if command -v ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; echo "..pyenv-virtualenv loaded"; fi
+if command -v ~/.pyenv/bin/pyenv 1>/dev/null 2>&1; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; fi
+if command -v ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 # jenv darwin (manage multiple java versions)
 #if file ~/.jenv/bin/jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jenv init -)"; echo ".jenv loaded"; fi
