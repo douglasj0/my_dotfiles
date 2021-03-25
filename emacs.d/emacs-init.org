@@ -190,8 +190,8 @@ Configuring built in packages
 ;;; Mouse wheel and keyboard scroll settings
 ;;; scroll one line at a time (less "jumpy" than defaults)
 ;(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
-;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
-;(setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
+(setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
 ;(setq scroll-step 1                    ;keyboard scroll one line at a time
 ;      scroll-preserve-screen-position t
 ;      scroll-conservatively 10000)     ;smooth scrolling
