@@ -1,0 +1,663 @@
+-*- mode: org; fill-column: 78 -*-
+#+STARTUP: overview
+#+PROPERTY: header-args :comments yes :results silent
+
+# NOTE: Moved out of main init to simplify debugging
+* Counsel-projectile
+Projectile has native support for using ivy as its completion system. Counsel-projectile provides further ivy integration into projectile by taking advantage of ivy's support for selecting from a list of actions and applying an action without leaving the completion session.
+https://github.com/ericdanan/counsel-projectile
+
+#+begin_src emacs-lisp
+(use-package counsel-projectile
+  :ensure t
+  :commands counsel-projectile)
+#+end_src
+
+* Company (Code & Text Completion)
+** Company
+Company is a text completion framework for Emacs. The name stands for "complete anything". It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
+https://github.com/company-mode/company-mode
+Homepage: http://company-mode.github.io/
+
+#+begin_src emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (setq company-global-modes '(not org-mode eshell-mode shell-mode lisp-interaction-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+)
+#+end_src
+
+** Company Box
+A company front-end with icons.
+https://github.com/sebastiencs/company-box
+
+#+begin_src emacs-lisp
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+** Company Statistics
+Company-statistics is a global minor mode built on top of the in-buffer completion system company-mode. The idea is to keep a log of a certain number of completions you choose, along with some context information, and use that to rank candidates the next time you have to choose — hopefully showing you likelier candidates at the top of the list.
+https://github.com/company-mode/company-statistics
+
+#+begin_src emacs-lisp
+(use-package company-statistics
+  :ensure t
+  :hook (company-mode . company-statistics-mode)
+  :config
+  (setq company-statistics-file "~/.emacs.d/cache/company-statistics-cache.el")
+)
+#+end_src
+* Delsel
+C-c C-g always quits minubuffer
+
+#+begin_src emacs-lisp
+(use-package delsel
+  :bind
+  (:map mode-specific-map
+        ("C-g" . minibuffer-keyboard-quit)))
+#+end_src
+* Multiple Cursors
+Multiple cursors for Emacs
+https://github.com/magnars/multiple-cursors.el
+
+#+begin_src emacs-lisp
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C-S-c C-S-c" . 'mc/edit-lines)
+         ("C->" . 'mc/mark-next-like-this)
+         ("C-<" . 'mc/mark-previous-like-this)
+         ("C-c C-<" . 'mc/mark-all-like-this)))
+#+end_src
+
+* Restclient
+HTTP REST client tool for emacs
+https://github.com/pashky/restclient.el
+
+C-c C-c: runs the query under the cursor, tries to pretty-print the response (if possible)
+C-c C-r: same, but doesn't do anything with the response, just shows the buffer
+C-c C-v: same as C-c C-c, but doesn't switch focus to other window
+C-c C-p: jump to the previous query
+C-c C-n: jump to the next query
+C-c C-.: mark the query under the cursor
+C-c C-u: copy query under the cursor as a curl command
+C-c C-g: start a helm session with sources for variables and requests (if helm is available, of course)
+C-c n n: narrow to region of current request (including headers)
+TAB: hide/show current request body, only if
+C-c C-a: show all collapsed regions
+C-c C-i: show information on resclient variables at point
+
+#+begin_src emacs-lisp
+(use-package restclient
+  :ensure t)
+
+;(use-package company-restclient
+;  :ensure t
+;  :config
+;  (add-to-list 'company-backends 'company-restclient))
+#+end_src
+
+* Search
+** Deadgrep
+Deadgrep is the fast, beautiful text search that your Emacs deserves.
+https://github.com/Wilfred/deadgrep
+NOTE: Install ripgrep. You need version 0.8 or later.
+
+Keybindings
+|-------------+----------------------------------------------------------------|
+| Key         | Action                                                         |
+|-------------+----------------------------------------------------------------|
+| RET         | Visit the result, file or push button at point                 |
+| o           | Visit the result in another window                             |
+| n and p     | Move between results or buttons                                |
+| N and P     | Move between search hits                                       |
+| M-n and M-p | Move between file headers                                      |
+| g           | Re-run the search                                              |
+| TAB         | Expand/collapse results for a file                             |
+| C-c C-k     | Stop a running search                                          |
+| C-u         | prefix argument prevents searches from starting automatically. |
+|-------------+----------------------------------------------------------------|
+You can also use M-x imenu to move between files in a results buffer.
+
+#+begin_src emacs-lisp
+;(use-package deadgrep
+;  :ensure t
+;  :commands deadgrep
+;  :bind
+;  (
+;   :map deadgrep-mode-map
+;   ("C-c C-e" . deadgrep-edit-mode))) ; C-c C-e is org-export
+#+end_src
+** rg - ripgrep
+Emacs search tool based on ripgrep https://rgel.readthedocs.io
+https://github.com/dajva/rg.el
+Docs: https://rgel.readthedocs.io/en/latest/usage.html
+
+#+begin_src emacs-lisp
+(use-package rg
+  :ensure t
+  :defer t
+  :bind ("M-s" . rg-dwim)
+        ;("C-x s" . rg-project)
+        ("M-S" . rg-project)
+  :config
+  ;(rg-enable-menu)
+  (rg-enable-default-bindings)
+  ;(add-hook 'rg-mode-hook 'wgrep-ag-setup)
+  ;(setq rg-show-columns t
+  ;      rg-show-header t
+  ;      rg-command-line-flags (list "-uuu")
+  ;)
+  ;(bind-keys :map rg-mode-map
+  ;           ("W" . wgrep-change-to-wgrep-mode))
+)
+#+end_src
+* Smoothscrolling
+The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
+This is a nice alternative to all the native scroll-* custom variables, which unfortunately cannot provide this functionality perfectly.
+https://github.com/aspiers/smooth-scrolling
+
+#+begin_src emacs-lisp
+(use-package smooth-scrolling
+  :ensure t
+  :config
+  (smooth-scrolling-mode 1))
+#+end_src
+
+* Projectile (Project Management)
+https://github.com/bbatsov/projectile
+http://batsov.com/projectile/
+projectile - project managent (works with helm)
+Project navigation and management library for Emacs
+Keybindings: https://projectile.readthedocs.io/en/latest/usage/
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :ensure t
+  :defer 5
+  :config
+    (projectile-mode +1)
+    ;(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ; super-p
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    ;(define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map) ; conflicts with lsp-mode python
+    (setq projectile-completion-system 'ivy) ; use ivy for completion
+    (setq projectile-enable-caching t) ; enable caching
+    (setq projectile-indexing-method 'alien) ; external cmd for indexing
+    ;; put bookmark and cache in cache directory - didn't work
+    ;(setq projectile-known-projects-file (concat user-emacs-directory "cache/projectile-bookmarks.eld"))
+    ;(setq projectile-cache-file (concat user-emacs-directory "cache/projectile.cache"))
+)
+#+END_SRC
+* Ansible-vault
+Minor mode for manipulating ansible-vault files
+https://github.com/zellio/ansible-vault-mode
+
+#+begin_src emacs-lisp
+(defun ansible-vault-mode-maybe ()
+  (when (ansible-vault--is-vault-file)
+    (ansible-vault-mode 1)))
+
+(use-package ansible-vault
+  :ensure t
+  :init (add-hook 'yaml-mode-hook 'ansible-vault-mode-maybe)
+  :config (setq ansible-vault-password-file "~/.vault_core_pass.txt")
+)
+#+end_src
+* Hydra
+Tie related commands into a family of short bindings with a common prefix - a Hydra
+https://github.com/abo-abo/hydra
+
+#+begin_src emacs-lisp
+(use-package hydra
+  :ensure t
+)
+
+;;; dired
+;(defhydra hydra-dired (:hint nil :color pink)
+;  "
+;_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+;_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+;_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+;_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
+;_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
+;_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
+;_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+;_z_ compress-file  _A_ find regexp
+;_Z_ compress       _Q_ repl regexp
+;
+;T - tag prefix
+;"
+;  ("\\" dired-do-ispell)
+;  ("(" dired-hide-details-mode)
+;  (")" dired-omit-mode)
+;  ("+" dired-create-directory)
+;  ("=" diredp-ediff)         ;; smart diff
+;  ("?" dired-summary)
+;  ("$" diredp-hide-subdir-nomove)
+;  ("A" dired-do-find-regexp)
+;  ("C" dired-do-copy)        ;; Copy all marked files
+;  ("D" dired-do-delete)
+;  ("E" dired-mark-extension)
+;  ("e" dired-ediff-files)
+;  ("F" dired-do-find-marked-files)
+;  ("G" dired-do-chgrp)
+;  ("g" revert-buffer)        ;; read all directories again (refresh)
+;  ("i" dired-maybe-insert-subdir)
+;  ("l" dired-do-redisplay)   ;; relist the marked or singel directory
+;  ("M" dired-do-chmod)
+;  ("m" dired-mark)
+;  ("O" dired-display-file)
+;  ("o" dired-find-file-other-window)
+;  ("Q" dired-do-find-regexp-and-replace)
+;  ("R" dired-do-rename)
+;  ("r" dired-do-rsynch)
+;  ("S" dired-do-symlink)
+;  ("s" dired-sort-toggle-or-edit)
+;  ("t" dired-toggle-marks)
+;  ("U" dired-unmark-all-marks)
+;  ("u" dired-unmark)
+;  ("v" dired-view-file)      ;; q to exit, s to search, = gets line #
+;  ("w" dired-kill-subdir)
+;  ("Y" dired-do-relsymlink)
+;  ("z" diredp-compress-this-file)
+;  ("Z" dired-do-compress)
+;  ("q" nil)
+;  ("." nil :color blue))
+;
+;(setq dired-dwim-target t)
+;(define-key dired-mode-map (kbd ".") 'hydra-dired/body)
+#+end_src
+
+* -- Programming --
+* Pyvenv
+Python virtual environment interface for Emacs
+https://github.com/jorgenschaefer/pyvenv
+
+To look at: https://fredrikmeyer.github.io/2020/08/26/emacs-python-venv.html
+
+# Example .dir_locals.el for python to select version
+# ((python-mode . ((pyvenv-workon . "~/.pyenv/versions/emacs")
+#                 (subdirs . nil))))
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :init
+  (add-to-list 'exec-path "~/.pyenv/shims")
+  (setenv "WORKON_HOME" "~/.pyenv/versions/")
+  :config
+  (pyvenv-mode 1)
+  ;(pyvenv-activate "~/.pyenv/versions/3.8.3/")
+  ;:bind
+  ;("C-x p e" . pyenv-activate-current-project) ; not defined
+)
+#+end_src
+* Python
+# https://github.com/pyenv/pyenv-virtualenvwrapper
+# brew install pyenv-virtualenvwrapper
+# (for linux:  git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git $(pyenv root)/plugins/pyenv-virtualenvwrapper)
+#
+# Instlall virtualenv: pip install virtualenv (this is a PITA to maintain, trying to not use it)
+# Create virtualenv: virtualenv -p python3 ~/.virtualenvs/p3 (or mkvirtualenv p3)
+# or, for python3:  python3 -m venv ~/.virtualenvs/p3
+# enable: workon p3
+# or, for python3:  cd ~/.virtualenvs/p3/bin; source ./activate
+# stop:   deactivate p3
+# or, for python3:  deactivate
+
+# Setup virtualenv with pyenv, activate with: M-x pyenv-workon python3-emacs
+pyenv virtualenv 3.8.1 emacs-python3
+pyenv local emacs-python3
+pyenv version
+
+pip install --upgrade pip
+#pip install virtualenv
+pip install 'python-language-server[all]'
+pip install flake8 flake8-docstrings flake8-polyfill flake8-quotes flake8-string-format pep8 pep8-naming
+
+--
+
+To run code in emacs:
+M-x python-mode
+C-c C-p : run-python
+C-c C-c : python-shell-send-buffer
+
+C-c C-z : open a python shell
+C-c C-c : run the content of the buffer in the opened python shell
+C-c C-r : run the selected region in the python shell
+
+C-c C-c       python-shell-send-buffer
+C-c C-d       python-describe-at-point
+C-c C-f       python-eldoc-at-point
+C-c C-j       imenu
+C-c C-l       python-shell-send-file
+C-c C-p       run-python
+C-c C-r       python-shell-send-region
+C-c C-s       python-shell-send-string
+C-c C-t       Prefix Command
+C-c C-v       python-check
+C-c C-z       python-shell-switch-to-shell
+C-c <     python-indent-shift-left
+C-c >     python-indent-shift-right
+
+C-c C-t c python-skeleton-class
+C-c C-t d python-skeleton-def
+C-c C-t f python-skeleton-for
+C-c C-t i python-skeleton-if
+C-c C-t m python-skeleton-import
+C-c C-t t python-skeleton-try
+C-c C-t w python-skeleton-while
+
+live-py-plugin
+https://www.youtube.com/watch?v=bYy90EUAh98
+https://github.com/donkirkby/live-py-plugin
+Live coding in Python with PyCharm, Emacs, Sublime Text, or even a browser
+#+begin_src emacs-lisp
+;(use-package live-py-mode
+;  :ensure t
+;  :defer t
+;)
+#+end_src
+
+Commented out, giving a not-found error in messages buffer
+#+begin_src emacs-lisp
+;(use-package python-mode
+;  :hook ((python-mode . lsp)))
+#+end_src
+
+* Lsp (Language Server Protocol)
+Client for Language Server Protocol (v3.14). lsp-mode aims to provide IDE-like experience by providing optional integration with the most popular Emacs packages like company, flycheck and projectile.
+https://github.com/emacs-lsp/lsp-mode
+Homepage: https://emacs-lsp.github.io/lsp-mode/
+Installation: https://emacs-lsp.github.io/lsp-mode/page/installation/
+
+Install Python with framework
+env PYTHON_CONFIGURE_OPTS="--enable-framework CC=clang" pyenv install 3.8.6
+
+Installing python lsp in venv:
+  pyenv virtualenv 2.7.18 emacs-py27
+  pyenv virtualenv 3.8.6 emacs-py3
+  pyenv versions
+  pyenv global emacs-py3
+  pyenv version
+  pip install --upgrade pip
+  pip install 'python-language-server[all]'
+  pip list
+  pyenv global 3.8.6 # revert back
+  pip list
+
+#+begin_src emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;; check with: C-h v lsp-keymap-prefi
+(setq lsp-keymap-prefix "s-l")  ; super-l
+
+;; How to disable lsp as flycheck's default checker #1413
+;(setq lsp-diagnostic-package :none)
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  (pyvenv-activate "~/.pyenv/versions/emacs-py3/")
+  (setq lsp-prefer-flymake nil)
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+          (python-mode . lsp-deferred)
+          ;; if you want which-key integration
+          (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred)
+
+;; optionally
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :config
+  (add-hook 'python-mode-hook 'flycheck-mode)
+)
+
+;;Recommended settings for lsp-mode related packages
+;;company
+(setq company-minimum-prefix-length 1
+      company-idle-delay 0.0) ;; default is 0.2
+
+;; https://github.com/tigersoldier/company-lsp
+;; Company completion backend for lsp-mode
+;(use-package company-lsp
+;;; package not found on reinstall
+;  :ensure t
+;  :after (:all lsp-mode)
+;  :config
+;  (push 'company-lsp company-backends)
+;)
+
+
+;; if you are helm user
+;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy
+  :ensure t
+  :after (lsp-mode lsp-ui)
+  :commands lsp-ivy-workspace-symbol)
+
+;; https://github.com/emacs-lsp/lsp-treemacs
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+;(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; Emacs client/library for Debug Adapter Protocol is a wire protocol for communication between client and Debug Server. It’s similar to the LSP but provides integration with debug server.
+;; https://github.com/emacs-lsp/dap-mode
+;; https://emacs-lsp.github.io/dap-mode/page/configuration/
+
+;; in venv: pip install "ptvsd>=4.2"
+
+;(use-package dap-mode
+;  :ensure t)
+
+;(use-package dap-mode
+;  :ensure t
+;  :requires (lsp-mode)
+;  :hook ((lsp-mode . dap-mode)
+;         (lsp-mode . dap-ui-mode))
+;  :bind (:map dap-mode-map
+;         ("C-c d d" . dap-debug)
+;         ("C-c d h" . dap-hydra)
+;         ("C-c d b" . dap-ui-breakpoints)
+;         ("C-c d l" . dap-ui-locals)
+;         ("C-c d r" . dap-ui-repl))
+;)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+;(use-package dap-python)
+#+end_src
+* YASnippet (Snippet Completion)
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates. Bundled language templates include: C, C++, C#, Perl, Python, Ruby, SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from TextMate's syntax, you can even import most TextMate templates to YASnippet. Watch a demo on YouTube.
+https://github.com/joaotavora/yasnippet
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-reload-all)
+  :hook
+  (prog-mode . yas-minor-mode))
+
+;(use-package yasnippet-snippets
+;  :ensure t)
+
+;(use-package ivy-yasnippet
+;  :ensure t
+; ;:bind (:map yas-minor-mode-map
+; ;       ("C-c s" . ivy-yasnippet)) ; C-c s used by rg-menu
+;)
+#+end_src
+
+* Web
+web-mode.el is an emacs major mode for editing web templates aka HTML files embedding parts (CSS/JavaScript) and blocks (pre rendered by client/server side engines).
+https://github.com/fxbois/web-mode
+http://web-mode.org/
+
+#+begin_src emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode (("\\.erb\\'" . web-mode)
+         ("\\.mustache\\'" . web-mode)
+         ("\\.html?\\'" . web-mode)
+         ("\\.php\\'" . web-mode)
+         ("\\.jsp\\'" . web-mode)
+         ;; ("\\.jsx?$" . web-mode)
+         ("\\.es6\\'" . web-mode)
+         ("\\.ejs\\'" . web-mode)
+         ("\\.phtml\\'" . web-mode)
+         ("\\.tpl\\.php\\'" . web-mode)
+         ("\\.[agj]sp\\'" . web-mode)
+         ("\\.as[cp]x\\'" . web-mode)
+         ("\\.djhtml\\'" . web-mode)))
+#+end_src
+* Emacs Lisp
+Commented out, giving a not-found error in messages buffer
+
+#+begin_src emacs-lisp
+;(use-package elisp-format
+;  :bind (:map emacs-lisp-mode-map
+;             ("C-x w" . elisp-format-buffer))
+;  :hook (emacs-lisp-mode . yas-minor-mode))
+#+end_src
+* YAML
+Disabled for now as this loads it into an LSP
+
+#+begin_src emacs-lisp
+;(use-package yaml-mode
+;  :ensure t
+;  :mode "\\.yml\\'"
+;  :mode "\\.yaml\\'"
+;  :hook ((yaml-mode . lsp)
+;         (yaml-mode . yaml-imenu-enable)))
+;
+;(use-package yaml-imenu
+;  :ensure t
+;  :after yaml-mode)
+#+end_src
+* -- Testing --
+
+* Treemacs
+A tree layout file explorer for Emacs
+https://github.com/Alexander-Miller/treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :ensure t
+  ;:disabled t ;disables use-package customizations only
+  :defer t
+  ;:custom
+  ;(treemacs-width 20)
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  ;:bind
+  ;("M-0" . treemacs-select-window)
+  :config
+    (progn
+  (setq treemacs-persist-file (expand-file-name "cache/treemacs-persist" user-emacs-directory))
+
+  ;; The default width and height of the icons is 22 pixels. If you are
+  ;; using a Hi-DPI display, uncomment this to double the icon size.
+  ;;(treemacs-resize-icons 44)
+
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode t)
+  (pcase (cons (not (null (executable-find "git")))
+               (not (null treemacs-python-executable)))
+    (`(t . t)
+     (treemacs-git-mode 'deferred))
+    (`(t . _)
+     (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ;("C-x t 1"   . treemacs-delete-other-windows) ;delete all other tabs
+        ("C-x t t"   . treemacs)
+        ;("C-x t B"   . treemacs-bookmark) ;switch to buffer in other tab
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag))
+)
+#+end_src
+
+Treemacs Projectile
+Projectile integration, the treemacs-projectile package lets you quickly add your projectile projects to the treemacs workspace.
+#+begin_src emacs-lisp
+(use-package treemacs-projectile
+  :ensure t
+  :after treemacs projectile
+)
+
+;;; Removing, caused stringp, null error for Dailylogs
+;;; Also, looked neat, but slowed treemacs/dired down
+;;(use-package treemacs-icons-dired
+;;  :after treemacs dired
+;;  :ensure t
+;;  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+#+end_src
+
+* Winner mode
+WinnerMode lets you undo and redo window configurations. It's included
+by default, so we just need to turn it on.
+https://www.emacswiki.org/emacs/WinnerMode
+
+key commands: ‘C-c left’ and ‘C-c right’
+
+Disabled for now as I'm not using it
+#+begin_src emacs-lisp
+;  (when (fboundp 'winner-mode)
+;    (winner-mode 1))
+#+end_src
+
+* notmuch email
+Emacs major mode for interacting with Notmuch
+https://notmuchmail.org/notmuch-emacs/
+
+To open html files in a browser, ex. firefox, on a Mac with ". v"
+Add the following to ~/.mailcap:
+text/html; /Applications/Firefox.app/Contents/MacOS/firefox %s; nametemplate=%s.html
+
+#+begin_src emacs-lisp
+  ;;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-notmuch.el
+  ;;; error: not available
+  ;use-package org-notmuch
+  ; ;:ensure t
+  ; ;:demand t
+  ; :after (org notmuch)
+  ; ;:after (:any org-plus-contrib notmuch)
+  ;
+
+;(use-package notmuch
+;  :ensure t
+;  :defer t
+;  :config
+;  (setq notmuch-search-oldest-first nil
+;        notmuch-show-logo nil
+;        mm-text-html-renderer 'shr
+;        shr-inhibit-images nil
+;        mime-view-text/html-previewer 'shr
+;        mm-inline-text-html-with-images t
+;        notmuch-multipart/alternative-discouraged '("text/html"))
+;  (bind-key "g" 'notmuch-refresh-this-buffer notmuch-common-keymap)
+;)
+;
+;(use-package counsel-notmuch
+;  :disabled
+;  ;:ensure t
+;  :defer t
+;  :after notmuch
+;)
+#+end_src

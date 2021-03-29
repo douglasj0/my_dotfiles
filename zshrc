@@ -318,6 +318,18 @@ if [[ -f ~/Library/mysql/com.mysql.mysqld.plist ]]; then
     alias stop_mysql="sudo launchctl unload ~/Library/mysql/com.mysql.mysqld.plist"
 fi
 
+# Enable Homebrew for M1 Mac if installed
+if command -v /opt/homebrew/bin/brew 1>/dev/null 2>&1; then eval $(/opt/homebrew/bin/brew shellenv); fi
+
+# pyenv local git install (manage multiple python versions)
+# putting this in zshenv causes exec-path-from-shell to complain
+# TODO: Seems to be kinda slow in either file
+if command -v ~/.pyenv/bin/pyenv 1>/dev/null 2>&1; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; fi
+if command -v ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init 1>/dev/null 2>&1; then eval "$(pyenv virtualenv-init -)"; fi
+
+# jenv darwin (manage multiple java versions)
+#if file ~/.jenv/bin/jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jenv init -)"; echo ".jenv loaded"; fi
+
 ;; # end Darwin
 
 Linux)  # Based off of Ubuntu
