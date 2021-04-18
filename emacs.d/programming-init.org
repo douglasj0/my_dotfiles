@@ -157,7 +157,7 @@ Docs: https://rgel.readthedocs.io/en/latest/usage.html
 )
 #+end_src
 * Smoothscrolling
-The smooth-scrolling package teaches EMACS to smoothly show more linesas we move the cursor up and down.
+The smooth-scrolling package teaches EMACS to smoothly show more lines as we move the cursor up and down.
 This is a nice alternative to all the native scroll-* custom variables, which unfortunately cannot provide this functionality perfectly.
 https://github.com/aspiers/smooth-scrolling
 
@@ -168,7 +168,7 @@ https://github.com/aspiers/smooth-scrolling
   (smooth-scrolling-mode 1))
 #+end_src
 
-* Projectile (Project Management)
+* Projectile (Project Management) - moved back to mainline 20210418
 https://github.com/bbatsov/projectile
 http://batsov.com/projectile/
 projectile - project managent (works with helm)

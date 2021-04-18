@@ -59,6 +59,15 @@
   :custom
   (org-src-tab-acts-natively t))
 
+;; install no-littering as early as possible
+; Help keeping ~/.emacs.d clean
+; The default paths used to store configuration files and persistent data are not consistent across Emacs packages. This isn't just a problem with third-party packages but even with built-in packages.
+; https://github.com/emacscollective/no-littering/
+(use-package no-littering               ; Keep .emacs.d clean
+  :ensure t
+  ;:config
+)
+
 ;; convert emacs-init.org into elc file for quick loading
 (when (file-exists-p "~/.emacs.d/emacs-init.org")
   (org-babel-load-file (expand-file-name "emacs-init.org"

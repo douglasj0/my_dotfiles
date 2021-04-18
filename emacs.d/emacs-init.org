@@ -48,7 +48,7 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 ;;;; Only start server if it is not currently running
 ;(require 'server) ;; Note: (start-server) is now mostly deprecated
 (load "server")
-(setq server-socket-dir "~/.emacs.d/tmp")
+(setq server-socket-dir "~/.emacs.d/var/tmp")
 (unless (server-running-p) (server-start))
 #+end_src
 
@@ -214,7 +214,7 @@ Configuring built in packages
 (setq woman-show-log nil)
 (autoload 'woman "woman"
   "Decode and browse a Unix man page." t)
-(setq woman-cache-filename "~/.emacs.d/cache/woman_cache.el")
+(setq woman-cache-filename "~/.emacs.d/var/woman_cache.el")
 
 ;;; Make tooltips appear in the echo area (checks if function exists)
 (tooltip-mode nil)
@@ -445,7 +445,7 @@ A small number of better defaults for Emacs
       ediff-window-setup-function 'ediff-setup-windows-plain
       save-place-file (concat user-emacs-directory "places")
       backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                               "backups"))))
+                                               "var/backups"))))
 #+END_SRC
 * Helpful
 Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
@@ -486,7 +486,7 @@ I was trying to make a nice setup for recentf but then I realized I could just e
 #+begin_src emacs-lisp
 ;; Enable mini-buffer history save feature
 ;; Also added for recentf replacement
-(setq savehist-file "~/.emacs.d/cache/savehist"
+(setq savehist-file "~/.emacs.d/var/savehist"
   history-length 1000
   history-delete-duplicates t
   savehist-save-minibuffer-history t
@@ -1265,7 +1265,7 @@ https://org-roam.readthedocs.io/en/master/
   ;(make-directory "~/org-roam")
   ;(org-roam-directory "~/org-roam/")
   (org-roam-directory org-roam-directory-location)
-  (org-roam-db-location "~/.emacs.d/cache/org-roam.db")
+  (org-roam-db-location "~/.emacs.d/var/org-roam.db")
   (org-roam-index-file "index.org")
   (org-roam-completion-system 'ivy)
   :bind (:map org-roam-mode-map
@@ -1480,6 +1480,50 @@ NOTE: if smex is installed, counsel will use it to sort by most recently used
   ;(global-set-key (kbd "C-c a") 'counsel-ag) ; conflicts with org-agenda
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+#+end_src
+
+* Projectile (Project Management)
+https://github.com/bbatsov/projectile
+http://batsov.com/projectile/
+projectile - project managent (works with helm)
+Project navigation and management library for Emacs
+Keybindings: https://projectile.readthedocs.io/en/latest/usage/
+
+Mminimum commands to start benefitting
+-  Find file in current project (s-p f)
+-  Switch project (s-p p) (you can also switch between open projects with s-p q)
+-  Grep (search for text/regexp) in project (s-p s g) (grep alternatives like ag, pt and rg are also supported)
+-  Replace in project (s-p r)
+-  Invoke any Projectile command via the Projectile Commander (s-p m)
+-  Toggle between implementation and test (s-p t)
+-  Toggle between related files (e.g. foo.h <→ foo.c and Gemfile <→ Gemfile.lock) (s-p a)
+-  Run a shell command in the root of the project (s-p ! for a sync command and s-p & for an async command)
+-  Run various pre-defined project commands like:
+   -  build/compile project (s-p c)
+   -  test project (s-p T)
+- If you ever forget any of Projectile’s keybindings just do a (s-p C-h)
+- Open up project directory in Dired (s-p D)
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :defer 5
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ;("s-p" . projectile-command-map) ; super-p
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-enable-caching t) ; enable caching
+  (setq projectile-indexing-method 'alien) ; external cmd for indexing
+
+  ;; set a list of folders for projectile to automatically check
+  (setq projectile-project-search-path '("~/projects/" "~/work/"))
+
+  ;; To change the remote file exists cache expire to 10 min use this code:
+  (setq projectile-file-exists-remote-cache-expire (* 10 60))
+
+)
 #+end_src
 
 * Daily log
@@ -2060,7 +2104,7 @@ Keyboard shortcuts
   ;  (elfeed-db-unload)))
 
   ;; changes location of elfeed database
-  (setq elfeed-db-directory "~/.emacs.d/cache/elfeeddb")
+  (setq elfeed-db-directory "~/.emacs.d/var/elfeeddb")
 
   ;; Mark all as read
   (defun elfeed-mark-all-as-read ()
@@ -2179,7 +2223,7 @@ Keyboard shortcuts
   :ensure t
   :demand t
   :config
-  (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
+  (setq elfeed-dashboard-file "~/.emacs.d/var/elfeed-dashboard.org")
   ;; update feed counts on elfeed-quit
   (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
 ))
