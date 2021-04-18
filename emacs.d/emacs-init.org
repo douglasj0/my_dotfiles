@@ -1854,11 +1854,16 @@ Search all marked buffers
 Load the mu4e.el file if it exists
 
 #+begin_src emacs-lisp
+;; only load mu4e on a specific system for debugging
+(when (string= (system-name) "lothlorien.local")
+
 ;(load "~/.emacs.d/mu4e.el" t)
 ;; vs
 (setq mu4e-config "~/.emacs.d/mu4e.el")
 (if (file-exists-p mu4e-config)
     (load mu4e-config))
+
+)
 #+end_src
 
 * s (String manipulation library)
@@ -2013,3 +2018,182 @@ https://github.com/magit/git-modes
 #+end_src
 * -- Testing --
 Put packages to test here
+
+* elfeed (rss reader)
+Elfeed is an extensible web feed reader for Emacs, supporting both Atom and RSS.
+https://github.com/skeeto/elfeed
+https://github.com/Manoj321/elfeed-dashboard
+https://github.com/algernon/elfeed-goodies
+
+Keyboard shortcuts
+  RET: view selected entry in a buffer
+  b: open selected entries in your browser (browse-url)
+  y: copy selected entries URL to the clipboard
+  r: mark selected entries as read
+  u: mark selected entries as unread
+  +: add a specific tag to selected entries
+  -: remove a specific tag from selected entries
+  R: mark all messages in buffer as read
+
+#+begin_src emacs-lisp
+;;(getenv "USER")
+;;("system-name")
+;; only load elfeed on a specific system for debugging
+(when (string= (system-name) "lothlorien.local")
+
+(use-package elfeed
+  :ensure t
+  :commands (elfeed)
+  :config
+  ;(require 'elfeed-protocol)
+
+  ;; load db on open, close db on quit
+  ;; https://www.pengmeiyu.com/blog/my-emacs-configuration/
+  ;(defun my-elfeed-open ()
+  ;  (interactive)
+  ;  (elfeed-db-load)
+  ;  (elfeed))
+  ;
+  ;(defun my-elfeed-quit ()
+  ;  (interactive)
+  ;  (elfeed-search-quit-window)
+  ;  (elfeed-db-unload)))
+
+  ;; changes location of elfeed database
+  (setq elfeed-db-directory "~/.emacs.d/cache/elfeeddb")
+
+  ;; Mark all as read
+  (defun elfeed-mark-all-as-read ()
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread))
+
+  (bind-keys
+   :map elfeed-search-mode-map
+   ("R" . elfeed-mark-all-as-read))
+
+  ;; data is stored in ~/.elfeed
+  (setq elfeed-feeds (quote
+         (;; My feeds from The Old Reader
+          ;;The Old Reader Picks
+          ("https://www.apartmenttherapy.com/main.rss" misc)
+          ("https://www.getrichslowly.org/feed/" misc)
+          ("https://what-if.xkcd.com/feed.atom" misc)
+          ("http://blog.theoldreader.com/rss" misc)
+          ("https://thedailywhat.cheezburger.com/rss" misc)
+          ("http://feeds.feedburner.com/elise/simplyrecipes" misc)
+          ("https://manofmany.com/feed" misc)
+          ;; News
+          ("https://www.chicagotribune.com/rss2.0.xml" news chicago)
+          ;; Apple
+          ("https://www.engadget.com/rss.xml" apple)
+          ("http://feeds.macrumors.com/MacRumors-Front" apple)
+          ("https://www.cnet.com/rss/reviews/" apple)
+          ;; Blogs
+          ("http://c0t0d0s0.org/feeds/index.rss2" blogs)
+          ("http://feeds.scottlowe.org/slowe/content/feed" blogs)
+          ("http://utcc.utoronto.ca/~cks/space/blog/?atom" blogs)
+          ("https://everythingsysadmin.com/atom.xml" blogs)
+          ("https://prefetch.net/blog/index.php/feed" blogs)
+          ("https://blogs.oracle.com/compendium/rss" blogs)
+          ("http://snarfed.org/feed" blogs)
+          ("http://feeds.feedburner.com/TheGeekStuff" blogs)
+          ;; Downloads
+          ("http://reinventedsoftware.com/news/index.xml" downloads)
+          ("http://feeds.feedburner.com/macupdate" downloads)
+          ;; Linux
+          ("http://feeds.feedburner.com/d0od" linux)
+          ("https://www.usenix.org/blog/rss.xml" linux)
+          ("http://planet.centos.org/atom.xml" linux)
+          ("https://www.reddit.com/r/linux/.rss" linux reddit)
+          ("https://www.reddit.com/r/commandline/.rss" linux reddit)
+          ("https://www.reddit.com/r/sysadmin/.rss" linux reddit)
+          ("http://debian.org/News/news" linux debian)
+          ("https://blog.linuxmint.com/?feed=rss2" linux mint)
+          ;; PiDP
+          ("https://groups.google.com/forum/feed/pidp-8/msgs/rss_v2_0.xml?num=50" pidp google)
+          ("https://groups.google.com/forum/feed/pidp-11/msgs/rss_v2_0.xml?num=50" pidp google)
+          ;; Security
+          ("http://debian.org/security/dsa" security linux debian)
+          ("http://us-cert.gov/ncas/alerts.xml" security us)
+          ("https://msrc-blog.microsoft.com/feed/" security microsoft)
+          ("https://isc.sans.edu/rssfeed_full.xml" security sans)
+          ("https://www.netscout.com/blog/asert/rss.xml" security)
+          ;; Tech
+          ("http://thedailywtf.com/rss.aspx" tech wtf)
+          ("https://hackaday.com/feed/" tech)
+          ("https://raspberrypi.stackexchange.com/feeds" tech pi)
+          ("http://feeds.feedburner.com/catonmat" tech)
+          ;; programming
+          ("https://news.ycombinator.com/rss" programming)
+          ("https://www.reddit.com/r/programming.rss" programming)
+          ("https://www.reddit.com/r/golang.rss" programming go)
+          ("https://www.reddit.com/r/java.rss" programming java)
+          ("https://www.reddit.com/r/javascript.rss" programming javascript)
+          ("https://www.reddit.com/r/typescript.rss" programming typescript)
+          ("https://www.reddit.com/r/clojure.rss" programming clojure)
+          ("https://www.reddit.com/r/python.rss" programming python)
+          ;; cloud
+          ("https://www.reddit.com/r/aws.rss" cloud aws reddit)
+          ("https://www.reddit.com/r/googlecloud.rss" cloud googlecloud reddit)
+          ("https://www.reddit.com/r/azure.rss" cloud azure reddit)
+          ("https://www.reddit.com/r/devops.rss" cloud devops reddit)
+          ("https://www.reddit.com/r/kubernetes.rss" cloud kubernetes reddit)
+          ;; LDAP
+          ("https://stackoverflow.com/feeds/tag/ldap" ldap)
+          ;; Emaacs
+          ("https://stackoverflow.com/feeds/tag/emacs" emacs)
+          ("https://emacs.stackexchange.com/feeds" emacs)
+          ("http://feeds.feedburner.com/XahsEmacsBlog" emacs)
+          ("https://www.reddit.com/r/emacs.rss" emacs reddit)
+          ("https://stackoverflow.com/feeds/tag/org-mode" emacs)
+          ("https://superuser.com/feeds/tag/emacs" emacs)
+          ("http://blog.binchen.org/rss.xml" emacs)
+          ("https://sachachua.com/blog/feed/?cat=-550" emacs)
+  )))
+
+  (setq-default elfeed-search-filter "@1-week-ago +unread")
+  ;(setq-default elfeed-search-filter "@2-days-ago +unread")
+  ;(setq-default elfeed-search-title-max-width 100)
+  ;(setq-default elfeed-search-title-min-width 100)
+
+  ;; set global keybindings
+  (global-set-key (kbd "C-c w") 'elfeed)
+  (global-set-key (kbd "C-c d") 'elfeed-dashboard)
+)
+
+;; provides article view on right side
+;(use-package elfeed-goodies
+;  :ensure t
+;  :demand t
+;  :config
+;  (elfeed-goodies/setup)
+;  ;; set pane position (left, right, top, bottom), default is right
+;  ;(setq elfeed-goodies/entry-pane-position 'bottom)
+;  (setq elfeed-goodies/entry-pane-size 0.65)
+;)
+
+;; save sample dashboard to a file
+;; curl https://raw.githubusercontent.com/Manoj321/elfeed-dashboard/main/elfeed-dashboard.org -o ~/elfeed-dashboard.org
+(use-package elfeed-dashboard
+  :ensure t
+  :demand t
+  :config
+  (setq elfeed-dashboard-file "~/.emacs.d/elfeed-dashboard.org")
+  ;; update feed counts on elfeed-quit
+  (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
+))
+
+;; Provide extra protocols to make self-hosting RSS readers work with elfeed, including Fever, NewsBlur, Nextcloud/ownCloud News, Tiny Tiny RSS and even more.
+;; https://www.reddit.com/r/emacs/comments/av1vyh/usepackage_and_elfeed/
+;(use-package elfeed-protocol
+;  :ensure t
+;  :defer t
+;  :config
+;  (elfeed-protocol-enable)
+;  (require 'password-store))
+;
+;(use-package password-store
+;  :ensure t
+;  :defer t)
+#+end_src
