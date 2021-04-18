@@ -61,31 +61,13 @@
 
 ;; install no-littering as early as possible
 ; Help keeping ~/.emacs.d clean
-; The default paths used to store configuration files and persistent data are not consistent across Emacs packages. This isn't just a problem with third-party packages but even with built-in packages.
 ; https://github.com/emacscollective/no-littering/
 (use-package no-littering               ; Keep .emacs.d clean
   :ensure t
-  ;:config
 )
 
-;; convert emacs-init.org into elc file for quick loading
+;; Simplify tangling, on emacs startup check
 (when (file-exists-p "~/.emacs.d/emacs-init.org")
   (org-babel-load-file (expand-file-name "emacs-init.org"
                        user-emacs-directory))
-;  ;(byte-compile-file (concat user-emacs-directory "early-init.el"))
-;  ;(byte-compile-file (concat user-emacs-directory "init.el"))
-;  (byte-compile-file (concat user-emacs-directory "emacs-init.el"))
 )
-
-;; tangle and byte compile on emacs-init.org on buffer save or kill
-(defun my--tangle-byte-compile-org ()
- "Tangles emacs.org and byte compiles ~/.emacs.d/"
-   (interactive)
-   (when (equal (buffer-name)
-                (concat "emacs-init.org"))
-     (org-babel-tangle)
-     ;(byte-recompile-directory (expand-file-name user-emacs-directory) 0)
-     (byte-compile-file (concat user-emacs-directory "emacs-init.el")) ))
-
-(add-hook 'after-save-hook #'my--tangle-byte-compile-org)
-(add-hook 'kill-emacs-hook #'my--tangle-byte-compile-org)
