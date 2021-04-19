@@ -2242,16 +2242,22 @@ Keyboard shortcuts
 ;  :defer t)
 #+end_src
 
+* vscode-icon
+VsCode Icons for Emacs
+https://github.com/jojojames/vscode-icon-emacs
+
+#+begin_src emacs-lisp
+(use-package vscode-icon
+  :ensure t
+  :commands (vscode-icon-for-file))
+#+end_src
+
 * sidebar
 
 Requires dired-subtree
 https://github.com/jojojames/dired-sidebar
 
 #+begin_src emacs-lisp
-(use-package dired-sidebar
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar))
-
 (use-package dired-sidebar
   :ensure t
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
@@ -2265,7 +2271,7 @@ https://github.com/jojojames/dired-sidebar
   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
-  (setq dired-sidebar-subtree-line-prefix "__")
+  ;(setq dired-sidebar-subtree-line-prefix "__")
   (setq dired-sidebar-theme 'vscode)
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t)
