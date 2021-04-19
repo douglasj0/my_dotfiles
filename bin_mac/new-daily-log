@@ -47,7 +47,7 @@ fi
 rm -f +* *~
 
 # Create new empty daily log file template
-##echo -e "#-*- mode: org -*-\n
+##echo -e "# -*- mode: org -*-\n
 ##$yourName  [ Week beginning Monday ${newfile#*--} ]\n
 ##Monday\n\n  .\n
 ##Tuesday\n\n\n

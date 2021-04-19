@@ -1514,11 +1514,11 @@ Mminimum commands to start benefitting
               ;("s-p" . projectile-command-map) ; super-p
               ("C-c p" . projectile-command-map))
   :config
-  (setq projectile-enable-caching t) ; enable caching
+  (setq projectile-enable-caching nil) ; don't enable caching
   (setq projectile-indexing-method 'alien) ; external cmd for indexing
 
   ;; set a list of folders for projectile to automatically check
-  (setq projectile-project-search-path '("~/projects/" "~/work/"))
+  (setq projectile-project-search-path '("~/education" "~/projects/" "~/work/"))
 
   ;; To change the remote file exists cache expire to 10 min use this code:
   (setq projectile-file-exists-remote-cache-expire (* 10 60))
