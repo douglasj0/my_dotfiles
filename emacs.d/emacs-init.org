@@ -147,9 +147,9 @@ Configuring built in packages
 * global settings
 #+begin_src emacs-lisp
 
-;; disable company-mode completions in shells
-(add-hook 'shell-mode-hook (lambda () (company-mode -1)) 'append)
-(add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
+;; disable company-mode completions in shells (removed since company-mode is disabled)
+;(add-hook 'shell-mode-hook (lambda () (company-mode -1)) 'append)
+;(add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
 
 ;; set default shell to zsh
 (setq explicit-shell-file-name "/bin/zsh")
@@ -2223,7 +2223,7 @@ Keyboard shortcuts
   :ensure t
   :demand t
   :config
-  (setq elfeed-dashboard-file "~/.emacs.d/var/elfeed-dashboard.org")
+  (setq elfeed-dashboard-file "~/.emacs.d/etc/elfeed-dashboard.org")
   ;; update feed counts on elfeed-quit
   (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
 ))
