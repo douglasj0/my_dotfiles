@@ -55,7 +55,7 @@ rm -f +* *~
 ##Thursday\n\n\n
 ##Friday\n\n" >${newfile}
 
-echo -e "#-*- mode: org; fill-column: 78 -*-
+echo -e "# -*- mode: org; fill-column: 78 -*-
 #+STARTUP: overview
 
 $yourName  [ Week beginning Monday ${newfile#*--} ]\n
