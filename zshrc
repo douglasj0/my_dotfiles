@@ -241,7 +241,7 @@ pushkey() {
 magit() {
   if git status > /dev/null 2>&1; then
       #emacsclient -nw --eval "(call-interactively #'magit-status)"
-      emacsclient -s ${HOME}/.emacs.d/tmp/server -n -a emacs --eval "(call-interactively #'magit-status)"
+      emacsclient -s ${HOME}/.emacs.d/var/tmp/server -n -a emacs --eval "(call-interactively #'magit-status)"
   else
       echo "Not in a git repo"
       return 1
@@ -290,7 +290,7 @@ fi
 # adapted from http://philipweaver.blogspot.com/2009/08/emacs-23.html
 ###
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"  # lowercase bin/emacs is broken
-EMACS_SOCKET="${HOME}/.emacs.d/tmp/server"
+EMACS_SOCKET="${HOME}/.emacs.d/var/tmp/server"
 alias ecw="emacsEclient -s $EMACS_SOCKET -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -s $EMACS_SOCKET -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -s $EMACS_SOCKET -n -a emacs" # do not start a new frame
