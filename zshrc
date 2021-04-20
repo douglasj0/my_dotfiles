@@ -1,4 +1,4 @@
-# -*- mode: sh -*-
+# -*- mode: sh; -*-
 #
 # my rc file for zsh 2.2
 # all this runs in interactive shells only
