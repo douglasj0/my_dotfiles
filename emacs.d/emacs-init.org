@@ -631,7 +631,11 @@ https://github.com/Wilfred/deadgrep
   :ensure t
   :config
   (when (memq window-system '(mac ns x))
-     (exec-path-from-shell-initialize))
+     (setq exec-path-from-shell-check-startup-files nil
+           exec-path-from-shell-variables '("PATH" "MANPATH")
+           exec-path-from-shell-arguments '("-l"))
+     (exec-path-from-shell-initialize)
+  )
 )
 
 ;; Disable railwaycat's tab bar
@@ -1709,32 +1713,10 @@ https://github.com/zamansky/dot-emacs
 ;; save pwd to kill ring for later use
 (setq eshell-pwd-convert-function #'kill-new)
 
-;; Broken out into its own section
-;(use-package exec-path-from-shell
-;  :ensure t
-;  :config
-;  (exec-path-from-shell-initialize)
-;)
-
 (use-package eshell-git-prompt
   :ensure t
   :config
   (eshell-git-prompt-use-theme 'git-radar)
-)
-#+end_src
-
-* Exec-path-from-shell
-A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell
-https://github.com/purcell/exec-path-from-shell
-
-#+begin_src emacs-lisp
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (setq exec-path-from-shell-check-startup-files nil
-        exec-path-from-shell-variables '("PATH" "MANPATH")
-        exec-path-from-shell-arguments '("-l"))
-  (exec-path-from-shell-initialize)
 )
 #+end_src
 
