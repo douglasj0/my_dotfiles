@@ -133,7 +133,7 @@ autoload -Uz compinit && compinit -i
 # cd
 
 # stty erase ^H
-stty -echoprt
+##stty -echoprt
 
 NNTPSERVER=news.eternal-september.org
 MORE=p
