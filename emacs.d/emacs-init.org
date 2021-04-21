@@ -2289,3 +2289,21 @@ https://www.emacswiki.org/emacs/RecentFiles
         recentf-auto-cleanup 'never)
   (recentf-mode +1))
 #+end_src
+
+* doom-modeline
+A fancy and fast mode-line inspired by minimalism design.
+https://seagle0128.github.io/doom-modeline/
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  ;; Fix? for Height below 25 not working anymore #187
+  ;; https://github.com/seagle0128/doom-modeline/issues/187
+  (defun my-doom-modeline--font-height ()
+    "Calculate the actual char height of the mode-line."
+    (+ (frame-char-height) 1))
+  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
+)
+#+end_src
