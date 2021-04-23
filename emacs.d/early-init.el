@@ -1,25 +1,40 @@
-;;; early-init.el --- -*- lexical-binding: t -*-
-;
-; disabling those in your init file, but elements were loaded before your init file, so you HAVE to call scroll-bar-mode and tool-bar-mode, which can take quite a lot of time (more than 100ms on my laptop)
+;;; -*- lexical-binding: t -*-
+;;; early-init.el
 
-;(push '(tool-bar-lines . 0) default-frame-alist)
-;(push '(menu-bar-lines . 0) default-frame-alist)
-;(push '(vertical-scroll-bars) default-frame-alist)
+;; ideasman_42's suggestion
+;; https://www.reddit.com/r/emacs/comments/msll0j/do_any_of_you_have_some_tips_on_speeding_up_emacs/
 
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
+;; default of gc-cons-threshold is 800k
+(defvar default-gc-cons-threshold 16777216 ; 16mb
+  "my default desired value of `gc-cons-threshold'
+during normal emacs operations.")
 
+;; make garbage collector less invasive
+(setq
+  gc-cons-threshold
+  most-positive-fixnum
+  gc-cons-percentage 0.6)
 
-;;Garbage Collection
-;;Make startup faster by reducing the frequency of garbage collection. Set gc-cons-threshold (the default is 800 kilobytes) to maximum value available, to prevent any garbage collection from happening during load time.
-(setq gc-cons-threshold most-positive-fixnum) ;; was 100000000
-;; Restore it to reasonable value after init.
-;; was after-init-hook and 800000, but emacs-startup-hook runs later, catching more commands
-(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
+;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
+(setq
+  default-file-name-handler-alist
+  file-name-handler-alist
+  file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+  (lambda (&rest _)
+    (setq
+      gc-cons-threshold
+      default-gc-cons-threshold
+      gc-cons-percentage 0.1
+      file-name-handler-alist default-file-name-handler-alist)
+
+    ;; delete no longer necessary startup variable
+    (makunbound 'default-file-name-handler-alist)))
 
 
 ;; Show startup time
