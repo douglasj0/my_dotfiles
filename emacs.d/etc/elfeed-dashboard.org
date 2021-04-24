@@ -1,0 +1,53 @@
+* Basics
+
+ [U] Update Elfeed
+ [s] Search
+ [E] Edit
+ [g] Refresh counts
+ [q] Kill dashboard
+
+* Bookmarks
+
+ [u] Unread      ([[elfeed:+unread][  1411]]/[[elfeed:][  1464]])
+ [m] Misc        ([[elfeed:+unread +misc][  106]]/[[elfeed:+misc][   118]])
+ [n] News        ([[elfeed:+unread +news][    0]]/[[elfeed:+news][    33]])
+ [a] Apple       ([[elfeed:+unread +apple][   70]]/[[elfeed:+apple][    70]])
+ [b] Blogs       ([[elfeed:+unread +blogs][  170]]/[[elfeed:+globs][     0]])
+ [d] Downloads   ([[elfeed:+unread +downloads][   35]]/[[elfeed:+downloads][    35]])
+ [l] Linux       ([[elfeed:+unread +linux][  162]]/[[elfeed:+linux][   162]])
+ [P] PiDP        ([[elfeed:+unread +pidp][   13]]/[[elfeed:+pidp][    20]])
+ [s] Security    ([[elfeed:+unread +security][   53]]/[[elfeed:+security][    53]])
+ [t] Tech        ([[elfeed:+unread +tech][   69]]/[[elfeed:+tech][    69]])
+ [p] Programming ([[elfeed:+unread +programming][  223]]/[[elfeed:+programming][   224]])
+ [c] Cloud       ([[elfeed:+unread +cloud][  135]]/[[elfeed:+cloud][   135]])
+ [L] LDAP        ([[elfeed:+unread +ldap][   30]]/[[elfeed:+ldap][    30]])
+ [e] Emacs       ([[elfeed:+unread +emacs][  341]]/[[elfeed:+emacs][   341]])
+
+
+* Configuration
+  :PROPERTIES:
+  :VISIBILITY: hideall
+  :END:
+
+  Press "E" to edit and M-x elfeed-dashboard-mode to go back
+
+  #+STARTUP: showall showstars indent
+  #+KEYMAP: u | elfeed-dashboard-query "+unread"
+  #+KEYMAP: m | elfeed-dashboard-query "+unread +misc"
+  #+KEYMAP: n | elfeed-dashboard-query "+unread +news"
+  #+KEYMAP: a | elfeed-dashboard-query "+unread +apple"
+  #+KEYMAP: b | elfeed-dashboard-query "+unread +blogs"
+  #+KEYMAP: d | elfeed-dashboard-query "+unread +downloads"
+  #+KEYMAP: l | elfeed-dashboard-query "+unread +linux"
+  #+KEYMAP: P | elfeed-dashboard-query "+unread +pidp"
+  #+KEYMAP: s | elfeed-dashboard-query "+unread +security"
+  #+KEYMAP: t | elfeed-dashboard-query "+unread +tech"
+  #+KEYMAP: p | elfeed-dashboard-query "+unread +programming"
+  #+KEYMAP: c | elfeed-dashboard-query "+unread +cloud"
+  #+KEYMAP: L | elfeed-dashboard-query "+unread +ldap"
+  #+KEYMAP: e | elfeed-dashboard-query "+unread +emacs"
+  #+KEYMAP: s | elfeed
+  #+KEYMAP: g | elfeed-dashboard-update-links
+  #+KEYMAP: U | elfeed-dashboard-update
+  #+KEYMAP: E | elfeed-dashboard-edit
+  #+KEYMAP: q | kill-current-buffer
