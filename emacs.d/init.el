@@ -1,5 +1,5 @@
 ;;; init.el --- -*- lexical-binding: t -*-
-;;; https://nullprogram.com/blog/2016/12/22/
+;;; lexical scope: https://nullprogram.com/blog/2016/12/22/
 
 ;; set elpa directory name based on emacs major version
 ;(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version)) ;ex. elpa-27
@@ -16,12 +16,13 @@
         ("org"   . "https://orgmode.org/elpa/") ; provides org-plus-contrib
         ("melpa" . "https://melpa.org/packages/") ; milkypostman's pkg archive
 ))
+
 (package-initialize)
 
 ;; install use-package early, needed for org-plus-contrib
 ;; https://github.com/jwiegley/use-package
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
+  (package-refresh-contents) ;; maybe only do before installing pkgs?
   (package-install 'use-package))
 
 ;; Disable ad-redefinition-action messages on startup

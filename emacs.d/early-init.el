@@ -40,7 +40,6 @@ during normal emacs operations.")
 ;;; and site-run-file
 (setq site-run-file nil)
 
-
 ;; Profile emacs startup
 ;; https://raw.githubusercontent.com/daviwil/dotfiles/master/Emacs.org
 (add-hook 'emacs-startup-hook
@@ -50,6 +49,3 @@ during normal emacs operations.")
          (float-time
             (time-subtract after-init-time before-init-time)))
       gcs-done)))
-
-
-;;; moved from init.el to simplify it

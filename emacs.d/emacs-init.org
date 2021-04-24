@@ -1,8 +1,8 @@
 -*- mode: org; fill-column: 78; -*-
 #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
+#+PROPERTY: header-args:emacs-lisp :tangle ./emacs-init.el :mkdirp yes
 
-# TODO:  hydra, swiper, counsel, org, ripgrep, fasd, expand-region
 * Init
 Transfered from ~/.emacs.d/init.el
 Moved use-package and org-plus-contrib back to init.el to fix org-version issue
