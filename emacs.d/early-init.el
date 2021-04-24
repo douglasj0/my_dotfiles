@@ -1,5 +1,4 @@
-;;; -*- lexical-binding: t -*-
-;;; early-init.el
+;;; early-init.el --- -*- lexical-binding: t -*-
 
 ;; ideasman_42's suggestion
 ;; https://www.reddit.com/r/emacs/comments/msll0j/do_any_of_you_have_some_tips_on_speeding_up_emacs/
@@ -36,16 +35,21 @@ during normal emacs operations.")
     ;; delete no longer necessary startup variable
     (makunbound 'default-file-name-handler-alist)))
 
+;;; Disable package-enabel-at-startup sinc we're handling it
+(setq package-enable-at-startup nil)
+;;; and site-run-file
+(setq site-run-file nil)
 
-;; Show startup time
-;; https://www.reddit.com/r/emacs/comments/m8d55l/what_is_your_startup_time
-(defun efs/display-startup-time ()
-  (message
-   "Emacs loaded in %s with %d garbage collections."
-   (format
-    "%.2f seconds"
-    (float-time
-     (time-subtract after-init-time before-init-time)))
-   gcs-done))
 
-(add-hook 'emacs-startup-hook #'efs/display-startup-time)
+;; Profile emacs startup
+;; https://raw.githubusercontent.com/daviwil/dotfiles/master/Emacs.org
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (message "*** Emacs loaded in %s with %d garbage collections."
+      (format "%.2f seconds"
+         (float-time
+            (time-subtract after-init-time before-init-time)))
+      gcs-done)))
+
+
+;;; moved from init.el to simplify it

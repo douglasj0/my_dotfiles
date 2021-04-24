@@ -1,12 +1,6 @@
 ;;; init.el --- -*- lexical-binding: t -*-
 ;;; https://nullprogram.com/blog/2016/12/22/
 
-; -*- mode: emacs-lisp -*-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Doug's GNU Emacs startup file                                           ;;;
-;;; hpotter@hogworts.edu                                                    ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; set elpa directory name based on emacs major version
 ;(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version)) ;ex. elpa-27
 (setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version)) ;ex. elpa-27.1
