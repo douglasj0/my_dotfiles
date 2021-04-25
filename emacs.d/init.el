@@ -1,11 +1,10 @@
 ;;; init.el --- -*- lexical-binding: t -*-
 ;;; lexical scope: https://nullprogram.com/blog/2016/12/22/
 
-
+;; Initialize use-package on non-linux platforms
 ;; install use-package early, needed for org-plus-contrib
 ;; https://github.com/jwiegley/use-package
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents) ;; maybe only do before installing pkgs?
   (package-install 'use-package))
 
 ;; install no-littering as early as possible

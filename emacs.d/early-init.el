@@ -1,10 +1,7 @@
 ;;; early-init.el --- -*- lexical-binding: t -*-
-;;
-;; Filename: early-init.el
 
 ;; ideasman_42's suggestion
 ;; https://www.reddit.com/r/emacs/comments/msll0j/do_any_of_you_have_some_tips_on_speeding_up_emacs/
-
 ;; default of gc-cons-threshold is 800k
 (defvar default-gc-cons-threshold 16777216 ; 16mb
   "my default desired value of `gc-cons-threshold'
@@ -58,8 +55,6 @@
             (time-subtract after-init-time before-init-time)))
       gcs-done)))
 
-
-
 ;; Disable ad-redefinition-action messages on startup
 ;; Caused by third party functions redefining defadvice
 ;; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
@@ -89,13 +84,13 @@
 (require 'package)
 ;(setq package-enable-at-startup nil) ; moved to early-init
 (setq package-archives
-      '(
-        ;("elpy"  . "http://jorgenschaefer.github.io/packages/") ; elpy package archive
-        ("gnu"   . "https://elpa.gnu.org/packages/") ; default package archive
-        ("org"   . "https://orgmode.org/elpa/") ; provides org-plus-contrib
-        ("melpa" . "https://melpa.org/packages/") ; milkypostman's pkg archive
-))
+  '(
+    ("melpa" . "https://melpa.org/packages/")     ; milkypostman's pkg archive
+    ("org"   . "https://orgmode.org/elpa/")       ; provides org-plus-contrib
+    ("elpa"  . "https://elpa.gnu.org/packages/"))); default package archive
 
 (package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (provide 'early-init)
