@@ -1418,6 +1418,7 @@ https://github.com/abo-abo/swiper
 changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+
 #+begin_src emacs-lisp
 (use-package ivy
   :ensure t
@@ -1436,6 +1437,8 @@ https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
          ("<f1> l"  . counsel-find-library)
          ("<f1> i"  . counsel-info-lookup-symbol)
          ("<f1> u"  . counsel-unicode-char)
+         ("<f2> i"  . counsel-info-lookup-symbol)
+         ("<f2> u"  . counsel-unicode-char)
          ("C-c g"   . counsel-git) ;;; Ivy-based interface to shell and system tools
          ("C-c j"   . counsel-git-grep)
          ("C-c k"   . counsel-ag)
@@ -1485,19 +1488,20 @@ NOTE: if smex is installed, counsel will use it to sort by most recently used
 (use-package counsel
   ;:disabled
   :ensure t
-  :config
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  ;(global-set-key (kbd "C-c a") 'counsel-ag) ; conflicts with org-agenda
-  (global-set-key (kbd "C-x l") 'counsel-locate)
-  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+  ;:config
+  ;(global-set-key (kbd "M-x") 'counsel-M-x) ; defined in ivy
+  ;(global-set-key (kbd "C-x C-f") 'counsel-find-file) ; defined in ivy
+  ;(global-set-key (kbd "<f1> f") 'counsel-describe-function) ; defined in ivy
+  ;(global-set-key (kbd "<f1> v") 'counsel-describe-variable) ; defined in ivy
+  ;(global-set-key (kbd "<f1> l") 'counsel-find-library) ; defined in ivy
+  ;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  ;(global-set-key (kbd "C-c g") 'counsel-git) ; defined in ivy
+  ;(global-set-key (kbd "C-c j") 'counsel-git-grep) ; defined in ivy
+  ;(global-set-key (kbd "C-c a") 'counsel-ag) ; conflicts with org-agenda, also defined in ivy
+  ;(global-set-key (kbd "C-x l") 'counsel-locate) ; defined in ivy
+  ;(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)  ; defined in ivy
+)
 #+end_src
 
 * Projectile (Project Management)
@@ -1617,6 +1621,9 @@ Hide file detail toggle `(`
   :bind ("C-x C-j"   . dired-jump)
         ("C-x 4 C-j" . dired-jump-other-window)
   :config
+     ;; on macOS, ls doesn't support --dired option linux does
+     (when (string= system-type "darwin")
+       (setq dired-use-ls-dired nil))
      (setq-default dired-omit-files-p t)
      (setq dired-listing-switches "-alhv")
      ;(setq dired-use-ls-dired nil)
