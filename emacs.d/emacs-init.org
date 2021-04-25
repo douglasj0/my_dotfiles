@@ -1615,6 +1615,17 @@ provides extra functionality for Dired Mode.
 Hide file detail toggle `(`
 
 #+begin_src emacs-lisp
+(use-package ls-lisp
+  :ensure nil
+  :defer t
+  :custom
+  (ls-lisp-emulation 'MacOS)
+  (ls-lisp-ignore-case t)
+  (ls-lisp-verbosity nil)
+  (ls-lisp-dirs-first t)
+  (ls-lisp-use-insert-directory-program nil)
+)
+
 (use-package dired-x
   :ensure nil
   :demand t
