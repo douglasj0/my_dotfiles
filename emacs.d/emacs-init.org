@@ -312,96 +312,96 @@ Configuring built in packages
 
 * functions
 #+begin_src emacs-lisp
-;;; ---------------------------------------------------------------------------
-;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
-;;; Open link at point in new frame
-(defun zin/org-open-other-frame ()
-  "Jump to bookmark in another frame. See `bookmark-jump' for more."
-  (interactive)
-  (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
-    (org-open-at-point)))
-(global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
+  ;;; ---------------------------------------------------------------------------
+  ;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
+  ;;; Open link at point in new frame
+  (defun zin/org-open-other-frame ()
+    "Jump to bookmark in another frame. See `bookmark-jump' for more."
+    (interactive)
+    (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
+      (org-open-at-point)))
+  (global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
 
-;;; ---------------------------------------------------------------------------
-;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
-;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-(defun narrow-or-widen-dwim ()
-  "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
-  (interactive)
-  (cond ((buffer-narrowed-p) (widen))
-        ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
-        ((equal major-mode 'org-mode) (org-narrow-to-subtree))
-        (t (error "Please select a region to narrow to"))))
-(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
+  ;;; ---------------------------------------------------------------------------
+  ;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
+  ;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+  (defun narrow-or-widen-dwim ()
+    "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+    (interactive)
+    (cond ((buffer-narrowed-p) (widen))
+          ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+          ((equal major-mode 'org-mode) (org-narrow-to-subtree))
+          (t (error "Please select a region to narrow to"))))
+  (global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
 
-;; I bind this key to C-c n, using the bind-key function that comes with use-package.
-;(bind-key "C-c n" 'narrow-or-widen-dwim)
+  ;; I bind this key to C-c n, using the bind-key function that comes with use-package.
+                                          ;(bind-key "C-c n" 'narrow-or-widen-dwim)
 
-;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
-;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
+  ;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
+  ;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
 
-;;; ---------------------------------------------------------------------------
-;;; Move lines up or down (can't easily use C-S on MacOS)
-;;; http://whattheemacsd.com//editing-defuns.el-02.html
-(defun move-line-down ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
+  ;;; ---------------------------------------------------------------------------
+  ;;; Move lines up or down (can't easily use C-S on MacOS)
+  ;;; http://whattheemacsd.com//editing-defuns.el-02.html
+  (defun move-line-down ()
+    (interactive)
+    (let ((col (current-column)))
+      (save-excursion
+        (forward-line)
+        (transpose-lines 1))
       (forward-line)
-      (transpose-lines 1))
-    (forward-line)
-    (move-to-column col)))
+      (move-to-column col)))
 
-(defun move-line-up ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines -1))
-    (move-to-column col)))
+  (defun move-line-up ()
+    (interactive)
+    (let ((col (current-column)))
+      (save-excursion
+        (forward-line)
+        (transpose-lines -1))
+      (move-to-column col)))
 
-;(global-set-key (kbd "<C-S-down>") 'move-line-down)
-;(global-set-key (kbd "<C-S-up>") 'move-line-up)
-(global-set-key (kbd "<M-S-down>") 'move-line-down)
-(global-set-key (kbd "<M-S-up>") 'move-line-up)
+                                          ;(global-set-key (kbd "<C-S-down>") 'move-line-down)
+                                          ;(global-set-key (kbd "<C-S-up>") 'move-line-up)
+  (global-set-key (kbd "<M-S-down>") 'move-line-down)
+  (global-set-key (kbd "<M-S-up>") 'move-line-up)
 
-;;; ---------------------------------------------------------------------------
-;;; Match Paren / based on the vim command using %
-;;; http://grok2.tripod.com/
-(defun match-paren (arg)
-      "Go to the matching paren if on a paren; otherwise insert %."
-      (interactive "p")
-      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-            ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-            (t (self-insert-command (or arg 1)))))
-(global-set-key "%" 'match-paren)
+  ;;; ---------------------------------------------------------------------------
+  ;;; Match Paren / based on the vim command using %
+  ;;; http://grok2.tripod.com/
+  (defun match-paren (arg)
+    "Go to the matching paren if on a paren; otherwise insert %."
+    (interactive "p")
+    (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+          ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+          (t (self-insert-command (or arg 1)))))
+  (global-set-key "%" 'match-paren)
 
-;;; ---------------------------------------------------------------------------
-(defun intelligent-close ()
-  "quit a frame the same way no matter what kind of frame you are on.
+  ;;; ---------------------------------------------------------------------------
+  (defun intelligent-close ()
+    "quit a frame the same way no matter what kind of frame you are on.
 
-This method, when bound to C-x C-c, allows you to close an emacs frame the
-same way, whether it's the sole window you have open, or whether it's
-a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
-a windowing environment, you probably have lots of frames open at any given
-time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
-frame, and to remember to do C-x C-x to close the main frame (and if you're
-not careful, doing so will take all the child frames away with it).  This
-is my solution to that: an intelligent close-frame operation that works in
-all cases (even in an emacs -nw session).
+  This method, when bound to C-x C-c, allows you to close an emacs frame the
+  same way, whether it's the sole window you have open, or whether it's
+  a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
+  a windowing environment, you probably have lots of frames open at any given
+  time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
+  frame, and to remember to do C-x C-x to close the main frame (and if you're
+  not careful, doing so will take all the child frames away with it).  This
+  is my solution to that: an intelligent close-frame operation that works in
+  all cases (even in an emacs -nw session).
 
-Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
-  (interactive)
-  (if (eq (car (visible-frame-list)) (selected-frame))
-      ;;for parent/master frame...
-      (if (> (length (visible-frame-list)) 1)
-          ;;close a parent with children present
-          (delete-frame (selected-frame))
-        ;;close a parent with no children present
-        (save-buffers-kill-emacs))
-    ;;close a child frame
-    (delete-frame (selected-frame))))
-(global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
+  Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
+    (interactive)
+    (if (eq (car (visible-frame-list)) (selected-frame))
+        ;;for parent/master frame...
+        (if (> (length (visible-frame-list)) 1)
+            ;;close a parent with children present
+            (delete-frame (selected-frame))
+          ;;close a parent with no children present
+          (save-buffers-kill-emacs))
+      ;;close a child frame
+      (delete-frame (selected-frame))))
+  (global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
 #+end_src
 
 * Better Defaults Package
@@ -2305,5 +2305,31 @@ https://seagle0128.github.io/doom-modeline/
     "Calculate the actual char height of the mode-line."
     (+ (frame-char-height) 1))
   (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
+)
+#+end_src
+
+* shell-pop
+shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
+https://github.com/kyagi/shell-pop-el
+
+#+begin_src emacs-lisp
+;; Unset C-t from transpose characters
+;(global-set-key (kbd "C-t") nil)
+(global-unset-key (kbd "C-t"))
+
+(use-package shell-pop
+  :ensure t
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/zsh"
+        shell-pop-window-size 30
+        shell-pop-full-span t
+        shell-pop-window-position "bottom"
+        shell-pop-autocd-to-working-dir t
+        shell-pop-restore-window-configuration t
+        shell-pop-cleanup-buffer-at-process-exit t)
+  ;;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
 #+end_src
