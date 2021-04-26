@@ -75,22 +75,4 @@
 ;; Also suppress extraneous package-initialize errors
 (setq warning-suppress-log-types '((package reinitialization)))
 
-;; set elpa directory name based on emacs major version
-;(setq package-user-dir (format "~/.emacs.d/elpa-%d" emacs-major-version)) ;ex. elpa-27
-(setq package-user-dir (concat "~/.emacs.d/elpa-" emacs-version)) ;ex. elpa-27.1
-
-;; To refresh package list, run:  M-x package-refresh-contents
-;; To manually update installed packages:  M-x package-list-packages U x
-(require 'package)
-;(setq package-enable-at-startup nil) ; moved to early-init
-(setq package-archives
-  '(
-    ("melpa" . "https://melpa.org/packages/")     ; milkypostman's pkg archive
-    ("org"   . "https://orgmode.org/elpa/")       ; provides org-plus-contrib
-    ("elpa"  . "https://elpa.gnu.org/packages/"))); default package archive
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
 (provide 'early-init)
