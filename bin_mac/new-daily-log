@@ -63,15 +63,18 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n8:30-9:30 email/slack catch-up
 \n.
 \n9-3 ghprod AMI Creation day reminder
+\n10-10:30 [Meeting] CDE Standup
 \n10:30-11 Log into GH4W to keep account active
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
-\n3-3:30 [Meeting] Doug / Johnny 1:1
+\n3-3:30 [Meeting] Doug/Dawid 1:1
 \n* Tuesday
 \n8:30-9:30 email/slack catch-up
+\n10:30-11 [Meeting] AMI Vulnerabilities Checkpoint: InfoSec, Infra, SecEng
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
+\n2-3 [Meeting] EOE WBR
 \n* Wednesday
 \n8:30-9:30 email/slack catch-up
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
@@ -80,9 +83,9 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n3-4 [Meeting] Postmortems Weekly
 \n* Thursday
 \n8:30-9:30 email/slack catch-up
-\n11-11:30 [Meeting] Tech Bi-weekly All Hands
+\n11:20-12 [Meeting] Tech Bi-weekly All Hands
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
-\n1-2 [Meeting] CHI2 Shutdown Discussion
+\n1-1:30 [Meeting] CHI2 Shutdown Discussion
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
 \n* Friday
