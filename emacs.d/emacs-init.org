@@ -1645,10 +1645,13 @@ Hide file detail toggle `(`
      (setq dired-listing-switches "-alhv")
      ;(setq dired-use-ls-dired nil)
      ;(setq dired-listing-switches "-agho --group-directories-first") ; errors
-     (setq dired-omit-files "^\\.\\|^#.#$\\|.~$")
      ;(define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy) ; requires dired-hacks
-     (define-key dired-mode-map (kbd "h") #'dired-omit-mode)
      (define-key dired-mode-map (kbd "e") #'read-only-mode)
+
+     ;; omit-mode
+     (setq dired-omit-files "^\\.\\|^#.#$\\|.~$") ; omit dot and backup files
+     (define-key dired-mode-map (kbd "h") #'dired-omit-mode) ; overriding h:describe-mode
+     (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))) ; start in omit-mode
 
      ;; Auto-refresh dired on file change
      (add-hook 'dired-mode-hook 'auto-revert-mode)
