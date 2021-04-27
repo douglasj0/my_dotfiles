@@ -8,7 +8,13 @@ Transfered from ~/.emacs.d/init.el
 Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 
 #+begin_src emacs-lisp
-;;; emacs-init.el --- -*- lexical-binding: t -*-
+;;; init.el --- -*- lexical-binding: t -*-
+;;  Author: Douglas Jackson
+;;; Commentary:
+;;  My Emacs configuration
+;;; Code:
+
+;;; Note: Some Performance Advantages of Lexical Scope:
 ;;; https://nullprogram.com/blog/2016/12/22/
 
 ;; whoami?
@@ -2208,6 +2214,7 @@ Keyboard shortcuts
           ("https://superuser.com/feeds/tag/emacs" emacs)
           ("http://blog.binchen.org/rss.xml" emacs)
           ("https://sachachua.com/blog/feed/?cat=-550" emacs)
+          ("https://blog.tecosaur.com/tmio/rss.xml" emacs org)
   )))
 
   (setq-default elfeed-search-filter "@1-week-ago +unread")
@@ -2384,4 +2391,16 @@ https://github.com/kyagi/shell-pop-el
   ;;; need to do this manually or not picked up by `shell-pop'
   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
 )
+#+end_src
+
+* global-line-number-mode
+
+#+begin_src emacs-lisp
+;(column-number-mode)
+;(global-display-line-numbers-mode 1)
+;
+;(dolist (mode '(org-mode-hook
+;                term-mode-hook
+;                eshell-mode-hook
+;  (add-hook mode (lambda () (display-line0-numbers-mode 0))))))
 #+end_src

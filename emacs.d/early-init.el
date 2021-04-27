@@ -1,4 +1,8 @@
 ;;; early-init.el --- -*- lexical-binding: t -*-
+;;  Author: Douglas Jackson
+;;; Commentary:
+;;  My Emacs configuration
+;;; Code:
 
 ;; ideasman_42's suggestion
 ;; https://www.reddit.com/r/emacs/comments/msll0j/do_any_of_you_have_some_tips_on_speeding_up_emacs/

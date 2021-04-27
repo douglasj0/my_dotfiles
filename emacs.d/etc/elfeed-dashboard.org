@@ -16,7 +16,7 @@
  [d] Downloads   ([[elfeed:+unread +downloads][   35]]/[[elfeed:+downloads][    35]])
  [l] Linux       ([[elfeed:+unread +linux][  162]]/[[elfeed:+linux][   162]])
  [P] PiDP        ([[elfeed:+unread +pidp][   13]]/[[elfeed:+pidp][    20]])
- [s] Security    ([[elfeed:+unread +security][   53]]/[[elfeed:+security][    53]])
+ [y] Security    ([[elfeed:+unread +security][   53]]/[[elfeed:+security][    53]])
  [t] Tech        ([[elfeed:+unread +tech][   69]]/[[elfeed:+tech][    69]])
  [p] Programming ([[elfeed:+unread +programming][  223]]/[[elfeed:+programming][   224]])
  [c] Cloud       ([[elfeed:+unread +cloud][  135]]/[[elfeed:+cloud][   135]])
@@ -40,7 +40,7 @@
   #+KEYMAP: d | elfeed-dashboard-query "+unread +downloads"
   #+KEYMAP: l | elfeed-dashboard-query "+unread +linux"
   #+KEYMAP: P | elfeed-dashboard-query "+unread +pidp"
-  #+KEYMAP: s | elfeed-dashboard-query "+unread +security"
+  #+KEYMAP: y | elfeed-dashboard-query "+unread +security"
   #+KEYMAP: t | elfeed-dashboard-query "+unread +tech"
   #+KEYMAP: p | elfeed-dashboard-query "+unread +programming"
   #+KEYMAP: c | elfeed-dashboard-query "+unread +cloud"
