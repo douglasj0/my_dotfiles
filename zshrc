@@ -237,7 +237,7 @@ pushkey() {
   fi
 }
 
-# magit, function to open magit buffer from current git repo
+# Emacs magit, function to open magit buffer from current git repo
 magit() {
   if git status > /dev/null 2>&1; then
       #emacsclient -nw --eval "(call-interactively #'magit-status)"
@@ -247,6 +247,14 @@ magit() {
       return 1
   fi
 }
+
+# Emacs vterm clear
+if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+    alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
+fi
+# Emacs vterm name buffer - doesn't work?
+#autoload -U add-zsh-hook
+#add-zsh-hook -Uz chpwd (){ print -Pn "\e]2;%m:%2~\a" }
 
 
 ###################

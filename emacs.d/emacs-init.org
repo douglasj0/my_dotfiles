@@ -2417,7 +2417,7 @@ Manual installation guide
 Prep, add emacs.d/emacs-libvterm to ~/.gitignore
 
 Clone the repository:
-$ cd .emacs.d
+$ cd .emacs.d/var
 $ git clone https://github.com/akermu/emacs-libvterm.git
 
 On Mac, install cmake and libvterm
@@ -2438,5 +2438,8 @@ Add to init.el
 #+begin_src emacs-lisp
 (use-package vterm
   :ensure nil
-  :load-path  "~/.emacs.d/var/emacs-libvterm")
+  :load-path  "~/.emacs.d/var/emacs-libvterm"
+  :config
+  (setq vterm-max-scrollback 5000) ; default 1000, max is 100000
+)
 #+end_src
