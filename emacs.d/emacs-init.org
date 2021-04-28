@@ -2407,3 +2407,36 @@ https://github.com/kyagi/shell-pop-el
 ;                eshell-mode-hook
 ;  (add-hook mode (lambda () (display-line0-numbers-mode 0))))))
 #+end_src
+
+* vterm
+Emacs-libvterm (vterm) is fully-fledged terminal emulator inside GNU Emacs based on libvterm
+https://github.com/akermu/emacs-libvterm
+
+Manual installation guide
+#+begin_src text
+Prep, add emacs.d/emacs-libvterm to ~/.gitignore
+
+Clone the repository:
+$ cd .emacs.d
+$ git clone https://github.com/akermu/emacs-libvterm.git
+
+On Mac, install cmake and libvterm
+$ brew install cmake libvterm
+
+Build the module
+$ cd ~/.emacs.d/var/emacs-libvterm
+$ mkdir -p build
+$ cd build
+$ cmake ..
+$ make
+
+Add to init.el
+(use-package vterm
+  :load-path  "path/to/emacs-libvterm/")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :ensure nil
+  :load-path  "~/.emacs.d/var/emacs-libvterm")
+#+end_src
