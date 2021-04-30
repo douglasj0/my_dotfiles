@@ -2041,25 +2041,8 @@ https://www.reddit.com/r/emacs/comments/imy9f1/all_the_icons_dired_subtree/
 (use-package all-the-icons-dired
   :ensure t
   :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-)
-
-;(use-package all-the-icons-dired
-;  :ensure t
-;  :config
-;  :hook (dired-mode . (lambda ()
-;                       (interactive)
-;                       (unless (file-remote-p default-directory)
-;                         (all-the-icons-dired-mode)))))
-;
-;
-;(use-package dired-subtree
-;  :ensure t
-;  :config
-;  (advice-add 'dired-subtree-toggle :after (lambda ()
-;                                             (interactive)
-;                                             (when all-the-icons-dired-mode
-;                                               (revert-buffer)))))
+  (if window-system
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 #+end_src
 
 * -- Programming --
