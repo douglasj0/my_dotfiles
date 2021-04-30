@@ -80,363 +80,363 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 Configuring built in packages
 
 ** enable disabled functions
- #+BEGIN_SRC emacs-lisp
- ;; Upcase and downcase regions
- (put 'upcase-region 'disabled nil)  ;C-x C-u
- (put 'downcase-region 'disabled nil)  ;C-x C-l
+#+BEGIN_SRC emacs-lisp
+;; Upcase and downcase regions
+(put 'upcase-region 'disabled nil)  ; C-x C-u
+(put 'downcase-region 'disabled nil)  ; C-x C-l
 
- ;; Sets the current horizontal position for C-n and C-p
- (put 'set-goal-column 'disabled nil)
+;; Sets the current horizontal position for C-n and C-p
+(put 'set-goal-column 'disabled nil)
 
- ;; Restrict buffer editing to a region
- ;; Text Narrowing commands:
- ;;   Region: C-x n n, Page: C-x n p
- ;;   Funct: C-x n p, Widen: C-x n w
- ;;   Subtree in Org-Mode:   C-x n s
- (put 'narrow-to-region 'disabled nil)
+;; Restrict buffer editing to a region
+;; Text Narrowing commands:
+;;   Region: C-x n n, Page: C-x n p
+;;   Funct: C-x n p, Widen: C-x n w
+;;   Subtree in Org-Mode:   C-x n s
+(put 'narrow-to-region 'disabled nil)
 
- ;; Dired functions (find-alternate 'a' reuses dired buffer)
- (put 'dired-find-alternate-file 'disabled nil)
+;; Dired functions (find-alternate 'a' reuses dired buffer)
+(put 'dired-find-alternate-file 'disabled nil)
 
- ;; Goal Column, enter C-x C-n, at point to set column that C-n should go to
- ;; to clear enter C-u C-x C-n
- (put 'set-goal-column 'disabled nil)
+;; Goal Column, enter C-x C-n, at point to set column that C-n should go to
+;; to clear enter C-u C-x C-n
+(put 'set-goal-column 'disabled nil)
 
- ;; https://www.emacswiki.org/emacs/ZapUpToChar
- (autoload 'zap-up-to-char "misc"
-   "Kill up to, but not including ARGth occurrence of CHAR.")
- (global-set-key (kbd "M-z") 'zap-up-to-char)
+;; https://www.emacswiki.org/emacs/ZapUpToChar
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+(global-set-key (kbd "M-z") 'zap-up-to-char)
 
- ;; And disable electric-indent if active, added in Emacs 24.4
- (when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
- #+END_SRC
+;; And disable electric-indent if active, added in Emacs 24.4
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+#+END_SRC
 
 ** global key bindings
- #+BEGIN_SRC emacs-lisp
- ;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
- ;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
- ;(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+#+BEGIN_SRC emacs-lisp
+;;; test out electric buffer mode - disabled, nice, but navigation highlighted every line
+;;; also, buffer management (deleting, etc) wasn't as polisihed as iBuffer
+(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 
- ;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
- ; Re-enable swap frames with M-`
- (global-set-key "\M-`" 'other-frame)
+;;; https://stackoverflow.com/questions/93058/emacs-switching-to-another-frame-mac-os-x
+; Re-enable swap frames with M-`
+;(global-set-key "\M-`" 'other-frame)
 
- ;; Open an Emacs eshell, shell, term, ansi-term, or vterm
- (global-set-key (kbd "C-c te") 'eshell)
- (global-set-key (kbd "C-c ts") 'shell)
- (global-set-key (kbd "C-c tt") 'term)
- (global-set-key (kbd "C-c ta") 'ansi-term)
- (global-set-key (kbd "C-c tv") 'vterm)
+;; Open an Emacs eshell, shell, term, ansi-term, or vterm
+(global-set-key (kbd "C-c te") 'eshell)
+(global-set-key (kbd "C-c ts") 'shell)
+(global-set-key (kbd "C-c tt") 'term)
+(global-set-key (kbd "C-c ta") 'ansi-term)
+(global-set-key (kbd "C-c tv") 'vterm)
 
- ;; Show a summery of all registers with content
- (global-set-key (kbd "C-x r v") 'list-registers)
+;; Show a summery of all registers with content
+(global-set-key (kbd "C-x r v") 'list-registers)
 
- ;; Move through windows in reverse order of (other-window), C-x o
- (global-set-key (kbd "C-x O") 'previous-multiframe-window)
+;; Move through windows in reverse order of (other-window), C-x o
+(global-set-key (kbd "C-x O") 'previous-multiframe-window)
 
- ;; Invoke M-x without the Alt key (from Steve Yegge's blog)
- (global-set-key (kbd "C-x C-m") 'execute-extended-command)
- (global-set-key (kbd "C-c C-m") 'execute-extended-command)
- #+END_SRC
+;; Invoke M-x without the Alt key (from Steve Yegge's blog)
+(global-set-key (kbd "C-x C-m") 'execute-extended-command)
+(global-set-key (kbd "C-c C-m") 'execute-extended-command)
+#+END_SRC
 
 ** global settings
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 
- ;; set default shell to zsh
- (setq explicit-shell-file-name "/bin/zsh")
- (setq shell-file-name "zsh")
- (setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
- (setenv "SHELL" shell-file-name)
+;; set default shell to zsh
+(setq explicit-shell-file-name "/bin/zsh")
+(setq shell-file-name "zsh")
+(setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
+(setenv "SHELL" shell-file-name)
 
- ;; Remove trailing whitespace on save
- (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Remove trailing whitespace on save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
- ;; automatically follow symlinks to files under version control without prompting
- (setq vc-follow-symlinks t)
+;; automatically follow symlinks to files under version control without prompting
+(setq vc-follow-symlinks t)
 
- ;;; Kill line backwards
- ;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
- (global-set-key (kbd "C-<backspace>") (lambda ()
-                                         (interactive)
-                                         (kill-line 0)
-                                         (indent-according-to-mode)))
+;;; Kill line backwards
+;;; http://emacsredux.com/blog/2013/04/08/kill-line-backward/
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)
+                                        (indent-according-to-mode)))
 
- ;;; Ping settings (from net-util.el)
- ;;; http://www.masteringemacs.org/articles/2011/03/02/network-utilities-emacs/
- (defvar ping-program-options)
- (setq ping-program-options '("-c" "4"))
+;;; Ping settings (from net-util.el)
+;;; http://www.masteringemacs.org/articles/2011/03/02/network-utilities-emacs/
+(defvar ping-program-options)
+(setq ping-program-options '("-c" "4"))
 
- ;;; Enable whitespace-mode for diff buffers
- ;;; http://stackoverflow.com/questions/11805584/automatically-enable-whitespace-mode-in-diff-mode
- (add-hook 'diff-mode-hook
-           '(lambda ()
-             (whitespace-mode 1)))
+;;; Enable whitespace-mode for diff buffers
+;;; http://stackoverflow.com/questions/11805584/automatically-enable-whitespace-mode-in-diff-mode
+(add-hook 'diff-mode-hook
+          '(lambda ()
+            (whitespace-mode 1)))
 
- ;;; Mouse wheel and keyboard scroll settings
- ;;; scroll one line at a time (less "jumpy" than defaults)
- ;(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
- (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
- (setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
- ;(setq scroll-step 1                    ;keyboard scroll one line at a time
- ;      scroll-preserve-screen-position t
- ;      scroll-conservatively 10000)     ;smooth scrolling
+;;; Mouse wheel and keyboard scroll settings
+;;; scroll one line at a time (less "jumpy" than defaults)
+;(setq mouse-wheel-follow-mouse 't)     ;scroll window under mouse
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;1 line
+(setq mouse-wheel-progressive-speed 'nil) ;'nil disables accelerated scrolling
+;(setq scroll-step 1                    ;keyboard scroll one line at a time
+;      scroll-preserve-screen-position t
+;      scroll-conservatively 10000)     ;smooth scrolling
 
- ;;; Enable holidays in Calendar
- (setq mark-holidays-in-calendar t)
+;;; Enable holidays in Calendar
+(setq mark-holidays-in-calendar t)
 
- ;; w/o-man mode (elisp man page formater for systems without 'man')
- (defvar woman-show-log)
- (defvar woman-cache-filename)
- (setq woman-show-log nil)
- (autoload 'woman "woman"
-   "Decode and browse a Unix man page." t)
- (setq woman-cache-filename "~/.emacs.d/var/woman_cache.el")
+;; w/o-man mode (elisp man page formater for systems without 'man')
+(defvar woman-show-log)
+(defvar woman-cache-filename)
+(setq woman-show-log nil)
+(autoload 'woman "woman"
+  "Decode and browse a Unix man page." t)
+(setq woman-cache-filename "~/.emacs.d/var/woman_cache.el")
 
- ;;; Make tooltips appear in the echo area (checks if function exists)
- (tooltip-mode nil)
+;;; Make tooltips appear in the echo area (checks if function exists)
+(tooltip-mode nil)
 
- ;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
- ;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
- (setq cua-enable-cua-keys nil)  ;; only for rectangles, keeps (C-c, C-v, C-x).
- (cua-mode t)
+;; Use CUA mode for rectangles (C-RET to select, normal emacs keys to copy)
+;;; http://emacs-fu.blogspot.com/2010/01/rectangles-and-cua.html
+(setq cua-enable-cua-keys nil)  ;; only for rectangles, keeps (C-c, C-v, C-x).
+(cua-mode t)
 
- ;;; Don't show the startup screen
- (setq inhibit-startup-message t)
+;;; Don't show the startup screen
+(setq inhibit-startup-message t)
 
- ;;; Disable startup message in scratch buffer
- (setq-default initial-scratch-message nil)
- ;;; And set scratch buffer initial mode to text instead of lisp eval
- ;(setq-default initial-major-mode 'text-mode)
- ;;; Don't create new lines when pressing 'arrow-down key' at end of the buffer
- (setq next-line-add-newlines nil)
+;;; Disable startup message in scratch buffer
+(setq-default initial-scratch-message nil)
+;;; And set scratch buffer initial mode to text instead of lisp eval
+;(setq-default initial-major-mode 'text-mode)
+;;; Don't create new lines when pressing 'arrow-down key' at end of the buffer
+(setq next-line-add-newlines nil)
 
- ;;; Fix delete key working as backspace and not forward deleting
- ;;; (This only worked in window mode, not terminal. C-d works in both)
- (when window-system (normal-erase-is-backspace-mode 1))
+;;; Fix delete key working as backspace and not forward deleting
+;;; (This only worked in window mode, not terminal. C-d works in both)
+(when window-system (normal-erase-is-backspace-mode 1))
 
- ;;; Alias to change apropos to ap
- (defalias 'ap 'apropos)
+;;; Alias to change apropos to ap
+(defalias 'ap 'apropos)
 
- ;;; hl-line: highlight the current line
- (when (fboundp 'global-hl-line-mode)
-   (global-hl-line-mode t)) ;; turn it on for all modes by default
+;;; hl-line: highlight the current line
+(when (fboundp 'global-hl-line-mode)
+  (global-hl-line-mode t)) ;; turn it on for all modes by default
 
- ;;; Make text mode default major mode with auto-fill enabled
- (setq default-major-mode 'text-mode)
- (add-hook 'text-mode-hook 'turn-on-visual-line-mode) ;replaces longlines in 23
+;;; Make text mode default major mode with auto-fill enabled
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode) ;replaces longlines in 23
 
- ;;; Auto-scroll in *Compilation* buffer
- (setq compilation-scroll-output t)
+;;; Auto-scroll in *Compilation* buffer
+(setq compilation-scroll-output t)
 
- ;;; make Emacs always indent using SPC characters and never TABs
- ;;; i.e. use spaces instead of tabs
- ;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
- (setq-default indent-tabs-mode nil)
+;;; make Emacs always indent using SPC characters and never TABs
+;;; i.e. use spaces instead of tabs
+;;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
+(setq-default indent-tabs-mode nil)
 
- ;;; "y or n" instead of "yes or no"
- (fset 'yes-or-no-p 'y-or-n-p)
+;;; "y or n" instead of "yes or no"
+(fset 'yes-or-no-p 'y-or-n-p)
 
- ;;; Highlight regions and add special behaviors to regions.
- ;;; "C-h d transient" for more info.  transient-mark-mode is a toggle.
- ;;; also in Emacs 22 and greater, C-SPC twice to temp enable transient mark
- ;(setq transient-mark-mode nil)
- (setq transient-mark-mode t)
+;;; Highlight regions and add special behaviors to regions.
+;;; "C-h d transient" for more info.  transient-mark-mode is a toggle.
+;;; also in Emacs 22 and greater, C-SPC twice to temp enable transient mark
+;(setq transient-mark-mode nil)
+(setq transient-mark-mode t)
 
- ;;; Display line and column numbers in the mode line
- (setq line-number-mode    t
-       column-number-mode  t)
+;;; Display line and column numbers in the mode line
+(setq line-number-mode    t
+      column-number-mode  t)
 
- ;;; Stop blinking cursor
- (blink-cursor-mode 0)
+;;; Stop blinking cursor
+(blink-cursor-mode 0)
 
- ;;; Explicitly show the end of a buffer (indicated on left fringe of window)
- (set-default 'indicate-empty-lines t)
+;;; Explicitly show the end of a buffer (indicated on left fringe of window)
+(set-default 'indicate-empty-lines t)
 
- ;;; Line-wrapping
- (set-default 'fill-column 78)
+;;; Line-wrapping
+(set-default 'fill-column 78)
 
- ;; Don't truncate lines
- (setq truncate-lines t
-       truncate-partial-width-windows nil)
+;; Don't truncate lines
+(setq truncate-lines t
+      truncate-partial-width-windows nil)
 
- ;; Create new scratch buffer if needed
- (run-with-idle-timer 1 t
-     '(lambda () (get-buffer-create "*scratch*")))
+;; Create new scratch buffer if needed
+(run-with-idle-timer 1 t
+    '(lambda () (get-buffer-create "*scratch*")))
 
- ;; allow scroll-down/up-command to move point to buffer end/beginning
- ;(setq scroll-error-top-bottom 'true)
+;; allow scroll-down/up-command to move point to buffer end/beginning
+;(setq scroll-error-top-bottom 'true)
 
- ;; New json-mode
- (setq auto-mode-alist (cons '("\\.json\\'" . js-mode) auto-mode-alist))
+;; New json-mode
+(setq auto-mode-alist (cons '("\\.json\\'" . js-mode) auto-mode-alist))
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;; bookmarks
- ;;    ‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
- ;;    ‘C-x r b’ – jump to a bookmark
- ;;    ‘C-x r l’ – list your bookmarks
- ;;    ‘M-x bookmark-delete’ – delete a bookmark by name
- (setq
-   bookmark-default-file "~/.emacs.d/var/bookmarks" ;; .emacs.d/bookmarks by default
-   bookmark-save-flag 1)                   ;; autosave each change)
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- #+end_src
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; bookmarks
+;;    ‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
+;;    ‘C-x r b’ – jump to a bookmark
+;;    ‘C-x r l’ – list your bookmarks
+;;    ‘M-x bookmark-delete’ – delete a bookmark by name
+(setq
+  bookmark-default-file "~/.emacs.d/var/bookmarks" ;; .emacs.d/bookmarks by default
+  bookmark-save-flag 1)                   ;; autosave each change)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 
 ** functions
- #+begin_src emacs-lisp
-   ;;; ---------------------------------------------------------------------------
-   ;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
-   ;;; Open link at point in new frame
-   (defun zin/org-open-other-frame ()
-     "Jump to bookmark in another frame. See `bookmark-jump' for more."
-     (interactive)
-     (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
-       (org-open-at-point)))
-   (global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
+#+begin_src emacs-lisp
+;;; ---------------------------------------------------------------------------
+;;; https://stackoverflow.com/questions/8881649/how-to-force-org-mode-to-open-a-link-in-another-frame
+;;; Open link at point in new frame
+(defun zin/org-open-other-frame ()
+  "Jump to bookmark in another frame. See `bookmark-jump' for more."
+  (interactive)
+  (let ((org-link-frame-setup (acons 'file 'find-file-other-frame org-link-frame-setup)))
+    (org-open-at-point)))
+(global-set-key (kbd "C-c 5 C-o") 'zin/org-open-other-frame)
 
-   ;;; ---------------------------------------------------------------------------
-   ;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
-   ;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-   (defun narrow-or-widen-dwim ()
-     "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
-     (interactive)
-     (cond ((buffer-narrowed-p) (widen))
-           ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
-           ((equal major-mode 'org-mode) (org-narrow-to-subtree))
-           (t (error "Please select a region to narrow to"))))
-   (global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
+;;; ---------------------------------------------------------------------------
+;;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
+;;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun narrow-or-widen-dwim ()
+  "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+  (interactive)
+  (cond ((buffer-narrowed-p) (widen))
+        ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+        ((equal major-mode 'org-mode) (org-narrow-to-subtree))
+        (t (error "Please select a region to narrow to"))))
+(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
 
-   ;; I bind this key to C-c n, using the bind-key function that comes with use-package.
-                                           ;(bind-key "C-c n" 'narrow-or-widen-dwim)
+;; I bind this key to C-c n, using the bind-key function that comes with use-package.
+                                        ;(bind-key "C-c n" 'narrow-or-widen-dwim)
 
-   ;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
-   ;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
+;; I also bind it to C-x t n, using Artur Malabarba's toggle map idea:
+;; http:://www.endlessparentheses.com/the-toggle-map-and-wizardry.html
 
-   ;;; ---------------------------------------------------------------------------
-   ;;; Move lines up or down (can't easily use C-S on MacOS)
-   ;;; http://whattheemacsd.com//editing-defuns.el-02.html
-   (defun move-line-down ()
-     (interactive)
-     (let ((col (current-column)))
-       (save-excursion
-         (forward-line)
-         (transpose-lines 1))
-       (forward-line)
-       (move-to-column col)))
+;;; ---------------------------------------------------------------------------
+;;; Move lines up or down (can't easily use C-S on MacOS)
+;;; http://whattheemacsd.com//editing-defuns.el-02.html
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines 1))
+    (forward-line)
+    (move-to-column col)))
 
-   (defun move-line-up ()
-     (interactive)
-     (let ((col (current-column)))
-       (save-excursion
-         (forward-line)
-         (transpose-lines -1))
-       (move-to-column col)))
+(defun move-line-up ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines -1))
+    (move-to-column col)))
 
-                                           ;(global-set-key (kbd "<C-S-down>") 'move-line-down)
-                                           ;(global-set-key (kbd "<C-S-up>") 'move-line-up)
-   (global-set-key (kbd "<M-S-down>") 'move-line-down)
-   (global-set-key (kbd "<M-S-up>") 'move-line-up)
+                                        ;(global-set-key (kbd "<C-S-down>") 'move-line-down)
+                                        ;(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "<M-S-down>") 'move-line-down)
+(global-set-key (kbd "<M-S-up>") 'move-line-up)
 
-   ;;; ---------------------------------------------------------------------------
-   ;;; Match Paren / based on the vim command using %
-   ;;; http://grok2.tripod.com/
-   (defun match-paren (arg)
-     "Go to the matching paren if on a paren; otherwise insert %."
-     (interactive "p")
-     (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-           ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-           (t (self-insert-command (or arg 1)))))
-   (global-set-key "%" 'match-paren)
+;;; ---------------------------------------------------------------------------
+;;; Match Paren / based on the vim command using %
+;;; http://grok2.tripod.com/
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+(global-set-key "%" 'match-paren)
 
-   ;;; ---------------------------------------------------------------------------
-   (defun intelligent-close ()
-     "quit a frame the same way no matter what kind of frame you are on.
+;;; ---------------------------------------------------------------------------
+(defun intelligent-close ()
+  "quit a frame the same way no matter what kind of frame you are on.
 
-   This method, when bound to C-x C-c, allows you to close an emacs frame the
-   same way, whether it's the sole window you have open, or whether it's
-   a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
-   a windowing environment, you probably have lots of frames open at any given
-   time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
-   frame, and to remember to do C-x C-x to close the main frame (and if you're
-   not careful, doing so will take all the child frames away with it).  This
-   is my solution to that: an intelligent close-frame operation that works in
-   all cases (even in an emacs -nw session).
+This method, when bound to C-x C-c, allows you to close an emacs frame the
+same way, whether it's the sole window you have open, or whether it's
+a \"child\" frame of a \"parent\" frame.  If you're like me, and use emacs in
+a windowing environment, you probably have lots of frames open at any given
+time.  Well, it's a pain to remember to do Ctrl-x 5 0 to dispose of a child
+frame, and to remember to do C-x C-x to close the main frame (and if you're
+not careful, doing so will take all the child frames away with it).  This
+is my solution to that: an intelligent close-frame operation that works in
+all cases (even in an emacs -nw session).
 
-   Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
-     (interactive)
-     (if (eq (car (visible-frame-list)) (selected-frame))
-         ;;for parent/master frame...
-         (if (> (length (visible-frame-list)) 1)
-             ;;close a parent with children present
-             (delete-frame (selected-frame))
-           ;;close a parent with no children present
-           (save-buffers-kill-emacs))
-       ;;close a child frame
-       (delete-frame (selected-frame))))
-   (global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
- #+end_src
+Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
+  (interactive)
+  (if (eq (car (visible-frame-list)) (selected-frame))
+      ;;for parent/master frame...
+      (if (> (length (visible-frame-list)) 1)
+          ;;close a parent with children present
+          (delete-frame (selected-frame))
+        ;;close a parent with no children present
+        (save-buffers-kill-emacs))
+    ;;close a child frame
+    (delete-frame (selected-frame))))
+(global-set-key "\C-x\C-c" 'intelligent-close) ;forward reference
+#+end_src
 
 ** Better Defaults Package
- https://github.com/technomancy/better-defaults
- A small number of better defaults for Emacs
+https://github.com/technomancy/better-defaults
+A small number of better defaults for Emacs
 
- #+begin_src emacs-lisp
- (require 'uniquify)
-  (setq uniquify-buffer-name-style 'forward)
+#+begin_src emacs-lisp
+(require 'uniquify)
+ (setq uniquify-buffer-name-style 'forward)
 
- (require 'saveplace)
-   (setq-default save-place t)
+(require 'saveplace)
+  (setq-default save-place t)
 
- (global-set-key (kbd "m-/") 'hippie-expand)
- ;(global-set-key (kbd "c-x c-b") 'ibuffer) ; set elsewhere in file
- ;(global-set-key (kbd "m-z") 'zap-up-to-char) ; doesn't exist?
+;(global-set-key (kbd "m-/") 'hippie-expand) ; something is wrong here
+;(global-set-key (kbd "c-x c-b") 'ibuffer) ; set elsewhere in file
+;(global-set-key (kbd "m-z") 'zap-up-to-char) ; doesn't exist?
 
- ;; replace by ivy and swiper
- ;(global-set-key (kbd "c-s") 'isearch-forward-regexp)
- ;(global-set-key (kbd "c-r") 'isearch-backward-regexp)
- ;(global-set-key (kbd "c-m-s") 'isearch-forward)
- ;(global-set-key (kbd "c-m-r") 'isearch-backward)
+;; replace by ivy and swiper
+;(global-set-key (kbd "c-s") 'isearch-forward-regexp)
+;(global-set-key (kbd "c-r") 'isearch-backward-regexp)
+;(global-set-key (kbd "c-m-s") 'isearch-forward)
+;(global-set-key (kbd "c-m-r") 'isearch-backward)
 
- (show-paren-mode 1)
- (setq save-interprogram-paste-before-kill t
-       apropos-do-all t
-       mouse-yank-at-point t
-       require-final-newline t
-       visible-bell t
-       load-prefer-newer t
-       ediff-window-setup-function 'ediff-setup-windows-plain
-       save-place-file (concat user-emacs-directory "places")
-       backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                                "var/backups"))))
+(show-paren-mode 1)
+(setq save-interprogram-paste-before-kill t
+      apropos-do-all t
+      mouse-yank-at-point t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      save-place-file (concat user-emacs-directory "places")
+      backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "var/backups"))))
 #+end_src
 ** Helpful
- Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
- https://github.com/Wilfred/helpful
+Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
+https://github.com/Wilfred/helpful
 
- #+begin_src emacs-lisp
- (use-package helpful
-   :ensure t
-   :bind
-   (("C-h f" . helpful-callable)
-    ("C-h v" . helpful-variable)
-    ("C-h k" . helpful-key)
-   ;;
-   ;; Lookup the current symbol at point. C-c C-d is a common keybinding
-   ;; for this in lisp modes.
-   ;("C-c C-d" . helpful-at-point)  # keys already bound to Cal Deadline
+#+begin_src emacs-lisp
+(use-package helpful
+  :ensure t
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+  ;;
+  ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+  ;; for this in lisp modes.
+  ;("C-c C-d" . helpful-at-point)  # keys already bound to Cal Deadline
 
-   ;; Look up *F*unctions (excludes macros).
-   ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
-   ;; already links to the manual, if a function is referenced there.
-   ("C-h F" . helpful-function)
+  ;; Look up *F*unctions (excludes macros).
+  ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
+  ;; already links to the manual, if a function is referenced there.
+  ("C-h F" . helpful-function)
 
-   ;; Look up *C*ommands.
-   ;;
-   ;; By default, C-h C is bound to describe `describe-coding-system'. I
-   ;; don't find this very useful, but it's frequently useful to only
-   ;; look at interactive functions.
-   ("C-h C" . helpful-command)
- ))
- #+end_src
+  ;; Look up *C*ommands.
+  ;;
+  ;; By default, C-h C is bound to describe `describe-coding-system'. I
+  ;; don't find this very useful, but it's frequently useful to only
+  ;; look at interactive functions.
+  ("C-h C" . helpful-command)
+))
+#+end_src
 
 * - Navigation -
 * Winum
