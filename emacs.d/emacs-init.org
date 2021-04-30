@@ -1857,18 +1857,16 @@ Paging: C-h
 
 #+begin_src emacs-lisp
 (use-package which-key
-   :ensure t
-   :defer 10
-   :config
-   (progn
-     ;(setq which-key-popup-type 'side-window) ;Default
-     ;(setq which-key-popup-type 'minibuffer)
-     ;(setq which-key-compute-remaps t) ;Show correct descriptions for remapped keys
-     ;(setq which-key-allow-multiple-replacements t) ;Default = nil
-     (which-key-setup-side-window-bottom) ; Default
-     (which-key-mode))
+  :ensure t
+  :defer 10
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 1)
+  (setq which-key-setup-side-window-bottom t) ; Default
+  (setq which-key-popup-type 'side-window) ;Default
 )
 #+end_src
+
 * -- Programming --
 * Shell script
 shell-script-mode is a major mode for shell script editing.
