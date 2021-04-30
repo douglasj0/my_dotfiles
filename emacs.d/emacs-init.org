@@ -3,7 +3,8 @@
 #+PROPERTY: header-args :comments yes :results silent
 #+PROPERTY: header-args:emacs-lisp :tangle ./emacs-init.el :mkdirp yes
 
-* Init
+* Startup
+** Initialization
 Transfered from original ~/.emacs.d/init.el
 Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 
@@ -51,7 +52,6 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 (unless (server-running-p) (server-start))
 #+end_src
 
-* Startup Performance
 ** esup
  Emacs Start Up Profiler, benchmark Emacs startup time.
  NOTE: seems fixated on vc-git.elc
@@ -75,9 +75,6 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version issue
  ;  ;; To disable collection of benchmark data after init is done.
  ;  (add-hook 'after-init-hook 'benchmark-init/deactivate))
  #+end_src
-
-* Emacs Core
-Configuring built in packages
 
 ** enable disabled functions
 #+BEGIN_SRC emacs-lisp
@@ -439,40 +436,6 @@ https://github.com/Wilfred/helpful
 #+end_src
 
 * - Navigation -
-* Winum
-Window numbers for Emacs: Navigate your windows and frames using numbers
-https://github.com/deb0ch/emacs-winum
-
-#+begin_src emacs-lisp
-(use-package winum
-  :ensure t
-  :bind*
-  (
-   ("C-`" . winum-select-window-by-number)
-   ;("M-0" . winum-select-window-0-or-10)
-   ("M-1" . winum-select-window-1)
-   ("M-2" . winum-select-window-2)
-   ("M-3" . winum-select-window-3)
-   ("M-4" . winum-select-window-4)
-   ("M-5" . winum-select-window-5)
-   ("M-6" . winum-select-window-6)
-   ("M-7" . winum-select-window-7)
-   ("M-8" . winum-select-window-8)
-   ("M-9" . winum-select-window-9))
-  :config
-  (winum-mode))
-#+end_src
-* Mwim (Move Where I Mean)
-This Emacs package provides several commands to switch between various line positions, like moving to the beginning/end of code, line or comment. It is inspired by this EmacsWiki page (some code from this page is used). mwim stands for Move Where I Mean.
-https://github.com/alezost/mwim.el
-
-#+begin_src emacs-lisp
-(use-package mwim
-  :ensure t
-  :bind
-  (("C-a" . mwim-beginning-of-code-or-line)
-   ("C-e" . mwim-end-of-code-or-line)))
-#+end_src
 * Ace Window
 The [[https://github.com/abo-abo/ace-window][ace-window]] package provides functions to quickly switch between
 windows. The main =ace-window= command will either switch to the one
@@ -486,20 +449,6 @@ delete windows.
   :bind (("M-o" . ace-window)))
 #+end_src
 
-* Avy
-avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. See also ace-jump-mode and vim-easymotion - avy uses the same idea.
-https://github.com/Wilfred/deadgrep
-
-#+begin_src emacs-lisp
-(use-package avy
-  :ensure t
-  :config
-  (avy-setup-default)
-  :bind
-  (("M-g w" . avy-goto-word-or-subword-1)
-   ("M-g b" . avy-pop-mark))
-)
-#+end_src
 * - OS specific settings -
 * MacOS
 #+begin_src emacs-lisp
@@ -667,8 +616,8 @@ https://github.com/Wilfred/deadgrep
 ))
 #+end_src
 * - Appearance -
-* Disable all themes before loading a theme
-
+* Dracula Theme
+Disable all themes before loading a theme
 #+begin_src emacs-lisp
 (defadvice load-theme (before disable-themes-first activate)
   (fk/disable-all-themes))
@@ -680,7 +629,7 @@ https://github.com/Wilfred/deadgrep
     (disable-theme theme)))
 #+end_src
 
-* load-theme without annoying confirmation
+load-theme without annoying confirmation
 #+begin_src emacs-lisp
 (advice-add 'load-theme
             :around
@@ -688,17 +637,6 @@ https://github.com/Wilfred/deadgrep
               (funcall fn theme t)))
 #+end_src
 
-* all-the-icons - commented out
-Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
-"M-x all-the-icons-install-fonts" to install fonts at the first time.
-https://github.com/domtronn/all-the-icons.el
-
-#+begin_src emacs-lisp
-;(use-package all-the-icons
-;  :ensure t)
-#+end_src
-
-* Dracula Theme
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
@@ -714,58 +652,6 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
 )
-
- ;; too small
- ;(set-face-attribute 'default nil
- ;        	      :family "JetBrains Mono"
- ;        	      :foundry "outline"
- ;        	      :slant 'normal
- ;        	      :weight 'normal
- ;        	      :height 120
- ;        	      :width 'semi-condensed)
-
- ;; need to investigate
- ;(add-hook 'display-line-numbers-mode-hook
- ;            (lambda ()
- ;              (set-face-attribute 'line-number nil
- ;        			  :weight 'normal)
- ;              (set-face-attribute 'line-number-current-line nil
- ;        			  :foreground (face-attribute 'cursor :background)
- ;        			  :weight 'bold
- ;        			  :slant 'normal))
- ;)
-#+end_src
-
-* Darcula Theme from Jetbrains
-JetBrains Darcula (Default Dark) for Emacs
-https://github.com/ianpan870102/jetbrains-darcula-emacs-theme
-
-Commented out for now, its very dark
-
-#+begin_src emacs-lisp
-;(use-package darcula-theme
-;  :ensure t
-  ;:init
-  ;(setq dracula-enlarge-headings nil)
-  ;(setq dracula-alternate-mode-line-and-minibuffer t)
-  ;:config
-  ;(if (display-graphic-p)
-  ;    (load-theme 'darcula :no-confirm)	 ; Emacs in own window
-  ;  (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
-  ;)
-;)
-#+end_src
-
-* Telephone line modeline - commented out
-https://www.reddit.com/r/emacs/comments/3g75kf/introducing_telephoneline_a_new_implementation_of/
-https://github.com/dbordak/telephone-line
-
-#+begin_src emacs-lisp
-;(use-package telephone-line
-;  :ensure t
-;  :init
-;  (telephone-line-mode 1)
-;)
 #+end_src
 
 * - Org-mode -
@@ -1309,17 +1195,6 @@ NOTE: Installed in elisp, no package
   :config (su-mode +1))
 #+end_src
 
-* Flx (Fuzzy matching)
-Fuzzy matching for Emacs ... a la Sublime Text.
-can be used by ivy - https://oremacs.com/2016/01/06/ivy-flx/
-https://github.com/lewang/flx
-
-#+BEGIN_SRC emacs-lisp
-(use-package flx
-  :ensure t
-)
-#+END_SRC
-
 * Ivy/Swiper (Completions)
 Ivy, a generic completion mechanism for Emacs.
 Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
@@ -1837,15 +1712,6 @@ Load the mu4e.el file if it exists
 )
 #+end_src
 
-* s (String manipulation library)
-The long lost Emacs string manipulation library
-https://github.com/magnars/s.el
-
-#+BEGIN_SRC emacs-lisp
-(use-package s
-  :ensure t)
-#+END_SRC
-
 * Which Key (Keybinding Completion)
 Emacs package that displays available keybindings in popup
 https://github.com/justbur/emacs-which-key
@@ -1869,6 +1735,15 @@ Paging: C-h
 #+end_src
 
 * -- Programming --
+* s (String manipulation library)
+The long lost Emacs string manipulation library
+https://github.com/magnars/s.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package s
+  :ensure t)
+#+END_SRC
+
 * Shell script
 shell-script-mode is a major mode for shell script editing.
 https://www.emacswiki.org/emacs/ShMode
