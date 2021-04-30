@@ -1320,11 +1320,13 @@ https://github.com/lewang/flx
 )
 #+END_SRC
 
-* Ivy (Completions)
-ivy-mode - a generic completion mechanism for Emacs
-swiper - an alternative to isearch uses ivy to show overview of all matches
+* Ivy/Swiper (Completions)
+Ivy, a generic completion mechanism for Emacs.
+Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
+Swiper, an Ivy-enhanced alternative to Isearch.
 https://github.com/abo-abo/swiper
-changed from ("C-s"     . swiper) ;; Ivy-based interface to standard commands
+ivy-rich adds extra columns to a few of the Counsel commands to provide more information about each item.
+https://github.com/Yevgnen/ivy-rich
 https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
 https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 
@@ -1333,84 +1335,77 @@ https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
   :ensure t
   :defer 0.5
   :init (ivy-mode 1)
-  :commands ivy
-  :bind (("C-s"     . counsel-grep-or-swiper) ;; swiper for small files, counsel-grep for large
-         ("C-x C-r" . counsel-recentf)
-         ;("C-x C-r" . ivy-resume)
-         ("<f6>"    . ivy-resume)
-         ("M-x"     . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("<f1> f"  . counsel-describe-function)
-         ("<f1> v"  . counsel-describe-variable)
-         ("<f1> o"  . counsel-describe-symbol)
-         ("<f1> l"  . counsel-find-library)
-         ("<f1> i"  . counsel-info-lookup-symbol)
-         ("<f1> u"  . counsel-unicode-char)
-         ("<f2> i"  . counsel-info-lookup-symbol)
-         ("<f2> u"  . counsel-unicode-char)
-         ("C-c g"   . counsel-git) ;;; Ivy-based interface to shell and system tools
-         ("C-c j"   . counsel-git-grep)
-         ("C-c k"   . counsel-ag)
-         ("C-x l"   . counsel-locate)
-         ("C-S-o"   . counsel-rhythmbox)
-         ("C-r"     . counsel-minibuffer-history)) ;; disable M-x filter
+  :bind
+    ;("\C-s"    . swiper)
+    ("\C-s"    . counsel-grep-or-swiper) ; swiper for small files, console-grep for large
+    ("C-x C-r" . counsel-recentf)
+    ;("C-c C-r" . ivy-resume)
+    ("<f6>"    . ivy-resume)
+    ("M-x"     . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("<f1> f"  . counsel-describe-function)
+    ("<f1> v"  . counsel-describe-variable)
+    ("<f1> o"  . counsel-describe-symbol)
+    ("<f1> l"  . counsel-find-library)
+    ("<f2> i"  . counsel-info-lookup-symbol)
+    ("<f2> u"  . counsel-unicode-char)
+    ("C-c g"   . counsel-git) ; Ivy-based interface to shell and system tools
+    ("C-c j"   . counsel-git-grep)
+    ("C-c k"   . counsel-ag)
+    ("C-x l"   . counsel-locate)
+    ("C-S-o"   . counsel-rhythmbox)
+    ("C-r"     . counsel-minibuffer-history) ; disable M-x filter
+  :config
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    (setq search-default-mode #'char-fold-to-regexp))
+
+(use-package ivy-rich
+  :ensure t
+  :after ivy
+  :init
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :ensure t
+  :after ivy
+  :bind (("C-M-j" . 'counsel-switch-buffer)
+
+         ("C-r" . 'counsel-minibuffer-history))
   :custom
-    (ivy-count-format "(%d/%d) ")
-    (ivy-display-style 'fancy)
-    (ivy-use-virtual-buffers t)
-    (enable-recursive-minibuffers t)
-    (ivy-virtual-abbreviate 'full)
-    (ivy-dynamic-exhibit-delay-ms 250)
-    (ivy-re-builders-alist
-      '((swiper . ivy--regex-plus)    ;disable fuzzy matching for swiper
-        (t      . ivy--regex-fuzzy))) ;but enable for ivy
-    (ivy-initial-inputs-alist nil)
-)
+  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+  :config
+  (counsel-mode 1))
 #+end_src
 
-all-the-icons-ivy (interesting, but seems to be Kanji?)
 Ivy/Counsel integration for all-the-icons.el
 https://github.com/asok/all-the-icons-ivy
 #+begin_src emacs-lisp
-;(use-package all-the-icons-ivy
-;  :ensure t
-;  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+(use-package all-the-icons-ivy
+  :ensure t
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 #+end_src
 
-Swiper
-NOTE: ivy-resume continues swpier with same search
-https://github.com/abo-abo/swiper
-http://cestlaz.github.io/posts/using-emacs-6-swiper/
 #+begin_src emacs-lisp
 (use-package swiper
   :ensure t
   :requires (ivy))
 #+end_src
 
-Counsel
-ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
+* Prescient
+prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them. This can be especially helpful when using M-x to run commands that you don’t have bound to a key but still need to access occasionally.
 
-Counsel takes this further, providing versions of common Emacs commands that are customised to make the best use of ivy. For example, counsel-find-file has some additional keybindings. Pressing DEL will move you to the parent directory.
-https://github.com/abo-abo/swiper
-NOTE: if smex is installed, counsel will use it to sort by most recently used
 #+begin_src emacs-lisp
-(use-package counsel
-  ;:disabled
+(use-package ivy-prescient
   :ensure t
-  ;:config
-  ;(global-set-key (kbd "M-x") 'counsel-M-x) ; defined in ivy
-  ;(global-set-key (kbd "C-x C-f") 'counsel-find-file) ; defined in ivy
-  ;(global-set-key (kbd "<f1> f") 'counsel-describe-function) ; defined in ivy
-  ;(global-set-key (kbd "<f1> v") 'counsel-describe-variable) ; defined in ivy
-  ;(global-set-key (kbd "<f1> l") 'counsel-find-library) ; defined in ivy
-  ;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  ;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  ;(global-set-key (kbd "C-c g") 'counsel-git) ; defined in ivy
-  ;(global-set-key (kbd "C-c j") 'counsel-git-grep) ; defined in ivy
-  ;(global-set-key (kbd "C-c a") 'counsel-ag) ; conflicts with org-agenda, also defined in ivy
-  ;(global-set-key (kbd "C-x l") 'counsel-locate) ; defined in ivy
-  ;(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)  ; defined in ivy
-)
+  :after counsel
+  :custom
+  (ivy-prescient-enable-filtering nil)
+  :config
+  ;; Uncomment the following line to have sorting remembered across sessions!
+  ;(prescient-persist-mode 1)
+  (ivy-prescient-mode 1))
 #+end_src
 
 * Projectile (Project Management)

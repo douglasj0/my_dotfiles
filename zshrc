@@ -286,11 +286,11 @@ source $HOME/.dotfiles/darwin_shell_aliases
 
 if [[ $INSIDE_EMACS ]]; then
   echo "..Inside Emacs"
-  TERM='vt100'
+  export TERM=vt100
   #alias ls='ls --color=none'
   #alias grep='grep'
 else
-  TERM=xterm-256color
+  export TERM=xterm-256color
 fi
 
 ###
@@ -349,7 +349,7 @@ source $HOME/.dotfiles/linux_shell_aliases
 ## Open like command for Linux:  xdg-open or see
 function open { xdg-open "$1" &> /dev/null & }
 
-TERM=xterm-color
+export TERM=xterm-color
 
 ###
 # Configure Emacs and Emacsclient
