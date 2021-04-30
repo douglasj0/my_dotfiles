@@ -1380,11 +1380,12 @@ https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 #+end_src
 
 Ivy/Counsel integration for all-the-icons.el
+Disabled, neat, but it seems to override ivy-rich additions
 https://github.com/asok/all-the-icons-ivy
 #+begin_src emacs-lisp
-(use-package all-the-icons-ivy
-  :ensure t
-  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+;(use-package all-the-icons-ivy
+;  :ensure t
+;  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1393,9 +1394,8 @@ https://github.com/asok/all-the-icons-ivy
   :requires (ivy))
 #+end_src
 
-* Prescient
+ivy-prescient
 prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them. This can be especially helpful when using M-x to run commands that you don’t have bound to a key but still need to access occasionally.
-
 #+begin_src emacs-lisp
 (use-package ivy-prescient
   :ensure t
