@@ -435,6 +435,106 @@ https://github.com/Wilfred/helpful
 ))
 #+end_src
 
+* Terminal
+** Eshell
+
+#+begin_src emacs-lisp
+(defun efs/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+  (setq eshell-history-size         1000
+        eshell-buffer-maximum-lines 1000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt
+  :ensure t
+  :config
+  (eshell-git-prompt-use-theme 'git-radar)
+)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("top" "htop" "zsh" "vi" "vim")))
+)
+#+end_src
+
+** vterm
+Emacs-libvterm (vterm) is fully-fledged terminal emulator inside GNU Emacs based on libvterm
+https://github.com/akermu/emacs-libvterm
+
+Manual installation guide
+#+begin_src text
+Prep, add emacs.d/emacs-libvterm to ~/.gitignore
+
+Clone the repository:
+$ cd .emacs.d/var
+$ git clone https://github.com/akermu/emacs-libvterm.git
+
+On Mac, install cmake and libvterm
+$ brew install cmake libvterm
+
+Build the module
+$ cd ~/.emacs.d/var/emacs-libvterm
+$ mkdir -p build
+$ cd build
+$ cmake ..
+$ make
+
+Add to init.el
+(use-package vterm
+  :load-path  "path/to/emacs-libvterm/")
+#+end_src
+
+Notes:
+#+begin_src text
+Q) What are the vterm's equivalents of term-line-mode C-c C-j and term-char-mode C-c C-k?
+A) It's C-c C-t to toggle vterm-copy-mode.
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :ensure nil
+  :load-path  "~/.emacs.d/var/emacs-libvterm"
+  :config
+  (setq vterm-max-scrollback 5000) ; default 1000, max is 100000
+)
+#+end_src
+
+** shell-pop
+shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
+https://github.com/kyagi/shell-pop-el
+NOTE: can use ‘shell’, ‘terminal’, ‘ansi-term’, and ‘eshell’.
+
+#+begin_src emacs-lisp
+;; Unset C-t from transpose characters
+;(global-set-key (kbd "C-t") nil)
+(global-unset-key (kbd "C-t"))
+
+(use-package shell-pop
+  :ensure t
+  :bind (("C-t" . shell-pop)) ; Ctrl-t
+  :config
+  ;(setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-shell-type (quote ("vterm" "*vterm*" (lambda nil (vterm shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/zsh"
+        shell-pop-window-size 30
+        shell-pop-full-span t
+        shell-pop-window-position "bottom"
+        shell-pop-autocd-to-working-dir t
+        shell-pop-restore-window-configuration t
+        shell-pop-cleanup-buffer-at-process-exit t)
+  ;;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+)
+#+end_src
 * - Navigation -
 * Ace Window
 The [[https://github.com/abo-abo/ace-window][ace-window]] package provides functions to quickly switch between
@@ -1181,6 +1281,7 @@ https://org-roam.readthedocs.io/en/master/
 ;  ;)
 
 #+end_src
+
 * - Misc -
 * Su/Sudo
 read-only files will be writable but if you attempt to save your modifications, emacs will ask root user’s password if needed. Can save pw to ~/.authinfo.
@@ -1499,36 +1600,6 @@ Open alternative to test from Xah Lee
 ;;(define-key dired-mode-map (kbd "M-<return>") 'xah-open-in-external-app)
 #+end_src
 
-* Eshell
-
-#+begin_src emacs-lisp
-(defun efs/configure-eshell ()
-  ;; Save command history when commands are entered
-  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-
-  ;; Truncate buffer for performance
-  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
-  (setq eshell-history-size         1000
-        eshell-buffer-maximum-lines 1000
-        eshell-hist-ignoredups t
-        eshell-scroll-to-bottom-on-input t))
-
-(use-package eshell-git-prompt
-  :ensure t
-  :config
-  (eshell-git-prompt-use-theme 'git-radar)
-)
-
-(use-package eshell
-  :hook (eshell-first-time-mode . efs/configure-eshell)
-  :config
-  (with-eval-after-load 'esh-opt
-    (setq eshell-destroy-buffer-when-process-dies t)
-    (setq eshell-visual-commands '("top" "htop" "zsh" "vi" "vim")))
-)
-#+end_src
-
 * Flycheck (Check program syntax)
 Modern on-the-fly syntax checking extension for GNU Emacs
 https://github.com/flycheck/flycheck
@@ -1696,22 +1767,6 @@ Search all marked buffers
 )
 #+end_src
 
-* mu4e
-Load the mu4e.el file if it exists
-
-#+begin_src emacs-lisp
-;; only load mu4e on a specific system for debugging
-(when (string= (system-name) "lothlorien.local")
-
-;(load "~/.emacs.d/mu4e.el" t)
-;; vs
-(setq mu4e-config "~/.emacs.d/mu4e.el")
-(if (file-exists-p mu4e-config)
-    (load mu4e-config))
-
-)
-#+end_src
-
 * Which Key (Keybinding Completion)
 Emacs package that displays available keybindings in popup
 https://github.com/justbur/emacs-which-key
@@ -1734,134 +1789,56 @@ Paging: C-h
 )
 #+end_src
 
-* -- Programming --
-* s (String manipulation library)
-The long lost Emacs string manipulation library
-https://github.com/magnars/s.el
-
-#+BEGIN_SRC emacs-lisp
-(use-package s
-  :ensure t)
-#+END_SRC
-
-* Shell script
-shell-script-mode is a major mode for shell script editing.
-https://www.emacswiki.org/emacs/ShMode
+* doom-modeline
+A fancy and fast mode-line inspired by minimalism design.
+https://seagle0128.github.io/doom-modeline/
 
 #+begin_src emacs-lisp
-(use-package sh-script
-  :mode (("zshecl" . sh-mode)
-         ("\\.zsh\\'" . sh-mode)
-         ("\\.sh\\'" . sh-mode))
-  :custom
-  ;; zsh
-  (system-uses-terminfo nil))
-
-(use-package executable
-  :hook
-  (after-save . executable-make-buffer-file-executable-if-script-p))
-#+end_src
-
-* Smartparens
-Smartparens is a minor mode for dealing with pairs in Emacs.
-https://github.com/Fuco1/smartparens
-
-NOTE: changed smartparens-global-mode to show-smartparens-global-mode
-https://github.com/Fuco1/smartparens/wiki/Show-smartparens-mode
-
-Cheatsheat
-https://gist.github.com/pvik/8eb5755cc34da0226e3fc23a320a3c95
-
-#+begin_src emacs-lisp
-(use-package smartparens
+(use-package doom-modeline
   :ensure t
-  :hook (after-init . show-smartparens-global-mode)
-  :config (require 'smartparens-config)
-    (add-hook 'python-mode-hook #'smartparens-mode)
-)
-#+end_src
-
-* - Git -
-* magit
-It's Magit! A Git porcelain inside Emacs. https://magit.vc
-https://github.com/magit/magit
-
-#+begin_src emacs-lisp
-;; Fixes for emacs 27
-;; Magit Error: Warning (with-editor): Cannot determine a suitable Emacsclient
-(setq-default with-editor-emacsclient-executable "emacsclient")
-
-(use-package magit
-  :ensure t
-  :defer 5
-  :commands magit
-  :bind
-    (("C-x g" . magit-status)
-     ("C-x G" . magit-status-with-prefix)
-     ("C-x M-g" . magit-dispatch)
-     ("C-c M-g" . global-magit-file-mode))
+  :init (doom-modeline-mode 1)
   :config
-    (setq magit-completing-read-function 'ivy-completing-read)
+  ;; Fix? for Height below 25 not working anymore #187
+  ;; https://github.com/seagle0128/doom-modeline/issues/187
+  (defun my-doom-modeline--font-height ()
+    "Calculate the actual char height of the mode-line."
+    (+ (frame-char-height) 1))
+  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 )
 #+end_src
 
-* git gutter
-Emacs port of GitGutter which is Sublime Text Plugin
-Show change information from git
-https://github.com/syohex/emacs-git-gutter
+* recentf
+a minor mode that builds a list of recently opened files
+https://www.emacswiki.org/emacs/RecentFiles
 
-#+BEGIN_SRC emacs-lisp
-(use-package git-gutter
-  :ensure t
-  :defer 10
+#+begin_src emacs-lisp
+(use-package recentf
+  :ensure nil
   :config
-    (global-git-gutter-mode t)
+  (setq recentf-save-file "~/.emacs.d/var/cache/recentf"
+        recentf-max-saved-items 500
+        recentf-max-menu-items 15
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+  (recentf-mode +1))
+#+end_src
+
+* mu4e
+Load the mu4e.el file if it exists
+
+#+begin_src emacs-lisp
+;; only load mu4e on a specific system for debugging
+(when (string= (system-name) "lothlorien.local")
+
+;(load "~/.emacs.d/mu4e.el" t)
+;; vs
+(setq mu4e-config "~/.emacs.d/mu4e.el")
+(if (file-exists-p mu4e-config)
+    (load mu4e-config))
+
 )
-#+END_SRC
-
-* git-timemachine
-https://github.com/emacsmirror/git-timemachine
-Walk through git revisions of a file https://gitlab.com/pidu/git-timemachine
-
-toggle the time machine you can use M-x git-timemachine-toggle.
-
-Use the following keys to navigate historic version of the file
-
-    p Visit previous historic version
-    n Visit next historic version
-    w Copy the abbreviated hash of the current historic version
-    W Copy the full hash of the current historic version
-    g Goto nth revision
-    t Goto revision by selected commit message
-    q Exit the time machine.
-    b Run magit-blame on the currently visited revision (if magit available).
-    c Show current commit using magit (if magit available).
-
-#+begin_src emacs-lisp
-(use-package git-timemachine
-  :ensure t
-  :bind (("s-g" . git-timemachine)))
 #+end_src
-
-* gitconfig
-https://github.com/magit/git-modes
-
-#+begin_src emacs-lisp
-(use-package gitconfig-mode
-  :ensure t
-  :mode "\\x?gitconfig.?.*\\'")
-#+end_src
-
-* gitignore
-https://github.com/magit/git-modes
-
-#+begin_src emacs-lisp
-(use-package gitignore-mode
-  :ensure t
-  :mode "\\.?gitignore.?.*\\'")
-#+end_src
-* -- Testing --
-Put packages to test here
 
 * elfeed (rss reader)
 Elfeed is an extensible web feed reader for Emacs, supporting both Atom and RSS.
@@ -2050,9 +2027,9 @@ NOTE: Install the fonts as well: M-x all-the-icons-install-fonts
 
 #+begin_src emacs-lisp
 (use-package all-the-icons
-  :ensure t
-)
+  :ensure t)
 #+end_src
+
 * all-the-icons-dird
 This adds dired support to all-the-icons.
 https://github.com/jtbm37/all-the-icons-dired
@@ -2084,6 +2061,135 @@ https://www.reddit.com/r/emacs/comments/imy9f1/all_the_icons_dired_subtree/
 ;                                             (when all-the-icons-dired-mode
 ;                                               (revert-buffer)))))
 #+end_src
+
+* -- Programming --
+* s (String manipulation library)
+The long lost Emacs string manipulation library
+https://github.com/magnars/s.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package s
+  :ensure t)
+#+END_SRC
+
+* Shell script
+shell-script-mode is a major mode for shell script editing.
+https://www.emacswiki.org/emacs/ShMode
+
+#+begin_src emacs-lisp
+(use-package sh-script
+  :mode (("zshecl" . sh-mode)
+         ("\\.zsh\\'" . sh-mode)
+         ("\\.sh\\'" . sh-mode))
+  :custom
+  ;; zsh
+  (system-uses-terminfo nil))
+
+(use-package executable
+  :hook
+  (after-save . executable-make-buffer-file-executable-if-script-p))
+#+end_src
+
+* Smartparens
+Smartparens is a minor mode for dealing with pairs in Emacs.
+https://github.com/Fuco1/smartparens
+
+NOTE: changed smartparens-global-mode to show-smartparens-global-mode
+https://github.com/Fuco1/smartparens/wiki/Show-smartparens-mode
+
+Cheatsheat
+https://gist.github.com/pvik/8eb5755cc34da0226e3fc23a320a3c95
+
+#+begin_src emacs-lisp
+(use-package smartparens
+  :ensure t
+  :hook (after-init . show-smartparens-global-mode)
+  :config (require 'smartparens-config)
+    (add-hook 'python-mode-hook #'smartparens-mode)
+)
+#+end_src
+
+* - Git -
+* magit
+It's Magit! A Git porcelain inside Emacs. https://magit.vc
+https://github.com/magit/magit
+
+#+begin_src emacs-lisp
+;; Fixes for emacs 27
+;; Magit Error: Warning (with-editor): Cannot determine a suitable Emacsclient
+(setq-default with-editor-emacsclient-executable "emacsclient")
+
+(use-package magit
+  :ensure t
+  :defer 5
+  :commands magit
+  :bind
+    (("C-x g" . magit-status)
+     ("C-x G" . magit-status-with-prefix)
+     ("C-x M-g" . magit-dispatch)
+     ("C-c M-g" . global-magit-file-mode))
+  :config
+    (setq magit-completing-read-function 'ivy-completing-read)
+)
+#+end_src
+
+* git gutter
+Emacs port of GitGutter which is Sublime Text Plugin
+Show change information from git
+https://github.com/syohex/emacs-git-gutter
+
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter
+  :ensure t
+  :defer 10
+  :config
+    (global-git-gutter-mode t)
+)
+#+END_SRC
+
+* git-timemachine
+https://github.com/emacsmirror/git-timemachine
+Walk through git revisions of a file https://gitlab.com/pidu/git-timemachine
+
+toggle the time machine you can use M-x git-timemachine-toggle.
+
+Use the following keys to navigate historic version of the file
+
+    p Visit previous historic version
+    n Visit next historic version
+    w Copy the abbreviated hash of the current historic version
+    W Copy the full hash of the current historic version
+    g Goto nth revision
+    t Goto revision by selected commit message
+    q Exit the time machine.
+    b Run magit-blame on the currently visited revision (if magit available).
+    c Show current commit using magit (if magit available).
+
+#+begin_src emacs-lisp
+(use-package git-timemachine
+  :ensure t
+  :bind (("s-g" . git-timemachine)))
+#+end_src
+
+* gitconfig
+https://github.com/magit/git-modes
+
+#+begin_src emacs-lisp
+(use-package gitconfig-mode
+  :ensure t
+  :mode "\\x?gitconfig.?.*\\'")
+#+end_src
+
+* gitignore
+https://github.com/magit/git-modes
+
+#+begin_src emacs-lisp
+(use-package gitignore-mode
+  :ensure t
+  :mode "\\.?gitignore.?.*\\'")
+#+end_src
+* -- Testing --
+Put packages to test here
 
 * neotree
 Neotree
@@ -2209,121 +2315,4 @@ posframe, cfrs, ht, lv, hydra, pfuture, ace-window
 ;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
 ;  :ensure t
 ;  :config (treemacs-set-scope-type 'Perspectives))
-#+end_src
-
-* recentf
-a minor mode that builds a list of recently opened files
-https://www.emacswiki.org/emacs/RecentFiles
-
-#+begin_src emacs-lisp
-(use-package recentf
-  :ensure nil
-  :config
-  (setq recentf-save-file "~/.emacs.d/var/cache/recentf"
-        recentf-max-saved-items 500
-        recentf-max-menu-items 15
-        ;; disable recentf-cleanup on Emacs start, because it can cause
-        ;; problems with remote files
-        recentf-auto-cleanup 'never)
-  (recentf-mode +1))
-#+end_src
-
-* doom-modeline
-A fancy and fast mode-line inspired by minimalism design.
-https://seagle0128.github.io/doom-modeline/
-
-#+begin_src emacs-lisp
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :config
-  ;; Fix? for Height below 25 not working anymore #187
-  ;; https://github.com/seagle0128/doom-modeline/issues/187
-  (defun my-doom-modeline--font-height ()
-    "Calculate the actual char height of the mode-line."
-    (+ (frame-char-height) 1))
-  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
-)
-#+end_src
-
-* shell-pop
-shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
-https://github.com/kyagi/shell-pop-el
-NOTE: can use ‘shell’, ‘terminal’, ‘ansi-term’, and ‘eshell’.
-
-#+begin_src emacs-lisp
-;; Unset C-t from transpose characters
-;(global-set-key (kbd "C-t") nil)
-(global-unset-key (kbd "C-t"))
-
-(use-package shell-pop
-  :ensure t
-  :bind (("C-t" . shell-pop)) ; Ctrl-t
-  :config
-  ;(setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  (setq shell-pop-shell-type (quote ("vterm" "*vterm*" (lambda nil (vterm shell-pop-term-shell)))))
-  (setq shell-pop-term-shell "/bin/zsh"
-        shell-pop-window-size 30
-        shell-pop-full-span t
-        shell-pop-window-position "bottom"
-        shell-pop-autocd-to-working-dir t
-        shell-pop-restore-window-configuration t
-        shell-pop-cleanup-buffer-at-process-exit t)
-  ;;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-)
-#+end_src
-
-* global-line-number-mode
-
-#+begin_src emacs-lisp
-;(column-number-mode)
-;(global-display-line-numbers-mode 1)
-;
-;(dolist (mode '(org-mode-hook
-;                term-mode-hook
-;                eshell-mode-hook
-;  (add-hook mode (lambda () (display-line0-numbers-mode 0))))))
-#+end_src
-
-* vterm
-Emacs-libvterm (vterm) is fully-fledged terminal emulator inside GNU Emacs based on libvterm
-https://github.com/akermu/emacs-libvterm
-
-Manual installation guide
-#+begin_src text
-Prep, add emacs.d/emacs-libvterm to ~/.gitignore
-
-Clone the repository:
-$ cd .emacs.d/var
-$ git clone https://github.com/akermu/emacs-libvterm.git
-
-On Mac, install cmake and libvterm
-$ brew install cmake libvterm
-
-Build the module
-$ cd ~/.emacs.d/var/emacs-libvterm
-$ mkdir -p build
-$ cd build
-$ cmake ..
-$ make
-
-Add to init.el
-(use-package vterm
-  :load-path  "path/to/emacs-libvterm/")
-#+end_src
-
-Notes:
-#+begin_src text
-Q) What are the vterm's equivalents of term-line-mode C-c C-j and term-char-mode C-c C-k?
-A) It's C-c C-t to toggle vterm-copy-mode.
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package vterm
-  :ensure nil
-  :load-path  "~/.emacs.d/var/emacs-libvterm"
-  :config
-  (setq vterm-max-scrollback 5000) ; default 1000, max is 100000
-)
 #+end_src
