@@ -406,7 +406,220 @@ https://www.emacswiki.org/emacs/RecentFiles
   (recentf-mode +1))
 #+end_src
 
+** ace-window
+The [[https://github.com/abo-abo/ace-window][ace-window]] package provides functions to quickly switch between
+windows. The main =ace-window= command will either switch to the one
+other open window or let you select another window by typing the first
+letters of the its label. Additionally, this package can swap and
+delete windows.
+
+#+begin_src emacs-lisp
+(use-package ace-window
+  :ensure nil
+  :init (setq aw-scope 'frame)
+  :bind (("M-o" . ace-window)))
+#+end_src
+* OS Settings
+** MacOS
+#+begin_src emacs-lisp
+(cond ((eq system-type 'darwin)
+;	(setq mac-command-modifier 'meta
+;	      mac-option-modifier 'alt
+;	      mac-right-option-modifier 'super)
+
+;; set keys for Apple keyboard, for emacs in OS X
+(setq mac-command-modifier 'meta) ; make cmd key do Meta
+(setq mac-option-modifier 'super) ; make opt key do Super
+(setq mac-control-modifier 'control) ; make Control key do Control
+;(setq ns-function-modifier 'hyper)  ; make Fn key do Hyper
+
+;; Use meta +/- to change text size
+(bind-key "M-+" 'text-scale-increase)
+(bind-key "M-=" 'text-scale-increase)
+(bind-key "M--" 'text-scale-decrease)
+
+;; This is copied from
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+(defun my/text-scale-reset ()
+  "Reset text-scale to 0."
+  (interactive)
+  (text-scale-set 0))
+(bind-key "M-g 0" 'my/text-scale-reset)
+
+;;; set font size to 15, overriding default 12
+; M-x describe-font:
+; Monaco:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+;(set-face-attribute 'default (selected-frame) :height 150)
+(set-face-attribute 'default nil :height 150)
+
+;; Osx-trash
+;; Make Emacs' delete-by-moving-to-trash do what you expect it to do on OS X.
+;; https://github.com/lunaryorn/osx-trash.el
+;(use-package osx-trash
+;   :ensure t
+;   :config
+;   (setq delete-by-moving-to-trash t)
+;   (osx-trash-setup)
+;)
+
+;A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell
+;https://github.com/purcell/exec-path-from-shell
+;
+;Needed to find aspell and probably others
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+     (setq exec-path-from-shell-check-startup-files nil ;; don't warn about env
+           exec-path-from-shell-variables '("PATH" "MANPATH")
+           exec-path-from-shell-arguments nil  ; was '("-l")
+           ;exec-path-from-shell-debug 1   ; enable debugging
+           ;exec-path-from-shell--debug 1  ; print msg if debug enabled
+     )
+     (exec-path-from-shell-initialize)
+  )
+)
+
+;; Disable railwaycat's tab bar
+;; https://github.com/railwaycat/homebrew-emacsmacport/issues/123
+(defvar mac-frame-tabbing)
+(setq mac-frame-tabbing nil)
+
+;; Don't open up new frames for files dropped on icon, use active frame
+(defvar ns-pop-up-frames)
+(setq ns-pop-up-frames nil)
+
+;; Drag and drop on the emacs window opens the file in a new buffer instead of
+;; appending it to the current buffer
+;; http://stackoverflow.com/questions/3805658/how-to-configure-emacs-drag-and-drop-to-open-instead-of-append-on-osx
+(if (fboundp 'ns-find-file)
+    (global-set-key [ns-drag-file] 'ns-find-file))
+
+;; Move deleted files to the System's trash can
+;; set trash-directory otherwise uses freedesktop.org-style
+(setq trash-directory "~/.Trash")
+(setq delete-by-moving-to-trash t)
+
+;; Macbook Pro has no insert key.
+;; http://lists.gnu.org/archive/html/help-gnu-emacs/2006-07/msg00220.html
+(global-set-key (kbd "C-c I") (function overwrite-mode))
+
+;;; Open up URLs in mac browser
+(setq browse-url-browser-function 'browse-url-default-macosx-browser)
+; (setq browse-url-browser-function 'browse-url-default-windows-browser)
+
+;;; Copy and paste into Emacs Terminal
+;;; stack overflow, pasting text into emacs on Macintosh
+;;; Copy - C-x M-w
+;;; Paste - C-x C-y
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+    (point)
+    (if mark-active (mark) (point))
+    "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+      (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
+(global-set-key [C-x C-y] 'pt-pbpaste)
+(global-set-key [C-x M-w] 'pt-pbcopy)
+
+;; add the missing man page path for woman
+;; https://www.reddit.com/r/emacs/comments/ig7zzo/weekly_tipstricketc_thread/
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/share/man")
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/usr/share/man")
+;(add-to-list 'woman-manpath
+;             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man")
+
+;; On a Mac: make Emacs detect if you have light or dark mode enabled system wide.
+;;If you have two themes, a light one and a dark one, and you want the dark theme by default unless you have light mode enabled, add this to your init.el:
+
+;; If we're on a Mac and the file "~/bin/get_dark.osascript" exists
+;; and it outputs "false", activate light mode. Otherwise activate
+;; dark mode.
+;(cond ((and (file-exists-p "~/bin/get_dark.osascript")
+;	     (string> (shell-command-to-string "command -v osascript") "")
+;	     (equal "false\n"
+;		    (shell-command-to-string "osascript ~/bin/get_dark.osascript")))
+;	(mcj/theme-set-light))
+;      (t (mcj/theme-set-dark)))
+
+;; (mcj/theme-set-light and mcj/theme-set-light are functions that enable the light and the dark theme, respectively).
+
+;;~/bin/get_dark.osascript contains the following:
+;;
+;;tell application "System Events"
+;;	  tell appearance preferences
+;;		get dark mode
+;;	  end tell
+;;end tell
+))
+#+end_src
+
+** Linux
+#+begin_src emacs-lisp
+;; -=Linux specific settings
+(cond ((eq system-type 'gnu/linux)
+(defvar browse-url-browser-function)
+(defvar browse-url-browser-program)
+;;; http://stackoverflow.com/questions/15277172/how-to-make-emacs-open-all-buffers-in-one-window-debian-linux-gnome
+;(setq pop-up-frames 'graphic-only)
+(setq pop-up-frames nil)
+
+;;; http://stackoverflow.com/questions/4506249/how-to-make-emacs-org-mode-open-links-to-sites-in-google-chrome
+;;; Open up URLs in browser using gnome-open (errors on bytecompile)
+;(setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "gnome-open")
+(setq browse-url-browser-function 'browse-url-firefox)
+
+;;; Problems with minibuffer font size display in KDE/Crunchbang/Unity(?), explictily set font
+;;; List fonts with M-x descript-font
+;(set-default-font "Monospace-10")
+))
+#+end_src
 * Look and feel
+** Better defaults
+A small number of better defaults for Emacs
+Some taken from:
+  https://github.com/technomancy/better-defaults
+  https://git.sr.ht/~technomancy/better-defaults
+
+#+begin_src emacs-lisp
+(require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+
+;; When you visit a file, point goes to the last place where it was when you previously visited the same file.
+;; https://www.emacswiki.org/emacs/SavePlace
+(save-place-mode 1)
+;(setq save-place-file (locate-user-emacs-file "places" ".emacs-places"))
+(setq save-place-file (concat user-emacs-directory "var/places"))
+(setq save-place-forget-unreadable-files nil)
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+(show-paren-mode 1)
+(setq-default indent-tabs-mode nil)
+(savehist-mode 1)
+
+(setq save-interprogram-paste-before-kill t
+      apropos-do-all t
+      ;mouse-yank-at-point t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "var/backups"))))
+#+end_src
+
 ** First disable all themes
 Disable all themes before loading a theme
 #+begin_src emacs-lisp
@@ -428,7 +641,7 @@ load-theme without annoying confirmation
               (funcall fn theme t)))
 #+end_src
 
-** Dracula Theme
+** Dracula theme
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
@@ -443,6 +656,34 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
       (load-theme 'dracula :no-confirm)	 ; Emacs in own window (zenburn)
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
+)
+#+end_src
+
+** all-the-icons
+All-the-icons
+https://github.com/domtronn/all-the-icons.el
+NOTE: Install the fonts as well: M-x all-the-icons-install-fonts
+
+#+begin_src emacs-lisp
+(use-package all-the-icons
+  :ensure t)
+#+end_src
+
+** doom-modeline
+A fancy and fast mode-line inspired by minimalism design.
+https://seagle0128.github.io/doom-modeline/
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  ;; Fix? for Height below 25 not working anymore #187
+  ;; https://github.com/seagle0128/doom-modeline/issues/187
+  (defun my-doom-modeline--font-height ()
+    "Calculate the actual char height of the mode-line."
+    (+ (frame-char-height) 1))
+  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 )
 #+end_src
 
@@ -504,4 +745,26 @@ last sentence."
 ;; your choice.  See the Aon/DailyLogs/.config file for details.
 ;;
 ;; Please call if you have any questions.
+#+end_src
+
+** Which Key (Keybinding Completion)
+Emacs package that displays available keybindings in popup
+https://github.com/justbur/emacs-which-key
+
+Paging: C-h
+    Cycle through the pages forward with n (or C-n)
+    Cycle backwards with p (or C-p)
+    Undo the last entered key (!) with u (or C-u)
+    Call the default command bound to C-h, usually describe-prefix-bindings, with h (or C-h)
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :ensure t
+  :defer 10
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 1)
+  (setq which-key-setup-side-window-bottom t) ; Default
+  (setq which-key-popup-type 'side-window) ;Default
+)
 #+end_src
