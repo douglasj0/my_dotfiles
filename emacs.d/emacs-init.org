@@ -4,7 +4,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./emacs-init.el :mkdirp yes
 
 * Startup
-** Initialization
+** initialization
 Transfered from original ~/.emacs.d/init.el
 Moved use-package and org-plus-contrib back to init.el to fix org-version issue
 
@@ -346,7 +346,7 @@ Stolen from http://www.dotemacs.de/dotfiles/BenjaminRutt.emacs.html."
 #+end_src
 
 * Utilities
-** Helpful
+** helpful
 Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
 https://github.com/Wilfred/helpful
 
@@ -376,7 +376,7 @@ https://github.com/Wilfred/helpful
 ))
 #+end_src
 
-** Su/Sudo
+** su/sudo
 read-only files will be writable but if you attempt to save your modifications, emacs will ask root user’s password if needed. Can save pw to ~/.authinfo.
 https://github.com/PythonNut/su.el
 
@@ -397,7 +397,8 @@ https://www.emacswiki.org/emacs/RecentFiles
 (use-package recentf
   :ensure nil
   :config
-  (setq recentf-save-file "~/.emacs.d/var/cache/recentf"
+  (setq ;recentf-save-file "~/.emacs.d/var/cache/recentf"
+        recentf-save-file (expand-file-name "recentf" "~/.emacs.d/var")
         recentf-max-saved-items 500
         recentf-max-menu-items 15
         ;; disable recentf-cleanup on Emacs start, because it can cause
@@ -419,6 +420,63 @@ delete windows.
   :init (setq aw-scope 'frame)
   :bind (("M-o" . ace-window)))
 #+end_src
+** flycheck (program syntax)
+Modern on-the-fly syntax checking extension for GNU Emacs
+https://github.com/flycheck/flycheck
+Homepage: https://www.flycheck.org/en/latest/
+
+Install syntax checker for languages
+python: pip install pylint
+
+error on lsp-mode start: Error processing message: void-function flycheck-define-generic-checker
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  ;:init (global-flycheck-mode)
+  :init (add-hook 'after-init-hook #'global-flycheck-mode)
+  :config
+  (setq-default flycheck-global-modes '(not org-mode))
+)
+#+end_src
+
+** flyspell (spelling)
+Correcting misspelled words with flyspell using favourite interface.
+https://emacs.stackexchange.com/questions/31300/can-you-turn-on-flyspell-for-comments-but-not-strings
+
+Mac: brew install aspell
+
+#+begin_src emacs-lisp
+(use-package flyspell
+  :ensure nil
+  :init
+  ;(progn
+  ;  (flyspell-mode 1))
+  :hook ((prog-mode . flyspell-prog-mode)
+         (org-mode  . turn-off-flyspell)
+         (text-mode . flyspell-mode))
+  :config
+  (progn
+    (setq ispell-program-name "aspell")
+    (setq ispell-list-command "--list")
+    (setq ispell-extra-args '("--sug-mode=fast" "--lang=en_US"))
+  ) ;; run flyspell with aspell, not ispell
+)
+
+;; Correcting misspelled words with flyspell using favourite interface.
+;; https://github.com/d12frosted/flyspell-correct
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell)
+
+(use-package flyspell-correct-ivy
+  :ensure t
+  :after flyspell-correct
+  :bind ("C-M-;" . flyspell-correct-wrapper)
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+#+end_src
+
 * OS Settings
 ** MacOS
 #+begin_src emacs-lisp
@@ -586,7 +644,7 @@ delete windows.
 ))
 #+end_src
 * Look and feel
-** Better defaults
+** better defaults
 A small number of better defaults for Emacs
 Some taken from:
   https://github.com/technomancy/better-defaults
@@ -620,7 +678,7 @@ Some taken from:
                                                "var/backups"))))
 #+end_src
 
-** First disable all themes
+** disable all themes
 Disable all themes before loading a theme
 #+begin_src emacs-lisp
 (defadvice load-theme (before disable-themes-first activate)
@@ -641,7 +699,7 @@ load-theme without annoying confirmation
               (funcall fn theme t)))
 #+end_src
 
-** Dracula theme
+** dracula theme
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
@@ -688,7 +746,7 @@ https://seagle0128.github.io/doom-modeline/
 #+end_src
 
 * Productivity
-** Daily log
+** daily-log
 #+begin_src emacs-lisp
 ;;; -- daily log -
 
@@ -747,7 +805,7 @@ last sentence."
 ;; Please call if you have any questions.
 #+end_src
 
-** Which Key (Keybinding Completion)
+** which-key
 Emacs package that displays available keybindings in popup
 https://github.com/justbur/emacs-which-key
 
@@ -768,3 +826,725 @@ Paging: C-h
   (setq which-key-popup-type 'side-window) ;Default
 )
 #+end_src
+
+** ibuffer
+https://www.emacswiki.org/emacs/IbufferMode
+ibuffer - *Nice* buffer switching
+
+Search all marked buffers
+  ‘M-s a C-s’ - Do incremental search in the marked buffers.
+  ‘M-s a C-M-s’ - Isearch for regexp in the marked buffers.
+  ‘U’ - Replace by regexp in each of the marked buffers.
+  ‘Q’ - Query replace in each of the marked buffers.
+  ‘I’ - As above, with a regular expression.
+
+#+begin_src emacs-lisp
+(use-package ibuffer
+  :ensure nil
+  :bind ("C-x C-b" . ibuffer)
+  :config
+    ;; Don't show empty buffer groups
+    (setq ibuffer-show-empty-filter-groups nil)
+
+    ;; work groups for ibuffer
+    (setq ibuffer-saved-filter-groups
+          '(("default"
+             ("version control" (or (mode . svn-status-mode)
+                       (mode . svn-log-edit-mode)
+                       (name . "^\\*svn-")
+                       (name . "^\\*vc\\*$")
+                       (name . "^\\*Annotate")
+                       (name . "^\\*vc-")
+                       (name . "^\\*git-")
+                       (name . "^\\*magit")))
+             ("emacs" (or (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")
+                          (name . "^TAGS\\(<[0-9]+>\\)?$")
+                          (name . "^\\*info\\*$")
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*grep\\*$")
+                          (name . "^\\*Compile-Log\\*$")
+                          (name . "^\\*Backtrace\\*$")
+                          (name . "^\\*Process List\\*$")
+                          (name . "^\\*gud\\*$")
+                          (name . "^\\*Man")
+                          (name . "^\\*WoMan")
+                          (name . "^\\*Kill Ring\\*$")
+                          (name . "^\\*Completions\\*$")
+                          (name . "^\\*tramp")
+                          (name . "^\\*shell\\*$")
+                          (name . "^\\*compilation\\*$")))
+             ("Helm" (or (name . "\*helm\*")))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))
+             ("emacs-source" (or (mode . emacs-lisp-mode)
+                                 (filename . "/Applications/Emacs.app")
+                                 (filename . "/bin/emacs")))
+             ("emacs-config" (or (filename . ".emacs.d")
+                                 (filename . "emacs-config")))
+            ("org" (or (name . "^\\*org-")
+                        (name . "^\\*Org")
+                        (mode . org-mode)
+                        (mode . muse-mode)
+                        (name . "^\\*Calendar\\*$")
+                        (name . "^+current$")
+                        (name . "^diary$")
+                        (name . "^\\*Agenda")))
+             ("latex" (or (mode . latex-mode)
+                          (mode . LaTeX-mode)
+                          (mode . bibtex-mode)
+                          (mode . reftex-mode)))
+             ("dired" (or (mode . dired-mode)))
+             ("perl" (mode . cperl-mode))
+             ("erc" (mode . erc-mode))
+             ("shell" (or (mode . shell-mode)
+                            (name . "^\\*terminal\\*$")
+                            (name . "^\\*ansi-term\\*$")
+                            (name . "^\\*shell\\*$")
+                            (name . "^\\*eshell\\*$")))
+             ("gnus" (or (name . "^\\*gnus trace\\*$")
+                            (mode . message-mode)
+                            (mode . bbdb-mode)
+                            (mode . mail-mode)
+                            (mode . gnus-group-mode)
+                            (mode . gnus-summary-mode)
+                            (mode . gnus-article-mode)
+                            (name . "^\\.bbdb$")
+                            (name . "^\\.newsrc-dribble"))))))
+
+    ;; Order the groups so the order is : [Default], [agenda], [emacs]
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+    ;; Hide the following buffers
+    ;;(setq ibuffer-never-show-predicates
+    ;;      (list "\\*Completions\\*"
+    ;;            "\\*vc\\*"))
+
+    ;; Enable ibuffer expert mode, don't prompt on buffer deletes
+    (setq ibuffer-expert t)
+
+    ;; Load the 'work' group, can set to load groups by location
+    ;; ibuffer-auto-mode is a minor mode that automatically keeps the buffer
+    ;; list up to date. I turn it on in my ibuffer-mode-hook:
+    (add-hook 'ibuffer-mode-hook
+              '(lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
+)
+#+end_src
+
+* File mananagement
+** dired-x
+https://www.gnu.org/software/emacs/manual/dired-x.html
+https://www.emacswiki.org/emacs/DiredExtra#Dired_X
+provides extra functionality for Dired Mode.
+
+Hide file detail toggle `(`
+
+OSX/BSD ls doesn't sort directories first, ls-lisp can
+#+begin_src emacs-lisp
+(use-package ls-lisp
+  :ensure nil
+  :defer t
+  :custom
+  ;(ls-lisp-emulation 'MacOS)
+  (ls-lisp-ignore-case t)
+  (ls-lisp-verbosity nil)
+  (ls-lisp-dirs-first t)
+  (ls-lisp-use-insert-directory-program nil)
+)
+
+(use-package dired-x
+  :ensure nil
+  :demand t
+  :bind ("C-x C-j"   . dired-jump)
+	("C-x 4 C-j" . dired-jump-other-window)
+  :config
+     ;; on macOS, ls doesn't support --dired option linux does
+     (when (string= system-type "darwin")
+       (setq dired-use-ls-dired nil))
+     (setq-default dired-omit-files-p t)
+     (setq dired-listing-switches "-alhv")
+     ;(setq dired-use-ls-dired nil)
+     ;(setq dired-listing-switches "-agho --group-directories-first") ; errors
+     ;(define-key dired-mode-map (kbd "/") #'dired-narrow-fuzzy) ; requires dired-hacks
+     (define-key dired-mode-map (kbd "e") #'read-only-mode)
+
+     ;; omit-mode
+     (setq dired-omit-files "^\\.\\|^#.#$\\|.~$") ; omit dot and backup files
+     (define-key dired-mode-map (kbd "h") #'dired-omit-mode) ; overriding h:describe-mode
+     (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))) ; start in omit-mode
+
+     ;; Auto-refresh dired on file change
+     (add-hook 'dired-mode-hook 'auto-revert-mode)
+
+     ;; disable line wrapping in dired mode
+     (add-hook 'dired-mode-hook (lambda () (setq truncate-lines t)))
+
+     ;; enable side-by-side dired buffer targets
+     ;; Split your window, split-window-vertically & go to another dired directory.
+     ;; When you will press C to copy, the other dir in the split pane will be
+     ;; default destination.
+     (setq dired-dwim-target t) ;; suggest copying/moving to other dired buffer in split view
+
+     ;; Dired functions (find-alternate 'a' reuses dired buffer)
+     (put 'dired-find-alternate-file 'disabled nil)
+)
+#+end_src
+
+dired-launch
+https://github.com/thomp/dired-launch
+#+begin_src emacs-lisp
+(use-package dired-launch
+  :ensure t
+  :hook
+  (dired-mode . dired-launch-mode))
+#+end_src
+
+all-the-icons-dired
+This adds dired support to all-the-icons.
+https://github.com/jtbm37/all-the-icons-dired
+
+Plus the fix for sub-directories?
+https://www.reddit.com/r/emacs/comments/imy9f1/all_the_icons_dired_subtree/
+
+#+begin_src emacs-lisp
+(use-package all-the-icons-dired
+  :ensure t
+  :config
+  (if window-system
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+#+end_src
+
+* Completions
+** ivy/swiper (completions)
+Ivy, a generic completion mechanism for Emacs.
+Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
+Swiper, an Ivy-enhanced alternative to Isearch.
+https://github.com/abo-abo/swiper
+ivy-rich adds extra columns to a few of the Counsel commands to provide more information about each item.
+https://github.com/Yevgnen/ivy-rich
+https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+
+#+begin_src emacs-lisp
+(use-package ivy
+  :ensure t
+  :defer 0.5
+  :init (ivy-mode 1)
+  :bind
+    ;("\C-s"    . swiper)
+    ("\C-s"    . counsel-grep-or-swiper) ; swiper for small files, console-grep for large
+    ("C-x C-r" . counsel-recentf)
+    ;("C-c C-r" . ivy-resume)
+    ("<f6>"    . ivy-resume)
+    ("M-x"     . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("<f1> f"  . counsel-describe-function)
+    ("<f1> v"  . counsel-describe-variable)
+    ("<f1> o"  . counsel-describe-symbol)
+    ("<f1> l"  . counsel-find-library)
+    ("<f2> i"  . counsel-info-lookup-symbol)
+    ("<f2> u"  . counsel-unicode-char)
+    ("C-c g"   . counsel-git) ; Ivy-based interface to shell and system tools
+    ("C-c j"   . counsel-git-grep)
+    ("C-c k"   . counsel-ag)
+    ("C-x l"   . counsel-locate)
+    ("C-S-o"   . counsel-rhythmbox)
+    ("C-r"     . counsel-minibuffer-history) ; disable M-x filter
+  :config
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    (setq search-default-mode #'char-fold-to-regexp))
+
+(use-package ivy-rich
+  :ensure t
+  :after (ivy counsel)
+  :init
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :ensure t
+  :after ivy
+  :bind (("C-M-j" . 'counsel-switch-buffer)
+         ("C-r" . 'counsel-minibuffer-history))
+  :custom
+  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+  :config
+  (counsel-mode 1))
+#+end_src
+
+Ivy/Counsel integration for all-the-icons.el
+Disabled. Neat, but it seems to override ivy-rich additions
+https://github.com/asok/all-the-icons-ivy
+#+begin_src emacs-lisp
+;(use-package all-the-icons-ivy
+;  :ensure t
+;  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :requires (ivy))
+#+end_src
+
+ivy-prescient
+prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them. This can be especially helpful when using M-x to run commands that you don’t have bound to a key but still need to access occasionally.
+#+begin_src emacs-lisp
+(use-package ivy-prescient
+  :ensure t
+  :after counsel
+  :custom
+  (ivy-prescient-enable-filtering nil)
+  :config
+  ;; Uncomment the following line to have sorting remembered across sessions!
+  ;(prescient-persist-mode 1)
+  (ivy-prescient-mode 1))
+#+end_src
+
+** projectile (project Management)
+https://github.com/bbatsov/projectile
+http://batsov.com/projectile/
+projectile - project managent (works with helm)
+Project navigation and management library for Emacs
+Keybindings: https://projectile.readthedocs.io/en/latest/usage/
+
+Mminimum commands to start benefitting
+-  Find file in current project (s-p f)
+-  Switch project (s-p p) (you can also switch between open projects with s-p q)
+-  Grep (search for text/regexp) in project (s-p s g) (grep alternatives like ag, pt and rg are also supported)
+-  Replace in project (s-p r)
+-  Invoke any Projectile command via the Projectile Commander (s-p m)
+-  Toggle between implementation and test (s-p t)
+-  Toggle between related files (e.g. foo.h <→ foo.c and Gemfile <→ Gemfile.lock) (s-p a)
+-  Run a shell command in the root of the project (s-p ! for a sync command and s-p & for an async command)
+-  Run various pre-defined project commands like:
+   -  build/compile project (s-p c)
+   -  test project (s-p T)
+- If you ever forget any of Projectile’s keybindings just do a (s-p C-h)
+- Open up project directory in Dired (s-p D)
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :defer 5
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ;("s-p" . projectile-command-map) ; super-p
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-enable-caching nil) ; don't enable caching
+  (setq projectile-indexing-method 'alien) ; external cmd for indexing
+
+  ;; set a list of folders for projectile to automatically check
+  (setq projectile-project-search-path '("~/education" "~/projects/" "~/work/"))
+
+  ;; To change the remote file exists cache expire to 10 min use this code:
+  (setq projectile-file-exists-remote-cache-expire (* 10 60))
+
+)
+#+end_src
+
+* Terminal
+** eshell
+
+#+begin_src emacs-lisp
+(defun efs/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+  (setq eshell-history-size         1000
+        eshell-buffer-maximum-lines 1000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt
+  :ensure t
+  :config
+  (eshell-git-prompt-use-theme 'git-radar)
+)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("top" "htop" "zsh" "vi" "vim")))
+)
+#+end_src
+
+** vterm
+Emacs-libvterm (vterm) is fully-fledged terminal emulator inside GNU Emacs based on libvterm
+https://github.com/akermu/emacs-libvterm
+
+Manual installation guide
+#+begin_src text
+Prep, add emacs.d/emacs-libvterm to ~/.gitignore
+
+Clone the repository:
+$ cd .emacs.d/var
+$ git clone https://github.com/akermu/emacs-libvterm.git
+
+On Mac, install cmake and libvterm
+$ brew install cmake libvterm
+
+Build the module
+$ cd ~/.emacs.d/var/emacs-libvterm
+$ mkdir -p build
+$ cd build
+$ cmake ..
+$ make
+
+Add to init.el
+(use-package vterm
+  :load-path  "path/to/emacs-libvterm/")
+#+end_src
+
+Notes:
+#+begin_src text
+Q) What are the vterm's equivalents of term-line-mode C-c C-j and term-char-mode C-c C-k?
+A) It's C-c C-t to toggle vterm-copy-mode.
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :ensure nil
+  :load-path  "~/.emacs.d/var/emacs-libvterm"
+  :bind ("C-c tv" . vterm)
+  :config
+  (setq vterm-max-scrollback 5000) ; default 1000, max is 100000
+)
+#+end_src
+
+* org-mode
+** org
+A GNU Emacs major mode for convenient plain text markup — and much more.
+https://orgmode.org/
+NOTE: use-package def moved to init.el to override built-in org version
+
+#+begin_src emacs-lisp
+(use-package calendar
+  :ensure nil
+  :custom
+  (calendar-week-start-day 0))
+
+;;; org-superstar (replacement for org-bullets)
+;;; https://github.com/integral-dw/org-superstar-mode
+(use-package org-superstar
+  :ensure t
+  :after org
+  ;:custom
+  ;(org-superstar-headline-bullets-list '("◉" "○" "✸" "✿"))
+  ;(org-superstar-bullet-list '("•"))
+  ;(org-superstar-bullet-list '("■" "◆" "▲" "▶"))
+  :hook (org-mode . org-superstar-mode)
+  :config
+  ;; Don't do anything special for item bullets or TODOs by default
+  ;; these slow down larger org buffers.
+  (setq org-superstar-prettify-item-bullets nil
+        org-superstar-special-todo-items nil)
+)
+
+;; Prevent inadvertently edits an the invisible part of the buffer
+(setq-default org-catch-invisible-edits 'smart)
+
+;; Load additional exporters, or limit them with:  (setq org-export-backends '(ascii html latex odt))
+;(eval-after-load 'org
+;      (lambda()
+;        (require 'ox-texinfo) ; texi and info
+;        (require 'ox-md)      ; markdown
+;        (require 'ox-odt)     ; opendoc text
+;        (require 'ox-opml)
+;        (require 'ox-confluence)))
+
+;; Bind C-h o to org-info, loads info file
+(define-key global-map (kbd "C-h o") 'org-info)
+
+;; The following lines are always needed.  Choose your own keys.
+;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cc" 'org-capture)
+
+;; Set to the location of your Org files on your local system
+(setq org-directory "~/org")
+
+;; Open all txt files in org-mode
+(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
+
+
+;;; Agenda - Agenda window setup
+(setq org-agenda-window-setup 'current-window) ;; don't kill my window setup
+
+;; Include emacs diary, not needed if using org-anniversary
+;(setq org-agenda-include-diary t)
+
+;; Custom agenda commands
+;; http://members.optusnet.com.au/~charles57/GTD/mydotemacs.txt
+(setq org-agenda-custom-commands
+'(
+("P" "Projects"
+              ((tags "PROJECT")))
+
+("H" "Office and Home Lists"
+     ((agenda)
+          (tags-todo "OFFICE")
+          (tags-todo "HOME")
+          (tags-todo "COMPUTER")
+          (tags-todo "DVD")
+          (tags-todo "READING")))
+
+;("D" "Daily Action List"
+;     ((agenda "" ((org-agenda-ndays 1)
+;                     (org-agenda-sorting-strategy
+;                        (quote ((agenda time-up priority-down tag-up))))
+;                     (org-deadline-warning-days 0)
+;                     ))))
+
+("d" "Do today"
+   ;; Show all todos and everything due today.
+   ((agenda "" (
+                ;; Limits the agenda to a single day
+                (org-agenda-span 1)
+                ))
+    (todo "TODO")))
+
+("D" "Deadline due"
+     ((tags-todo "+TODO=\"TODO\"+DEADLINE<=\"<today>\""
+                 ((org-agenda-overriding-header "Deadline today")))
+      (tags-todo "+TODO=\"TODO\"+DEADLINE=\"\""
+                 ((org-agenda-overriding-header "No deadline")))))
+
+))
+
+
+;;; Capture
+;; NOTE:  Fibonacci format: 0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100
+;; Setup default target for notes and a global hotkey for new ones
+;; NOTE:  Need org-mode version 6.3.6 or later for this to work
+;; http://stackoverflow.com/questions/3622603/org-mode-setup-problem-when-trying-to-use-capture
+(setq org-default-notes-file (expand-file-name "~/org/notes.org"))
+
+;; Capture templates - C-c c t
+;; Based on Sacha Chua's org-capture-tempaltes
+;; http://pages.sachachua.com/.emacs.d/Sacha.html
+(defvar dbj/org-basic-task-template "* TODO %^{Task}
+SCHEDULED: %^t
+
+:PROPERTIES:
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
+:END:
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?" "Basic task data")
+
+(defvar dbj/org-basic-jira-template "* TODO %^{Task}
+SCHEDULED: %^t
+
+:PROPERTIES:
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
+:URL: %^{URL}
+:END:
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?" "Basic task data")
+
+(defvar dbj/org-basic-someday-template "* %^{Task}
+:PROPERTIES:
+:Story: %^{story|2|0|0.5|1|2|3|5|8|13}
+:END:
+:LOGBOOK:
+- State \"TODO\"       from \"\"           %U
+:END:
+%?" "Basic task data")
+
+(setq org-capture-templates
+      `(("t" "Tasks" entry
+          (file "~/org/inbox.org"), dbj/org-basic-task-template)
+          ;(file+headline "~/org/inbox.org" "Tasks"), dbj/org-basic-task-template)
+
+        ("j" "Jira" entry
+          (file "~/org/inbox.org"), dbj/org-basic-jira-template)
+
+        ("s" "Someday task" entry
+          (file "~/org/someday.org"), dbj/org-basic-someday-template)
+
+        ("r" "Reference information" entry
+          (file+headline "~/org/reference.org" "Inbox"))
+
+        ("n" "Notes" entry
+          (file+headline "~/org/notes.org"))
+
+        ("o" "Journal" entry
+          (file+olp+datetree "~/org/journal.org")
+          "* %?\nEntered on %U\n  %i\n  %a")
+))
+
+
+;;; Other
+;; When adding new heading below the current heading, the new heading is
+;; Placed after the body instead of before it.  C-<RET>
+(setq org-insert-heading-respect-content t)
+
+;; Set Todo keywords, same as:
+;; Shortcut key:  C-c C-t
+;; #+TODO: TODO(t) INPROGRESS(p) WAITING(w) | DONE(d) CANCELED(c)
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "INPROGRESS(p)" "WAITING(w@/!)")
+        (sequence "|" "DONE(d!)" "CANCELED(c@)")))
+
+;; Set Tags, same as:
+;; #+TAGS: home(h) work(w) @computer(c) @phone(p) errants(e)
+(setq org-tag-alist '(("@office" . ?o) ("@home" . ?h) ("computer" . ?c)
+                      ("phone" . ?p) ("reading" . ?r)))
+
+;; Prevent C-k from killing whole subtrees and losing work
+(setq org-special-ctrl-k t)
+
+;; Fontify code buffers in org, instead of grey text
+;; This is especially nice when you open an editing buffer with [Ctrl+c ']
+;; to insert code into the #+begin_src ... #+end_src area.
+(setq org-src-fontify-natively t)
+
+;; org-refile (C-c C-w) settings from:
+;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg34415.html
+;; http://doc.norang.ca/org-mode.html#RefileSetup
+; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+(setq org-refile-targets '((org-agenda-files :maxlevel . 2)
+                           (nil :maxlevel . 3)))
+
+; Use full outline paths for refile targets - we file directly with IDO
+(setq org-refile-use-outline-path t)
+;(setq org-refile-use-outline-path 'file)
+
+; Targets complete directly with IDO
+(setq org-outline-path-complete-in-steps nil)
+
+; Allow refile to create parent tasks with confirmation
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+
+;;; Strike-through finished todos
+;; sachachua.com/blog/2012/12/emacs-strike-through-headlines-for-done-tasks-in-org/
+(setq org-fontify-done-headline t)
+(custom-set-faces
+ '(org-done ((t (:foreground "PaleGreen"
+                 :weight normal
+                 :strike-through t))))
+ '(org-headline-done
+            ((((class color) (min-colors 16) (background dark))
+               (:foreground "LightSalmon" :strike-through t)))))
+
+;;; Make sure to hightlight mysql sql keywords: - errors on compile
+;;; ex. #+BEGIN_SRC sql
+;;;        SELECT foo FROM bar
+;;;     #+END_SRC
+;(add-hook 'sql-mode-hook
+;          (lambda ()
+;            (sql-highlight-mysql-keywords)))
+
+;;; Enable other org-babel languages
+(org-babel-do-load-languages
+  (quote org-babel-load-languages)
+  (quote ((emacs-lisp . t)
+          ;(asymptote . t) ;Asymptote
+          (awk . t)       ;Awk
+          (C . t)         ;C
+          ;(C++ . t)       ;C++
+          ;(clojure . t)   ;Clojure
+          ;(css . t)       ;CSS
+          ;(d . f)        ;D
+          ;(ditaa . f)     ;ditaa
+          ;(dot . t)       ;Graphviz
+          ;(calc . t)      ; Emacs Calc
+          ;(fortran . t)   ;Fortran
+          ;(gnuplot . t)   ;requires gnuplot installed
+          ;(haskell . t)   ;Haskell
+          (java . t)      ;Java
+          (js . t)        ;Javascript
+          ;(latex . t)     ;LaTeX
+          ;(ledger . f)    ;Ledger
+          (lisp . t)      ;Lisp
+          ;(lilypond . t)  ;Lilypond
+          ;(lua . t)       ;Lua
+          ;(matlab . t)    ;MATLAB
+          ;(mscgen . t)    ;Mscgen
+          ;(ocaml . t)     ;Objective Caml
+          ;(octave . t)    ;octave
+          (org . t)       ;Org mode
+          ;(oz . f)        ;Oz
+          (perl . t)      ;Perl
+          ;(plantuml . t)  ;Plantuml
+          ;(processing . t) ;Processing.js
+          (python . t)    ;Python
+          ;(R . t)         ;R
+          (ruby . t)      ;Ruby
+          ;(sass . t)      ;Sass
+          ;(scheme . t)    ;Scheme
+          ;(screen . t)    ;GNU Screen
+          (sed . t)       ;Sed
+          (shell . t)     ;shell
+          (sql . t)       ; SQL
+          ;(sqlite .t)     ;SQLite
+)))
+#+end_src
+
+* Programming
+** s
+The long lost Emacs string manipulation library
+https://github.com/magnars/s.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package s
+  :ensure t)
+#+END_SRC
+
+** shell script
+shell-script-mode is a major mode for shell script editing.
+https://www.emacswiki.org/emacs/ShMode
+
+#+begin_src emacs-lisp
+(use-package sh-script
+  :mode (("zshecl" . sh-mode)
+         ("\\.zsh\\'" . sh-mode)
+         ("\\.sh\\'" . sh-mode))
+  :custom
+  ;; zsh
+  (system-uses-terminfo nil))
+
+(use-package executable
+  :hook
+  (after-save . executable-make-buffer-file-executable-if-script-p))
+#+end_src
+
+** smartparens
+Smartparens is a minor mode for dealing with pairs in Emacs.
+https://github.com/Fuco1/smartparens
+
+NOTE: changed smartparens-global-mode to show-smartparens-global-mode
+https://github.com/Fuco1/smartparens/wiki/Show-smartparens-mode
+
+Cheatsheat
+https://gist.github.com/pvik/8eb5755cc34da0226e3fc23a320a3c95
+
+#+begin_src emacs-lisp
+(use-package smartparens
+  :ensure t
+  :hook (after-init . show-smartparens-global-mode)
+  :config (require 'smartparens-config)
+    (add-hook 'python-mode-hook #'smartparens-mode)
+)
+#+end_src
+
+* -- Testing --
