@@ -32,6 +32,10 @@
 ; https://github.com/emacscollective/no-littering/
 (use-package no-littering               ; Keep .emacs.d clean
   :ensure t
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
 )
 
 ;; Install and load the latest org-mode version via org-plus-contrib

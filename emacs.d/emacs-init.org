@@ -405,6 +405,8 @@ https://www.emacswiki.org/emacs/RecentFiles
         ;; disable recentf-cleanup on Emacs start, because it can cause
         ;; problems with remote files
         recentf-auto-cleanup 'never)
+  (add-to-list 'recentf-exclude '(".*-autoloads\\.el\\'"
+                                  "[/\\]\\.elpa/"))
   (recentf-mode +1))
 #+end_src
 
@@ -1501,6 +1503,160 @@ SCHEDULED: %^t
 )))
 #+end_src
 
+** deft
+deft - an Emacs mode for quickly browsing, filtering, and editing
+directories of plain text notes.  http://jblevins.org/projects/deft/
+http://jblevins.org/git/deft.git
+
+Modified for org-roam 20200601
+
+#+begin_src emacs-lisp
+;; Set org-roam directory in one place to prevent madness
+(setq org-roam-directory-location "~/org-roam/")
+
+(use-package deft
+  :ensure t
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  ;(deft-directory "~/org-roam/")
+  (deft-directory org-roam-directory-location)
+  (deft-recursive t)
+  (deft-use-filename-as-title nil)
+  (deft-use-filter-string-for-filename t)
+  ;(deft-org-mode-title-prefix t)
+  (deft-file-naming-rules '((noslash . "-")
+                            (nospace . "-")
+                            (case-fn . downcase)))
+  (deft-extensions '("org" "txt" "text" "md" "markdown" "org.gpg"))
+  (deft-default-extension "org")
+  (deft-text-mode 'org-mode)
+)
+#+end_src
+
+** org-roam
+Rudimentary Roam replica with Org-mode
+https://github.com/org-roam/org-roam
+https://org-roam.readthedocs.io/en/master/
+
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :after org
+  :hook
+  (after-init . org-roam-mode) ; error on start stringp, nil
+  ((org-mode . org-roam-mode)
+   (after-init . org-roam--build-cache-async))
+  :custom
+  (org-roam-link-title-format "R:%s")
+  ;(make-directory "~/org-roam")
+  ;(org-roam-directory "~/org-roam/")
+  (org-roam-directory org-roam-directory-location)
+  (org-roam-db-location "~/.emacs.d/var/org-roam.db")
+  (org-roam-index-file "index.org")
+  (org-roam-completion-system 'ivy)
+  :bind (:map org-roam-mode-map
+          (("C-c n l" . org-roam)
+           ("C-c n t" . org-roam-dailies-today)
+           ("C-c n f" . org-roam-find-file)
+           ("C-c n j" . org-roam-jump-to-index)
+           ("C-c n b" . org-roam-switch-to-buffer)
+           ;("C-c n g" . org-roam-show-graph)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n c" . org-roam-db-build-cache))
+          :map org-mode-map
+          (("C-c n i" . org-roam-insert))
+          (("C-c n I" . org-roam-insert-immediate)))
+  :config
+  (setq org-roam-capture-templates
+    '(("d" "default" plain (function org-roam-capture--get-point)
+       "%?"
+       :file-name "%<%Y%m%d>-${slug}"
+       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n#+STARTUP: overview\n\n- tags :: \n\n"
+       :unnarrowed t)))
+
+  ;; Update a field (#+LAST_MODIFIED: ) at save using bulit in time-stamp
+  ;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
+  (add-hook 'org-mode-hook (lambda ()
+                           (setq-local time-stamp-active t
+                                       time-stamp-line-limit 18
+                                       time-stamp-start "^#\\+LAST_MODIFIED: [ \t]*"
+                                       time-stamp-end "$"
+                                       time-stamp-format "\[%Y-%m-%d %a %H:%M\]")
+                           (add-hook 'before-save-hook 'time-stamp nil 'local)))
+
+
+)
+
+;  (setq org-roam-capture-templates
+;    '(("n" "Note" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Note-%<%Y%m%d>-${slug}"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("p" "paper" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Paper-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:paper.org][R:Paper]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("j" "project" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Proj-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:project.org][R:Project]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("s" "proposal" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "Proposal-%<%Y%m%d>-${slug}"
+;       ;:head "#+TITLE: ${title}\n - tags :: [[file:proposal.org][R:Proposal]]\n"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;      ("d" "Default" plain (function org-roam--capture-get-point) "%?"
+;       :file-name "%<%Y%m%d>-${slug}"
+;       :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+STARTUP: overview\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;       :unnarrowed t)
+;       ))
+
+;    :config
+;    (setq org-roam-capture-templates
+;      '(("d" "default" plain (function org-roam-capture--get-point)
+;         "%?"
+;         :file-name "%<%Y%m%d%H%M%S>-${slug}"
+;         :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n#+ROAM_ALIAS: \n\n- tags :: \n\n"
+;         :unnarrowed t)
+;
+;  ;; https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321
+;  ;      ("a" "daily" plain (function org-roam-capture--get-point)
+;  ;        ""
+;  ;       :immediate-finish t
+;  ;       :file-name "dailies/%<%Y-%m-%d>"
+;  ;       :head "#+TITLE: %<%Y-%m-%d>")
+;
+;  ; --
+;
+;  ;; how to modify last_modified tag in file
+;  ;;https://org-roam.discourse.group/t/update-a-field-last-modified-at-save/321/9
+;  ;(require 'time-stamp)
+;  ;(add-hook 'write-file-functions 'time-stamp)
+;
+;  ;--
+;
+;  ;; where no roam has gone before - oldfxiny
+;  ;; https://www.reddit.com/r/emacs/comments/h9zoy9/weekly_tipstricketc_thread/
+;
+;  ;(setq my/roam-dir-list '(
+;  ;  "~/org-roam/"
+;  ;  "~/org-roam-wip/"))
+;  ;
+;  ;(defun my/pick-roam-dir ()
+;  ;  "Select directories from a list"
+;  ;  (interactive)
+;  ;  (setq org-roam-directory
+;  ;  (completing-read "Select directory: " my/roam-dir-list))
+;  ;  ;;(deft)
+;  ;  ;;(deft-refresh)
+;  ;)
+
+#+end_src
+
 * Programming
 ** s
 The long lost Emacs string manipulation library
@@ -1549,3 +1705,198 @@ https://gist.github.com/pvik/8eb5755cc34da0226e3fc23a320a3c95
 #+end_src
 
 * -- Testing --
+* mu4e
+Load the mu4e.el file if it exists
+
+#+begin_src emacs-lisp
+;; only load mu4e on a specific system for debugging
+(when (string= (system-name) "lothlorien.local")
+
+;(load "~/.emacs.d/mu4e.el" t)
+;; vs
+(setq mu4e-config "~/.emacs.d/mu4e.el")
+(if (file-exists-p mu4e-config)
+    (load mu4e-config))
+
+)
+#+end_src
+
+* elfeed (rss reader)
+Elfeed is an extensible web feed reader for Emacs, supporting both Atom and RSS.
+https://github.com/skeeto/elfeed
+https://github.com/Manoj321/elfeed-dashboard
+https://github.com/algernon/elfeed-goodies
+
+Keyboard shortcuts
+  RET: view selected entry in a buffer
+  b: open selected entries in your browser (browse-url)
+  y: copy selected entries URL to the clipboard
+  r: mark selected entries as read
+  u: mark selected entries as unread
+  +: add a specific tag to selected entries
+  -: remove a specific tag from selected entries
+  R: mark all messages in buffer as read
+
+#+begin_src emacs-lisp
+;;(getenv "USER")
+;;("system-name")
+;; only load elfeed on a specific system for debugging
+(when (string= (system-name) "lothlorien.local")
+
+(use-package elfeed
+  :ensure t
+  :commands (elfeed)
+  :config
+  ;(require 'elfeed-protocol)
+
+  ;; load db on open, close db on quit
+  ;; https://www.pengmeiyu.com/blog/my-emacs-configuration/
+  ;(defun my-elfeed-open ()
+  ;  (interactive)
+  ;  (elfeed-db-load)
+  ;  (elfeed))
+  ;
+  ;(defun my-elfeed-quit ()
+  ;  (interactive)
+  ;  (elfeed-search-quit-window)
+  ;  (elfeed-db-unload)))
+
+  ;; changes location of elfeed database
+  (setq elfeed-db-directory "~/.emacs.d/var/elfeeddb")
+
+  ;; Mark all as read
+  (defun elfeed-mark-all-as-read ()
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread))
+
+  (bind-keys
+   :map elfeed-search-mode-map
+   ("R" . elfeed-mark-all-as-read))
+
+  ;; data is stored in ~/.elfeed
+  (setq elfeed-feeds (quote
+         (;; My feeds from The Old Reader
+          ;;The Old Reader Picks
+          ("https://www.apartmenttherapy.com/main.rss" misc)
+          ("https://www.getrichslowly.org/feed/" misc)
+          ("https://what-if.xkcd.com/feed.atom" misc)
+          ("http://blog.theoldreader.com/rss" misc)
+          ("https://thedailywhat.cheezburger.com/rss" misc)
+          ("http://feeds.feedburner.com/elise/simplyrecipes" misc)
+          ("https://manofmany.com/feed" misc)
+          ;; News
+          ("https://www.chicagotribune.com/rss2.0.xml" news chicago)
+          ;; Apple
+          ("https://www.engadget.com/rss.xml" apple)
+          ("http://feeds.macrumors.com/MacRumors-Front" apple)
+          ("https://www.cnet.com/rss/reviews/" apple)
+          ;; Blogs
+          ("http://c0t0d0s0.org/feeds/index.rss2" blogs)
+          ("http://feeds.scottlowe.org/slowe/content/feed" blogs)
+          ("http://utcc.utoronto.ca/~cks/space/blog/?atom" blogs)
+          ("https://everythingsysadmin.com/atom.xml" blogs)
+          ("https://prefetch.net/blog/index.php/feed" blogs)
+          ("https://blogs.oracle.com/compendium/rss" blogs)
+          ("http://snarfed.org/feed" blogs)
+          ("http://feeds.feedburner.com/TheGeekStuff" blogs)
+          ;; Downloads
+          ("http://reinventedsoftware.com/news/index.xml" downloads)
+          ("http://feeds.feedburner.com/macupdate" downloads)
+          ;; Linux
+          ("http://feeds.feedburner.com/d0od" linux)
+          ("https://www.usenix.org/blog/rss.xml" linux)
+          ("http://planet.centos.org/atom.xml" linux)
+          ("https://www.reddit.com/r/linux/.rss" linux reddit)
+          ("https://www.reddit.com/r/commandline/.rss" linux reddit)
+          ("https://www.reddit.com/r/sysadmin/.rss" linux reddit)
+          ("http://debian.org/News/news" linux debian)
+          ("https://blog.linuxmint.com/?feed=rss2" linux mint)
+          ;; PiDP
+          ("https://groups.google.com/forum/feed/pidp-8/msgs/rss_v2_0.xml?num=50" pidp google)
+          ("https://groups.google.com/forum/feed/pidp-11/msgs/rss_v2_0.xml?num=50" pidp google)
+          ;; Security
+          ("http://debian.org/security/dsa" security linux debian)
+          ("http://us-cert.gov/ncas/alerts.xml" security us)
+          ("https://msrc-blog.microsoft.com/feed/" security microsoft)
+          ("https://isc.sans.edu/rssfeed_full.xml" security sans)
+          ("https://www.netscout.com/blog/asert/rss.xml" security)
+          ;; Tech
+          ("http://thedailywtf.com/rss.aspx" tech wtf)
+          ("https://hackaday.com/feed/" tech)
+          ("https://raspberrypi.stackexchange.com/feeds" tech pi)
+          ("http://feeds.feedburner.com/catonmat" tech)
+          ;; programming
+          ("https://news.ycombinator.com/rss" programming)
+          ("https://www.reddit.com/r/programming.rss" programming)
+          ("https://www.reddit.com/r/golang.rss" programming go)
+          ("https://www.reddit.com/r/java.rss" programming java)
+          ("https://www.reddit.com/r/javascript.rss" programming javascript)
+          ("https://www.reddit.com/r/typescript.rss" programming typescript)
+          ("https://www.reddit.com/r/clojure.rss" programming clojure)
+          ("https://www.reddit.com/r/python.rss" programming python)
+          ;; cloud
+          ("https://www.reddit.com/r/aws.rss" cloud aws reddit)
+          ("https://www.reddit.com/r/googlecloud.rss" cloud googlecloud reddit)
+          ("https://www.reddit.com/r/azure.rss" cloud azure reddit)
+          ("https://www.reddit.com/r/devops.rss" cloud devops reddit)
+          ("https://www.reddit.com/r/kubernetes.rss" cloud kubernetes reddit)
+          ;; LDAP
+          ("https://stackoverflow.com/feeds/tag/ldap" ldap)
+          ;; Emaacs
+          ("https://stackoverflow.com/feeds/tag/emacs" emacs)
+          ("https://emacs.stackexchange.com/feeds" emacs)
+          ("http://feeds.feedburner.com/XahsEmacsBlog" emacs)
+          ("https://www.reddit.com/r/emacs.rss" emacs reddit)
+          ("https://stackoverflow.com/feeds/tag/org-mode" emacs)
+          ("https://superuser.com/feeds/tag/emacs" emacs)
+          ("http://blog.binchen.org/rss.xml" emacs)
+          ("https://sachachua.com/blog/feed/?cat=-550" emacs)
+          ("https://blog.tecosaur.com/tmio/rss.xml" emacs org)
+  )))
+
+  (setq-default elfeed-search-filter "@1-week-ago +unread")
+  ;(setq-default elfeed-search-filter "@2-days-ago +unread")
+  ;(setq-default elfeed-search-title-max-width 100)
+  ;(setq-default elfeed-search-title-min-width 100)
+
+  ;; set global keybindings
+  (global-set-key (kbd "C-c w") 'elfeed)
+  (global-set-key (kbd "C-c d") 'elfeed-dashboard)
+)
+
+;; provides article view on right side
+;(use-package elfeed-goodies
+;  :ensure t
+;  :demand t
+;  :config
+;  (elfeed-goodies/setup)
+;  ;; set pane position (left, right, top, bottom), default is right
+;  ;(setq elfeed-goodies/entry-pane-position 'bottom)
+;  (setq elfeed-goodies/entry-pane-size 0.65)
+;)
+
+;; save sample dashboard to a file
+;; curl https://raw.githubusercontent.com/Manoj321/elfeed-dashboard/main/elfeed-dashboard.org -o ~/elfeed-dashboard.org
+(use-package elfeed-dashboard
+  :ensure t
+  :demand t
+  :config
+  (setq elfeed-dashboard-file "~/.emacs.d/etc/elfeed-dashboard.org")
+  ;; update feed counts on elfeed-quit
+  (advice-add 'elfeed-search-quit-window :after #'elfeed-dashboard-update-links)
+))
+
+;; Provide extra protocols to make self-hosting RSS readers work with elfeed, including Fever, NewsBlur, Nextcloud/ownCloud News, Tiny Tiny RSS and even more.
+;; https://www.reddit.com/r/emacs/comments/av1vyh/usepackage_and_elfeed/
+;(use-package elfeed-protocol
+;  :ensure t
+;  :defer t
+;  :config
+;  (elfeed-protocol-enable)
+;  (require 'password-store))
+;
+;(use-package password-store
+;  :ensure t
+;  :defer t)
+#+end_src
