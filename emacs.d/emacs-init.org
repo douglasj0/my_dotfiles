@@ -1658,6 +1658,42 @@ https://org-roam.readthedocs.io/en/master/
 #+end_src
 
 * Programming
+** source control
+*** magit
+It's Magit! A Git porcelain inside Emacs. https://magit.vc
+https://github.com/magit/magit
+
+#+begin_src emacs-lisp
+;; Fixes for emacs 27
+;; Magit Error: Warning (with-editor): Cannot determine a suitable Emacsclient
+(setq-default with-editor-emacsclient-executable "emacsclient")
+
+(use-package magit
+  :ensure t
+  :defer 5
+  :commands magit
+  :bind
+    (("C-x g" . magit-status)
+     ("C-x G" . magit-status-with-prefix)
+     ("C-x M-g" . magit-dispatch)
+     ("C-c M-g" . global-magit-file-mode))
+  :config
+    (setq magit-completing-read-function 'ivy-completing-read)
+)
+#+end_src
+*** git gutter
+Emacs port of GitGutter which is Sublime Text Plugin
+Show change information from git
+https://github.com/syohex/emacs-git-gutter
+
+#+begin_src emacs-lisp
+(use-package git-gutter
+  :ensure t
+  :defer 6
+  :config
+    (global-git-gutter-mode t)
+)
+#+end_src
 ** s
 The long lost Emacs string manipulation library
 https://github.com/magnars/s.el
