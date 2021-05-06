@@ -274,7 +274,7 @@ Moved use-package and org-plus-contrib back to init.el to fix org-version issue
         ((region-active-p) (narrow-to-region (region-beginning) (region-end)))
         ((equal major-mode 'org-mode) (org-narrow-to-subtree))
         (t (error "Please select a region to narrow to"))))
-(global-set-key (kbd "C-c x") 'narrow-or-widen-dwim)  ; was: C-c n
+(global-set-key (kbd "C-c n n") 'narrow-or-widen-dwim)  ; was: C-c n then C-c x
 
 ;; I bind this key to C-c n, using the bind-key function that comes with use-package.
 ;(bind-key "C-c n" 'narrow-or-widen-dwim)
