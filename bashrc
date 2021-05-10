@@ -417,6 +417,11 @@ if [[ -f ~/Library/mysql/com.mysql.mysqld.plist ]]; then
     alias stop_mysql="sudo launchctl unload ~/Library/mysql/com.mysql.mysqld.plist"
 fi
 
+# Enable Homebrew for M1 Mac if installed
+if command -v /opt/homebrew/bin/brew 1>/dev/null 2>&1; then
+  eval $(/opt/homebrew/bin/brew shellenv)
+fi
+
 # pyenv darwin/homebrew
 #if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 #if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
@@ -425,8 +430,17 @@ fi
 #git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 ##git clone https://github.com/yyuu/pyenv-virtualenvwrapper.git ~/.pyenv/plugins/pyenv-virtualenvwrapper
 #git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
-if file ~/.pyenv/bin/pyenv > /dev/null; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; fi
-if file ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+#if file ~/.pyenv/bin/pyenv > /dev/null; then PYENV_ROOT="$HOME/.pyenv"; PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; fi
+#if file ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+if [ ! -z "${PYENV_ROOT}" ]; then
+  echo "..pyenv initalize"
+  eval "$(pyenv init -)"
+fi
+
+if command -v ~/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init 1>/dev/null 2>&1; then
+  echo "..pyenv-virtualenv initalize"
+  eval "$(pyenv virtualenv-init -)"
+fi
 
 # jenv darwin
 if which jenv > /dev/null; then export PATH="$HOME/.jenv/bin:$PATH"; eval "$(jenv init -)"; fi
