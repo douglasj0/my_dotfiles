@@ -79,4 +79,7 @@
 ;; Also suppress extraneous package-initialize errors
 (setq warning-suppress-log-types '((package reinitialization)))
 
+;; silence warnings?
+(setq comp-async-report-warnings-errors nil)
+
 (provide 'early-init)
