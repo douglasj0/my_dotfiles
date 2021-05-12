@@ -41,10 +41,13 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;;;;  Effectively replace use-package with straight-use-package
-;;; https://github.com/raxod502/straight.el/blob/develop/README.md#integration-with-use-package
+;; Use straight.el for use-package expressions
 (straight-use-package 'use-package)
+
 (setq straight-use-package-by-default t)
+
+;; Load the helper package for commands like `straight-x-clean-unused-repos'
+(require 'straight-x)
 
 ;; install no-littering as early as possible
 ; Help keeping ~/.emacs.d clean
