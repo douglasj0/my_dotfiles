@@ -26,6 +26,10 @@
 ;(unless (package-installed-p 'use-package)
 ;  (package-install 'use-package))
 
+;; identify files that were changed since the last time a package
+;; depending on them was built, don't check on statup
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
+
 ;; Boostrap straight.el package manager
 ;; https://github.com/raxod502/straight.el
 (defvar bootstrap-version)
