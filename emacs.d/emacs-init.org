@@ -383,7 +383,6 @@ NOTE: Installed in elisp, no package
 
 #+begin_src emacs-lisp
 (use-package su
-  :straight (:type built-in)
   ;:straight (:host github :repo "PythonNut/su.el")
   :config (su-mode +1))
 #+end_src
