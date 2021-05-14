@@ -698,7 +698,8 @@ load-theme without annoying confirmation
 
 ** dracula theme
 dracula-theme with telephone line status bar
-https://github.com/dracula/emacs
+https://draculatheme.com/
+https://github.com/dracula/dracula-theme
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
 
 #+begin_src emacs-lisp
