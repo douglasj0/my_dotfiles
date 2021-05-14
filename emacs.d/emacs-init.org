@@ -700,16 +700,31 @@ load-theme without annoying confirmation
 dracula-theme with telephone line status bar
 https://github.com/dracula/emacs
 https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_mode_line/
+
 #+begin_src emacs-lisp
 (use-package dracula-theme
   :init
   (setq dracula-enlarge-headings nil)
-  (setq dracula-alternate-mode-line-and-minibuffer t)
+  ;(setq dracula-alternate-mode-line-and-minibuffer t)
   :config
   (if (display-graphic-p)
-      (load-theme 'dracula :no-confirm)	 ; Emacs in own window (zenburn)
+      (load-theme 'dracula :no-confirm)	  ; Emacs in own window
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
   )
+)
+#+end_src
+
+** zenburn theme
+zenburn-theme
+https://github.com/bbatsov/zenburn-emacs
+
+#+begin_src emacs-lisp
+(use-package zenburn-theme
+  ;:config
+  ;(if (display-graphic-p)
+  ;   (load-theme 'zenburn :no-confirm)   ; Emacs in own window
+  ; (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty
+  ;
 )
 #+end_src
 
