@@ -468,11 +468,11 @@ Mac: brew install aspell
 (use-package flyspell-correct
   :after flyspell)
 
-(use-package flyspell-correct-ivy
-  :requires flyspell-correct
-  :bind ("C-M-;" . flyspell-correct-wrapper)
-  :init
-  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+;(use-package flyspell-correct-ivy
+;  :requires flyspell-correct
+;  :bind ("C-M-;" . flyspell-correct-wrapper)
+;  :init
+;  (setq flyspell-correct-interface #'flyspell-correct-ivy))
 #+end_src
 
 * OS Settings
@@ -1113,87 +1113,6 @@ https://github.com/minad/consult
          ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
          ("M-s l" . consult-line))                 ;; required by consult-line to detect isearch
 )
-#+end_src
-
-** ivy/swiper (completions)
-Ivy, a generic completion mechanism for Emacs.
-Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
-Swiper, an Ivy-enhanced alternative to Isearch.
-https://github.com/abo-abo/swiper
-ivy-rich adds extra columns to a few of the Counsel commands to provide more information about each item.
-https://github.com/Yevgnen/ivy-rich
-https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
-https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-
-#+begin_src emacs-lisp
-;(use-package ivy
-;  :init (ivy-mode 1)
-;  :bind
-;    ;("\C-s"    . swiper)
-;    ("\C-s"    . counsel-grep-or-swiper) ; swiper for small files, console-grep for large
-;    ("C-x C-r" . counsel-recentf)
-;    ;("C-c C-r" . ivy-resume)
-;    ("<f6>"    . ivy-resume)
-;    ("M-x"     . counsel-M-x)
-;    ("C-x C-f" . counsel-find-file)
-;    ("<f1> f"  . counsel-describe-function)
-;    ("<f1> v"  . counsel-describe-variable)
-;    ("<f1> o"  . counsel-describe-symbol)
-;    ("<f1> l"  . counsel-find-library)
-;    ("<f2> i"  . counsel-info-lookup-symbol)
-;    ("<f2> u"  . counsel-unicode-char)
-;    ("C-c g"   . counsel-git) ; Ivy-based interface to shell and system tools
-;    ("C-c j"   . counsel-git-grep)
-;    ("C-c k"   . counsel-ag)
-;    ("C-x l"   . counsel-locate)
-;    ("C-S-o"   . counsel-rhythmbox)
-;    ("C-r"     . counsel-minibuffer-history) ; disable M-x filter
-;  :config
-;    (setq ivy-use-virtual-buffers t)
-;    (setq enable-recursive-minibuffers t)
-;    ;; enable this if you want `swiper' to use it
-;    (setq search-default-mode #'char-fold-to-regexp))
-;
-;(use-package ivy-rich
-;  :requires (ivy counsel)
-;  :init
-;  (ivy-rich-mode 1))
-;
-;(use-package counsel
-;  :requires ivy
-;  :bind (("C-M-j" . 'counsel-switch-buffer)
-;         ("C-r" . 'counsel-minibuffer-history))
-;  :custom
-;  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
-;  :config
-;  (counsel-mode 1))
-#+end_src
-
-Ivy/Counsel integration for all-the-icons.el
-Disabled. Neat, but it seems to override ivy-rich additions
-https://github.com/asok/all-the-icons-ivy
-#+begin_src emacs-lisp
-;(use-package all-the-icons-ivy
-;  :ensure t
-;  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
-#+end_src
-
-#+begin_src emacs-lisp
-;(use-package swiper
-;  :requires (ivy))
-#+end_src
-
-ivy-prescient
-prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them. This can be especially helpful when using M-x to run commands that you don’t have bound to a key but still need to access occasionally.
-#+begin_src emacs-lisp
-;(use-package ivy-prescient
-;  :after counsel
-;  :custom
-;  (ivy-prescient-enable-filtering nil)
-;  :config
-;  ;; Uncomment the following line to have sorting remembered across sessions!
-;  ;(prescient-persist-mode 1)
-;  (ivy-prescient-mode 1))
 #+end_src
 
 ** projectile (project Management)
