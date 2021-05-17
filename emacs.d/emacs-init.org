@@ -704,10 +704,11 @@ https://www.reddit.com/r/emacs/comments/he55jl/whats_the_funky_character_on_the_
 
 #+begin_src emacs-lisp
 (use-package dracula-theme
-  :init
-  (setq dracula-enlarge-headings nil)
-  ;(setq dracula-alternate-mode-line-and-minibuffer t)
+  ;:init
+  ;(setq dracula-enlarge-headings nil)
   :config
+  ;; Don't change the font size for some headings and titles (default t)
+  (setq dracula-enlarge-headings nil)
   (if (display-graphic-p)
       (load-theme 'dracula :no-confirm)	  ; Emacs in own window
     (load-theme 'wheatgrass :no-confirm)  ; Emacs in tty

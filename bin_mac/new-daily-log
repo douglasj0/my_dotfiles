@@ -71,6 +71,7 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n* Tuesday
 \n8:30-9:30 email/slack catch-up
 \n10:30-11 [Meeting] AMI Vulnerabilities Checkpoint: InfoSec, Infra, SecEng
+\n11:15-11:45 [Meeting] WBR review
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
@@ -79,24 +80,23 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n8:30-9:30 email/slack catch-up
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
 \n1-1:30 [Meeting] Virtual coffee talk
-\n1-3 [Meeting] Work Social Hangout
+\n1-2:50 [Meeting] Work Social Hangout
 \n3-4 [Meeting] Postmortems Weekly
 \n* Thursday
 \n8:30-9:30 email/slack catch-up
-\n11:20-12 [Meeting] Tech Bi-weekly All Hands
+\n11-11:30 [Meeting] Tech Bi-weekly All Hands
 \n12:30-1 [Meeting] Prod-Infra Daily Standup
-\n1-1:30 [Meeting] CHI2 Shutdown Discussion
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 SRE Heads Down Time
+\n4:30-4:45 Friendly Reminder to review and update your tickets.
 \n* Friday
 \n8:30-9:30 email/slack catch-up
 \n9:30-10:30 [Meeting] SRE's Unite
+\n11-11:45 [Meeting] Infra Team: Sprint Planning
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 Learning Friday Time
 \n2-3 [Meeting] Security Engineering Team: Weekly Status and Project Review
-\n3-3:30 [Meeting] Prod-Infra Sprint Planning
-\n3-5 [Meeting] GrubPub Virtual Edition
-\n3:30-4 [Meeting] Team Drinking
+\n3-4 [Meeting] team retro+drinking
 \n* Notes:\n\n" >${newfile}
 
 # Count the number of log files (whose name starts with 0-9)
