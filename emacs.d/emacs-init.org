@@ -1025,6 +1025,91 @@ https://www.reddit.com/r/emacs/comments/imy9f1/all_the_icons_dired_subtree/
 #+end_src
 
 * Completions
+** vertico/corfu/consult (completions)
+vertico.el - VERTical Interactive COmpletion
+https://github.com/minad/vertico
+
+corfu.el - Completion Overlay Region FUnction
+https://github.com/minad/corfu
+
+consult.el - Consulting completing-read
+https://github.com/minad/consult
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :init
+  (vertico-mode))
+
+;; Use the `orderless' completion style.
+;; Enable `partial-completion' for files to allow path expansion.
+;; You may prefer to use `initials' instead of `partial-completion'.
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package corfu
+  :config
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since dabbrev can be used globally (M-/).
+  (corfu-global-mode))
+
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c b" . consult-bookmark)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-project-imenu)
+         ;; M-s bindings (search-map)
+         ("M-s f" . consult-find)
+         ("M-s L" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; required by consult-line to detect isearch
+         ("C-s"   . consult-line)                  ;; similar behavior to swiper
+  )
+)
+#+end_src
+
 ** ivy/swiper (completions)
 Ivy, a generic completion mechanism for Emacs.
 Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
@@ -1036,47 +1121,47 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
 
 #+begin_src emacs-lisp
-(use-package ivy
-  :init (ivy-mode 1)
-  :bind
-    ;("\C-s"    . swiper)
-    ("\C-s"    . counsel-grep-or-swiper) ; swiper for small files, console-grep for large
-    ("C-x C-r" . counsel-recentf)
-    ;("C-c C-r" . ivy-resume)
-    ("<f6>"    . ivy-resume)
-    ("M-x"     . counsel-M-x)
-    ("C-x C-f" . counsel-find-file)
-    ("<f1> f"  . counsel-describe-function)
-    ("<f1> v"  . counsel-describe-variable)
-    ("<f1> o"  . counsel-describe-symbol)
-    ("<f1> l"  . counsel-find-library)
-    ("<f2> i"  . counsel-info-lookup-symbol)
-    ("<f2> u"  . counsel-unicode-char)
-    ("C-c g"   . counsel-git) ; Ivy-based interface to shell and system tools
-    ("C-c j"   . counsel-git-grep)
-    ("C-c k"   . counsel-ag)
-    ("C-x l"   . counsel-locate)
-    ("C-S-o"   . counsel-rhythmbox)
-    ("C-r"     . counsel-minibuffer-history) ; disable M-x filter
-  :config
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    ;; enable this if you want `swiper' to use it
-    (setq search-default-mode #'char-fold-to-regexp))
-
-(use-package ivy-rich
-  :requires (ivy counsel)
-  :init
-  (ivy-rich-mode 1))
-
-(use-package counsel
-  :requires ivy
-  :bind (("C-M-j" . 'counsel-switch-buffer)
-         ("C-r" . 'counsel-minibuffer-history))
-  :custom
-  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
-  :config
-  (counsel-mode 1))
+;(use-package ivy
+;  :init (ivy-mode 1)
+;  :bind
+;    ;("\C-s"    . swiper)
+;    ("\C-s"    . counsel-grep-or-swiper) ; swiper for small files, console-grep for large
+;    ("C-x C-r" . counsel-recentf)
+;    ;("C-c C-r" . ivy-resume)
+;    ("<f6>"    . ivy-resume)
+;    ("M-x"     . counsel-M-x)
+;    ("C-x C-f" . counsel-find-file)
+;    ("<f1> f"  . counsel-describe-function)
+;    ("<f1> v"  . counsel-describe-variable)
+;    ("<f1> o"  . counsel-describe-symbol)
+;    ("<f1> l"  . counsel-find-library)
+;    ("<f2> i"  . counsel-info-lookup-symbol)
+;    ("<f2> u"  . counsel-unicode-char)
+;    ("C-c g"   . counsel-git) ; Ivy-based interface to shell and system tools
+;    ("C-c j"   . counsel-git-grep)
+;    ("C-c k"   . counsel-ag)
+;    ("C-x l"   . counsel-locate)
+;    ("C-S-o"   . counsel-rhythmbox)
+;    ("C-r"     . counsel-minibuffer-history) ; disable M-x filter
+;  :config
+;    (setq ivy-use-virtual-buffers t)
+;    (setq enable-recursive-minibuffers t)
+;    ;; enable this if you want `swiper' to use it
+;    (setq search-default-mode #'char-fold-to-regexp))
+;
+;(use-package ivy-rich
+;  :requires (ivy counsel)
+;  :init
+;  (ivy-rich-mode 1))
+;
+;(use-package counsel
+;  :requires ivy
+;  :bind (("C-M-j" . 'counsel-switch-buffer)
+;         ("C-r" . 'counsel-minibuffer-history))
+;  :custom
+;  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+;  :config
+;  (counsel-mode 1))
 #+end_src
 
 Ivy/Counsel integration for all-the-icons.el
@@ -1089,21 +1174,21 @@ https://github.com/asok/all-the-icons-ivy
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package swiper
-  :requires (ivy))
+;(use-package swiper
+;  :requires (ivy))
 #+end_src
 
 ivy-prescient
 prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them. This can be especially helpful when using M-x to run commands that you don’t have bound to a key but still need to access occasionally.
 #+begin_src emacs-lisp
-(use-package ivy-prescient
-  :after counsel
-  :custom
-  (ivy-prescient-enable-filtering nil)
-  :config
-  ;; Uncomment the following line to have sorting remembered across sessions!
-  ;(prescient-persist-mode 1)
-  (ivy-prescient-mode 1))
+;(use-package ivy-prescient
+;  :after counsel
+;  :custom
+;  (ivy-prescient-enable-filtering nil)
+;  :config
+;  ;; Uncomment the following line to have sorting remembered across sessions!
+;  ;(prescient-persist-mode 1)
+;  (ivy-prescient-mode 1))
 #+end_src
 
 ** projectile (project Management)
@@ -1545,7 +1630,7 @@ https://org-roam.readthedocs.io/en/master/
   (org-roam-directory org-roam-directory-location)
   (org-roam-db-location "~/.emacs.d/var/org-roam.db")
   (org-roam-index-file "index.org")
-  (org-roam-completion-system 'ivy)
+;  (org-roam-completion-system 'ivy)
   :bind (:map org-roam-mode-map
           (("C-c n l" . org-roam)
            ("C-c n t" . org-roam-dailies-today)
@@ -1665,8 +1750,8 @@ https://github.com/magit/magit
      ("C-x G" . magit-status-with-prefix)
      ("C-x M-g" . magit-dispatch)
      ("C-c M-g" . global-magit-file-mode))
-  :config
-    (setq magit-completing-read-function 'ivy-completing-read)
+  ;:config
+  ;  (setq magit-completing-read-function 'ivy-completing-read)
 )
 #+end_src
 *** git gutter
