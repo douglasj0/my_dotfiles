@@ -467,12 +467,6 @@ Mac: brew install aspell
 ;; https://github.com/d12frosted/flyspell-correct
 (use-package flyspell-correct
   :after flyspell)
-
-;(use-package flyspell-correct-ivy
-;  :requires flyspell-correct
-;  :bind ("C-M-;" . flyspell-correct-wrapper)
-;  :init
-;  (setq flyspell-correct-interface #'flyspell-correct-ivy))
 #+end_src
 
 * OS Settings
@@ -850,7 +844,7 @@ Search all marked buffers
 #+begin_src emacs-lisp
 (use-package ibuffer
   :straight (:type built-in)
-  :bind ("C-x C-b" . ibuffer)
+  :bind ("C-x C-b" . ibuffer) ; replaces electric-buffer-list
   :config
     ;; Don't show empty buffer groups
     (setq ibuffer-show-empty-filter-groups nil)
@@ -1562,7 +1556,7 @@ https://org-roam.readthedocs.io/en/master/
   (org-roam-directory org-roam-directory-location)
   (org-roam-db-location "~/.emacs.d/var/org-roam.db")
   (org-roam-index-file "index.org")
-;  (org-roam-completion-system 'ivy)
+  (org-roam-completion-system 'default) ; default, ido, ivy, helm
   :bind (:map org-roam-mode-map
           (("C-c n l" . org-roam)
            ("C-c n t" . org-roam-dailies-today)
@@ -1682,8 +1676,6 @@ https://github.com/magit/magit
      ("C-x G" . magit-status-with-prefix)
      ("C-x M-g" . magit-dispatch)
      ("C-c M-g" . global-magit-file-mode))
-  ;:config
-  ;  (setq magit-completing-read-function 'ivy-completing-read)
 )
 #+end_src
 *** git gutter
