@@ -1033,7 +1033,21 @@ consult.el - Consulting completing-read
 https://github.com/minad/consult
 
 #+begin_src emacs-lisp
+;; add similar behavior to ivy, doesnt' work in cli mode?
+(defun dw/minibuffer-backward-kill (arg)
+  "When minibuffer is completing a file name delete up to parent
+folder, otherwise delete a word"
+  (interactive "p")
+  (if minibuffer-completing-file-name
+      ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
+      (if (string-match-p "/." (minibuffer-contents))
+          (zap-up-to-char (- arg) ?/)
+        (delete-minibuffer-contents))
+      (backward-kill-word arg)))
+
 (use-package vertico
+  :bind (:map minibuffer-local-map
+         ("<backspace>" . dw/minibuffer-backward-kill))
   :init
   (vertico-mode))
 
@@ -1072,7 +1086,7 @@ https://github.com/minad/consult
   :bind (;; C-c bindings (mode-specific-map)
          ;("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
-         ("C-c k" . consult-bookmark) ; was C-c b
+         ("C-c b" . consult-bookmark)
          ;("C-c k" . consult-kmacro)
          ;; C-x bindings (ctl-x-map)
          ;("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
@@ -1279,7 +1293,7 @@ NOTE: use-package def moved to init.el to override built-in org version
 ;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
+;(global-set-key "\C-cb" 'org-iswitchb) ; no commnd, moved key to consult
 (global-set-key "\C-cc" 'org-capture)
 
 ;; Set to the location of your Org files on your local system
