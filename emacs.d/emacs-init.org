@@ -1047,7 +1047,8 @@ folder, otherwise delete a word"
 
 (use-package vertico
   :bind (:map minibuffer-local-map
-         ("<backspace>" . dw/minibuffer-backward-kill))
+         ("<backspace>" . dw/minibuffer-backward-kill)
+         ("C-h" . dw/minibuffer-backward-kill)) ; works in cli
   :init
   (vertico-mode))
 
