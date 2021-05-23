@@ -8,7 +8,7 @@
 ###################
 case $(uname) in
 Darwin)  # Darwin Environment
-echo ".darwin profile loaded"
+#echo ".darwin profile loaded"
 
 #For compilers to find ruby you may need to set:
 #  export LDFLAGS="-L/usr/local/opt/ruby/lib"
@@ -24,7 +24,7 @@ export PATH MANPATH TMPDIR
 
 # pyenv path setup
 if command -v ~/.pyenv/bin/pyenv 1>/dev/null 2>&1; then
-  echo "..pyenv path setup"
+  #echo "..pyenv path setup"
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init --path)"

@@ -6,7 +6,7 @@
 ###################
 case $(uname) in
 Darwin)  # Darwin Environment
-[ ! -z "$PS1" ] && echo ".darwin zshenv loaded"
+#[ ! -z "$PS1" ] && echo ".darwin zshenv loaded"
 
 # disable reading of /etc/zprofile (global profiles) on MacOSX it changes path order
 setopt no_global_rcs

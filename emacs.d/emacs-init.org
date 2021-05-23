@@ -1032,6 +1032,10 @@ https://github.com/minad/marginalia
 consult.el - Consulting completing-read
 https://github.com/minad/consult
 
+NOTE: emacs in a terminal settings to use backspace in minibuffer:
+ terminal- Preferences, Profiles, Advanced, check Delete sends C-h
+ iTerm- Preferences, Profiles, Keys, Delete sensd ^H
+
 #+begin_src emacs-lisp
 ;; add similar behavior to ivy, doesnt' work in cli mode?
 (defun dw/minibuffer-backward-kill (arg)
@@ -1047,7 +1051,7 @@ folder, otherwise delete a word"
 
 (use-package vertico
   :bind (:map minibuffer-local-map
-         ("<backspace>" . dw/minibuffer-backward-kill)
+         ;("<backspace>" . dw/minibuffer-backward-kill)
          ("C-h" . dw/minibuffer-backward-kill)) ; works in cli
   :init
   (vertico-mode))
@@ -1085,7 +1089,7 @@ folder, otherwise delete a word"
 (use-package consult
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (;; C-c bindings (mode-specific-map)
-         ;("C-c h" . consult-history)
+         ("C-c h" . consult-history) ; maybe use C-r
          ("C-c m" . consult-mode-command)
          ("C-c b" . consult-bookmark)
          ;("C-c k" . consult-kmacro)
@@ -1112,11 +1116,11 @@ folder, otherwise delete a word"
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-project-imenu)
          ;; M-s bindings (search-map)
-         ;("M-s f" . consult-find)
-         ;("M-s L" . consult-locate)
-         ;("M-s g" . consult-grep)
-         ;("M-s G" . consult-git-grep)
-         ;("M-s r" . consult-ripgrep)
+         ("M-s f" . consult-find)
+         ("M-s L" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
          ("M-s m" . consult-multi-occur)
          ;("M-s k" . consult-keep-lines)
