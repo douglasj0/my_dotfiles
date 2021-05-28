@@ -1758,15 +1758,14 @@ Load the mu4e.el file if it exists
 
 #+begin_src emacs-lisp
 ;; only load mu4e on a specific system for debugging
-(when (string= (system-name) "lothlorien.local")
+;(when (string= (system-name) "lothlorien.local")
 
 ;(load "~/.emacs.d/mu4e.el" t)
 ;; vs
-(setq mu4e-config "~/.emacs.d/mu4e.el")
-(if (file-exists-p mu4e-config)
-    (load mu4e-config))
-
-)
+;(setq mu4e-config "~/.emacs.d/mu4e.el")
+;(if (file-exists-p mu4e-config)
+;    (load mu4e-config))
+;)
 #+end_src
 
 * elfeed (rss reader)

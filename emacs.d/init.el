@@ -64,8 +64,9 @@
 )
 
 ;; Install and load the latest org-mode version via org-plus-contrib
+;; changed to org-contrib, https://orgmode.org/list/87blb3epey.fsf@gnu.org
 (use-package org
-  :straight org-plus-contrib
+  :straight org-contrib
   :hook
   ;(org-mode . variable-pitch-mode)
   (org-mode . visual-line-mode)
