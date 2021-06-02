@@ -1758,14 +1758,14 @@ Load the mu4e.el file if it exists
 
 #+begin_src emacs-lisp
 ;; only load mu4e on a specific system for debugging
-;(when (string= (system-name) "lothlorien.local")
+(when (string= (system-name) "lothlorien.local")
 
-;(load "~/.emacs.d/mu4e.el" t)
+;;(load "~/.emacs.d/mu4e.el" t)
 ;; vs
-;(setq mu4e-config "~/.emacs.d/mu4e.el")
-;(if (file-exists-p mu4e-config)
-;    (load mu4e-config))
-;)
+(setq mu4e-config "~/.emacs.d/mu4e.el")
+(if (file-exists-p mu4e-config)
+    (load mu4e-config))
+)
 #+end_src
 
 * elfeed (rss reader)
@@ -1943,4 +1943,80 @@ Keyboard shortcuts
 ;(use-package password-store
 ;  :ensure t
 ;  :defer t)
+#+end_src
+
+* ERC
+Emacs IRC Client
+https://www.emacswiki.org/emacs/ERC
+(Setup for irc.libera.chat)
+https://pages.sachachua.com/.emacs.d/Sacha.html
+https://www.emacswiki.org/emacs/ErcExampleEmacsFile
+https://www.gnu.org/software/emacs/manual/html_mono/erc.html
+https://github.com/vikraman/.emacs.d/blob/master/elisp/erc-init.el
+
+libera
+https://meta.wikimedia.org/wiki/IRC/Migrating_to_Libera_Chat
+
+#+begin_src emacs-lisp
+(setq erc-server "irc.libera.chat"
+      erc-nick "madrak1"    ; Change this!
+      erc-user-full-name "douglas"  ; And this!
+      erc-track-shorten-start 8
+      erc-autojoin-channels-alist '(("irc.libera.chat"
+                                     "#systemcrafters"
+                                     "#emacs"))
+      ;; Kill buffers for channels after /part
+      erc-kill-buffer-on-part t
+      erc-auto-query 'bury)
+
+(setq erc-query-display 'buffer ;; open query buf in cur window
+
+      ;; Interpret mIRC-style color commands in IRC chats
+      erc-interpret-mirc-color t
+
+      ;; utf-8 always and forever
+      erc-server-coding-system '(utf-8 . utf-8)
+
+      ;; static left align for nicks
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 15
+
+      ;; autoaway setup, 10 minutes
+      erc-auto-discard-away t
+      erc-autoaway-idle-seconds 600
+
+      erc-prompt-for-nickserv-password nil
+
+      erc-server-reconnect-attempts 5
+      erc-server-reconnect-timeout 3
+      erc-track-exclude-types '("JOIN" "MODE" "NICK" "PART" "QUIT"
+                                 "324" "329" "332" "333" "353" "477")
+)
+
+;; autoaway
+(defvar erc-autoaway-use-emacs-idle t)
+
+;; Keep ERC> prompt at the screen bottom
+(add-to-list 'erc-mode-hook (lambda ()
+  (set (make-local-variable 'scroll-conservatively) 100)))
+
+;; functions
+(defun my/erc-start-or-switch ()
+  "Connect to ERC, or switch to last active buffer"
+  (interactive)
+  (if (get-buffer "irc.libera.chat:6667") ;; ERC already active?
+    (erc-track-switch-buffer 1) ;; yes: switch to last active
+    (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
+      (erc :server "irc.libera.chat" :port 6667 :nick "madrak0" :full-name "douglasj"))))
+(global-set-key (kbd "C-c e e") 'my/erc-start-or-switch)
+
+(defun my/erc-notify (nickname message)
+"Displays a notification message for ERC."
+(let* ((channel (buffer-name))
+       (nick (erc-hl-nicks-trim-irc-nick nickname))
+       (title (if (string-match-p (concat "^" nickname) channel)
+                  nick
+                (concat nick " (" channel ")")))
+       (msg (s-trim (s-collapse-whitespace message))))
+  (alert (concat nick ": " msg) :title title)))
 #+end_src
