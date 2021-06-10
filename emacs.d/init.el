@@ -65,6 +65,7 @@
 
 ;; Install and load the latest org-mode version via org-plus-contrib
 ;; changed to org-contrib, https://orgmode.org/list/87blb3epey.fsf@gnu.org
+;; update repos and rebuild: straight-pull-all, then straight-rebuild-all?
 (use-package org
   :straight org-contrib
   :hook
