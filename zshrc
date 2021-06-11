@@ -304,7 +304,7 @@ alias ect="emacsclient -s $EMACS_SOCKET -t -a emacs -nw" # start a terminal fram
 alias ec="emacsclient -s $EMACS_SOCKET -n -a emacs" # do not start a new frame
 
 export EDITOR="${HOME}/bin/edit"
-export ALTERNATE_EDITOR="zile"
+export ALTERNATE_EDITOR="mg"
 export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 function ediff {
@@ -366,8 +366,8 @@ alias ecw="emacsclient -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -n -a emacs" # do not start a new frame
 # export EDITOR="emacsclient -t"
-[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
-export ALTERNATE_EDITOR="zile"
+[[ "x$EDITOR" == "x" ]] && export EDITOR="mg"  # set EDITOR if blank
+export ALTERNATE_EDITOR="mg"
 
 # Status (from Rackspace)
 function stats() { uptime; awk '/^MemTotal:/{total = $2/1024^2} /^(MemFree|Buffers|Cached):/{sum += $2} END {printf " Memory: %.2fG/%.2fG\n", sum/1024^2, total}' /proc/meminfo; ps -eo pcpu | awk '/[0-9]/ {sum += $1} END {printf " CPU: %s%%\n", sum}'; }

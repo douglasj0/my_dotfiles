@@ -395,7 +395,7 @@ alias ect="emacsclient -s $EMACS_SOCKET -t -a emacs -nw" # start a terminal fram
 alias ec="emacsclient -s $EMACS_SOCKET -n -a emacs" # do not start a new frame
 
 export EDITOR="${HOME}/bin/edit"
-export ALTERNATE_EDITOR="zile"
+export ALTERNATE_EDITOR="mg"
 export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 function ediff {
@@ -462,8 +462,8 @@ alias ecw="emacsclient -n -c -a emacs" # start a windowed frame
 alias ect="emacsclient -t -a emacs -nw" # start a terminal frame
 alias ec="emacsclient -n -a emacs" # do not start a new frame
 # export EDITOR="emacsclient -t"
-[[ "x$EDITOR" == "x" ]] && export EDITOR="zile"  # set EDITOR if blank
-export ALTERNATE_EDITOR="zile"
+[[ "x$EDITOR" == "x" ]] && export EDITOR="mg"  # set EDITOR if blank
+export ALTERNATE_EDITOR="mg"
 
 ## pass options to free ##
 alias meminfo='free -m -l -t'
