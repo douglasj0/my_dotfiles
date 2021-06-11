@@ -93,6 +93,7 @@ $yourName  [ Week beginning Monday ${newfile#*--} ]\n
 \n8:30-9:30 email/slack catch-up
 \n9:30-10:30 [Meeting] SRE's Unite
 \n11-11:45 [Meeting] Infra Team: Sprint Planning
+\n12-12:30 [Meeting] BigID Infra Bi-weekly Catchup, Sheetal
 \n1-1:30 [Meeting] Virtual coffee talk
 \n1-5 Learning Friday Time
 \n2-3 [Meeting] Security Engineering Team: Weekly Status and Project Review
