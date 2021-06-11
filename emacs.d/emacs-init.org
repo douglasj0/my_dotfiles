@@ -1962,14 +1962,14 @@ https://github.com/vikraman/.emacs.d/blob/master/elisp/erc-init.el
 libera
 https://meta.wikimedia.org/wiki/IRC/Migrating_to_Libera_Chat
 
-NOTE: erc-tls doesn't seem to be working on macos
+NOTE: erc non-encrypted port = 6667, encrypted is 6697
 
 #+begin_src emacs-lisp
 (setq erc-server "irc.libera.chat"
       erc-nick "madrak0"    ; Secondary nick
       erc-user-full-name "douglasj"  ; Name
       erc-track-shorten-start 8
-      erc-autojoin-channels-alist '(("irc.libera.chat"
+      erc-autojoin-channels-alist '(("Libera.Chat"
                                      "#systemcrafters"
                                      "#emacs"))
       ;; Kill buffers for channels after /part
@@ -1978,13 +1978,17 @@ NOTE: erc-tls doesn't seem to be working on macos
 
 ;; change how erc displays messages
 ;; static left align for nicks
-(setq erc-fill-column 120
-      erc-fill-function 'erc-fill-static
-      erc-fill-static-center 15)
+(setq erc-fill-function 'erc-fill-static
+      erc-fill-static-center 12)
+;(setq erc-fill-column 120)
+;; dynamic fill based on frame width
+(add-hook 'window-configuration-change-hook
+   '(lambda ()
+      (setq erc-fill-column (- (window-width) 2))))
 
 ;; activity tracking
-(setq erc-track-exclude '("#emacs")
-      erc-track-exclude-types '("JOIN" "NICK" "QUIT" "MODE" "AWAY")
+;(setq erc-track-exclude '("#emacs")
+(setq erc-track-exclude-types '("JOIN" "NICK" "QUIT" "MODE" "AWAY")
       erc-hide-list '("JOIN" "NICK" "QUIT" "MODE" "AWAY")
       erc-track-exclude-server-buffer t)
 
@@ -2040,9 +2044,9 @@ NOTE: erc-tls doesn't seem to be working on macos
 (setq erc-spelling-mode t)
 
 ;; autoaway setup, 10 minutes
-(setq erc-auto-discard-away t
-      erc-autoaway-idle-seconds 600)
-(defvar erc-autoaway-use-emacs-idle t)
+;(setq erc-auto-discard-away t
+;      erc-autoaway-idle-seconds 600)
+;(defvar erc-autoaway-use-emacs-idle t)
 
 ;; Keep ERC> prompt at the screen bottom
 (add-to-list 'erc-mode-hook (lambda ()
@@ -2052,11 +2056,11 @@ NOTE: erc-tls doesn't seem to be working on macos
 (defun my/erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
   (interactive)
-  (if (get-buffer "irc.libera.chat:6667") ;; ERC already active?
+  (if (get-buffer "Libera.Chat") ;; ERC already active?
     (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
-      (erc     :server "irc.libera.chat"
-               :port 6667
+      (erc-tls :server "irc.libera.chat"
+               :port "6697"
                :nick "madrak"
                :full-name "douglasj"))))
 (global-set-key (kbd "C-c e e") 'my/erc-start-or-switch)
