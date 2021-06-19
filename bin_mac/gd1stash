@@ -1,5 +1,0 @@
-#!/bin/bash
-  
-cd ~/Applications/GDStash
-/usr/bin/java -Xms2048m -Xmx2048m -jar ./GDStash.jar
-cd -

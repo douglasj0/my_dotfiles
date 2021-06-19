@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for IP in $*
-do
-  #curl -s http://ipinfo.io/?IP=${IP} | textutil -convert txt -stdin -stdout -format html | sed -n '/Host Name/,/Postal code/p' 
-  curl -s http://ipinfo.io/${IP} | grep country
-done

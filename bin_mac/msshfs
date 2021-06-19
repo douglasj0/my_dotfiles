@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# options:
-# reconnect - useful when network conn goes down with a mounted sshfs volume
-
-# Mounting the SSH file system
-mkdir -p /Volumes/$1
-sshfs jacksond@$1: /Volumes/$1 -o reconnect,volname=$1
-#sshfs jacksond@$1: /Volumes/$1 -o IdentityFile=${HOME}/.ssh/id_dsa,IdentitiesOnly=yes,reconnect,volname=$1

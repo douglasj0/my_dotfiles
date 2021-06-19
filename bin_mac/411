@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/bin/egrep -i -C 5 "$1" ${HOME}/examples/WorkingNotes.txt

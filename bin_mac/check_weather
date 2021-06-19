@@ -1,7 +1,0 @@
-#!/bin/bash
-
-curl http://wttr.in/CHI
-echo
-echo
-curl http://wttr.in/Moon
-
